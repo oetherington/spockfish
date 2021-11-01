@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Board from './Board';
-import Position from './engine/Position';
-import useKeyBind from '../../hooks/useKeyBind';
+import Position from '~/engine/Position';
+import useKeyBind from '~/hooks/useKeyBind';
 
 const getPixelRatio = () => typeof window === 'undefined'
 	? undefined

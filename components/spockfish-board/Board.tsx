@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import useDomEvent from '../../hooks/useDomEvent';
+import useDomEvent from '~/hooks/useDomEvent';
 import MainBoard from './MainBoard';
 import AttackBoard from './AttackBoard';
 import Piece from './Piece';

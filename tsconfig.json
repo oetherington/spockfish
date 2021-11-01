@@ -4,7 +4,9 @@
 		"paths": {
 			"~/styles/*": ["styles/*"],
 			"~/components/*": ["components/*"],
-			"~/hooks/*": ["hooks/*"]
+			"~/hooks/*": ["hooks/*"],
+			"~/engine/*": ["engine/*"],
+			"~/public/*": ["public/*"]
 		},
 		"target": "es5",
 		"lib": [

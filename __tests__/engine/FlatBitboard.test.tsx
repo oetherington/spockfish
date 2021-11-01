@@ -1,4 +1,4 @@
-import FlatBitboard from '~/components/spockfish-board/engine/FlatBitboard';
+import FlatBitboard from '~/engine/FlatBitboard';
 
 describe('FlatBitboard', () => {
 	it('can be initialized', () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
-import Layout from '../components/Layout';
-import BoardView from '../components/spockfish-board/BoardView';
+import Layout from '~/components/Layout';
+import BoardView from '~/components/spockfish-board/BoardView';
 
 const getNavbarHeight = () => parseInt(
 	getComputedStyle(document.body).getPropertyValue('--navbar-height')
