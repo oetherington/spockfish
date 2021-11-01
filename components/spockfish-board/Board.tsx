@@ -13,7 +13,12 @@ const makeControls = (gl, camera) => {
 	controls.dampingFactor = 0.1;
 	controls.enablePan = false;
 	controls.enableZoom = true;
-	controls.rotateSpeed = 0.2;
+	controls.zoomSpeed = 0.1;
+	controls.rotateSpeed = 0.15;
+	controls.minDistance = 2;
+	controls.maxDistance = 14;
+	controls.minPolarAngle = Math.PI * 0.1;
+	controls.maxPolarAngle = Math.PI * 0.6;
 	return controls;
 };
 

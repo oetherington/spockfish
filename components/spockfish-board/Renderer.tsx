@@ -19,6 +19,7 @@ const Renderer = ({ outlinedRefs, children }) => {
 
 	gl.outputEncoding = sRGBEncoding;
 	gl.gammaFactor = 2.2;
+	camera.fov = 75;
 
 	const composer = useRef();
 

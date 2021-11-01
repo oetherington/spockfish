@@ -10,9 +10,12 @@ const getPixelRatio = () => typeof window === 'undefined'
 const BoardView = props => {
 	const [position, setPosition] = useState(new Position());
 
-
 	return (
-		<Canvas pixelRatio={getPixelRatio()}>
+		<Canvas
+			pixelRatio={getPixelRatio()}
+			perspective // TODO: Add option for orthographic camera
+			camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}
+		>
 			<ambientLight intensity={0.2} />
 			<pointLight position={[10, 10, 10]} />
 			<Board position={position} {...props} />
