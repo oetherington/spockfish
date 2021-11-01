@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
+import { WebGLRenderer, Camera, Vector3, Group } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import useDomEvent from '~/hooks/useDomEvent';
 import MainBoard from './MainBoard';
 import AttackBoard from './AttackBoard';
-import Piece from './Piece';
+import PieceComponent from './Piece';
 import Renderer from './Renderer';
+import Piece from '~/engine/Piece';
+import Position from '~/engine/Position';
 
-const makeControls = (gl, camera) => {
+const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
 	controls.enableDamping = true;
 	controls.dampingFactor = 0.1;
@@ -22,10 +25,16 @@ const makeControls = (gl, camera) => {
 	return controls;
 };
 
-const Board = ({ position, width, height }) => {
+type BoardProps = {
+	position: Position,
+	width: number,
+	height: number,
+}
+
+const Board = ({ position, width, height }: BoardProps) => {
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
-	const [controls] = useState(makeControls(gl, camera));
+	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
 
 	useFrame((state, delta) => controls.update());
 
@@ -33,14 +42,15 @@ const Board = ({ position, width, height }) => {
 		setSize(width, height);
 	}, [width, height]);
 
-	const [selected, setSelected] = useState(null);
+	const [selected, setSelected] = useState<Group | null>(null);
 
-	const selectPiece = ref => setSelected(ref === selected ? null : ref);
+	const selectPiece = (obj: Group) =>
+		setSelected(obj === selected ? null : obj);
 
-	const clickObject = obj => {
-		if (obj.metadata.piece || obj.metadata.abLevel) {
+	const clickObject = (obj: Group) => {
+		if (obj.userData.piece || obj.userData.abLevel) {
 			selectPiece(obj);
-		} else if (obj.metadata.square) {
+		} else if (obj.userData.square) {
 			setSelected(null);
 		}
 	};
@@ -51,9 +61,11 @@ const Board = ({ position, width, height }) => {
 			let obj = objects[0].object;
 			while (obj.parent && obj.parent.type === 'Group')
 				obj = obj.parent;
-			if (!obj.metadata)
+			if (!obj.userData)
 				return;
-			clickObject(obj);
+			clickObject(obj as Group);
+		} else {
+			setSelected(null);
 		}
 	}, [scene.children, selected]);
 
@@ -71,9 +83,13 @@ const Board = ({ position, width, height }) => {
 			<AttackBoard color={'w'} level={whiteAttackBoards[1]} />
 			<AttackBoard color={'b'} level={blackAttackBoards[0]} />
 			<AttackBoard color={'b'} level={blackAttackBoards[1]} />
-			{pieces.map((piece, index) =>
-				<Piece key={index} {...piece} />)
-			}
+			<>
+				{
+					pieces.map((piece: Piece, index: number) =>
+						<PieceComponent key={index} {...piece} />
+					)
+				}
+			</>
 		</Renderer>
 	);
 };

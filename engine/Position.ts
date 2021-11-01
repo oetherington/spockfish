@@ -1,12 +1,13 @@
 import Color from './Color';
-import { File, Rank, Level } from './Square';
+import { File, Rank, AttackLevel } from './Square';
 import Piece from './Piece';
+import Move from './Move';
 
 class AttackBoards {
 	// To make sure positions are serializable, make sure the arrays are
 	// always sorted
-	white: Level[] = [ 'KL1', 'QL1' ];
-	black: Level[] = [ 'KL6', 'QL6' ];
+	white: AttackLevel[] = [ 'KL1', 'QL1' ];
+	black: AttackLevel[] = [ 'KL6', 'QL6' ];
 }
 
 class CastlingRights {
@@ -66,11 +67,11 @@ class Position {
 		this.castlingRights = new CastlingRights();
 	}
 
-	getWhiteAttackBoards() : Level[] {
+	getWhiteAttackBoards() : AttackLevel[] {
 		return this.attackBoards.white;
 	}
 
-	getBlackAttackBoards() : Level[] {
+	getBlackAttackBoards() : AttackLevel[] {
 		return this.attackBoards.black;
 	}
 
@@ -78,11 +79,11 @@ class Position {
 		return this.pieces;
 	}
 
-	getLegalMovesForPiece(piece) : Move[] {
+	getLegalMovesForPiece(piece: Piece) : Move[] {
 		return [];
 	}
 
-	getLegalMoves(piece) : Move[] {
+	getLegalMoves(piece: Piece | null) : Move[] {
 		return piece
 			? this.getLegalMovesForPiece(piece)
 			: this.pieces.map(p => this.getLegalMovesForPiece(p)).flat();

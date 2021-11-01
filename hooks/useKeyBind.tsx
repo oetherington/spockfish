@@ -1,8 +1,12 @@
 import React, { useEffect } from 'react';
 
-const useKeyBind = (keyCode, callback) => {
+type KeyDownEvent = {
+	code: string,
+}
+
+const useKeyBind = (keyCode: string, callback: () => void) => {
 	useEffect(() => {
-		const handler = ev => {
+		const handler = (ev: KeyDownEvent) => {
 			if (ev.code === keyCode)
 				callback();
 		}

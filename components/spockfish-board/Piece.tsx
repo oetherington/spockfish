@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Group, Mesh, Material, Color as ThreeColor } from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { useLoader } from '@react-three/fiber';
 import {
@@ -8,8 +9,11 @@ import {
 	pieceRotations,
 	getSquarePosition,
 } from './geometry';
+import { PieceType } from '~/engine/Piece';
+import { File, Rank, Level } from '~/engine/Square';
+import Color from '~/engine/Color';
 
-const makeFileName = name => `/mdl/${name}.obj`;
+const makeFileName = (name: string) => `/mdl/${name}.obj`;
 
 const fileNames = {
 	p: makeFileName('pawn'),
@@ -20,34 +24,52 @@ const fileNames = {
 	k: makeFileName('king'),
 };
 
-const Piece = ({ piece, color, file, rank, level }) => {
-	const [loaded, setLoaded] = useState(false);
+type ColoredMaterial = {
+	color: ThreeColor;
+};
+
+type PieceProps = {
+	piece: PieceType,
+	color: Color,
+	file: File,
+	rank: Rank,
+	level: Level,
+}
+
+const Piece = ({ piece, color, file, rank, level }: PieceProps) => {
+	const [loaded, setLoaded] = useState<boolean>(false);
+
+	let obj: Group | undefined;
 
 	try {
-		const obj = useLoader(OBJLoader, fileNames[piece]);
+		obj = useLoader(OBJLoader, fileNames[piece]);
 	} catch (promise) {
-		promise.then(() => setLoaded(true));
+		const p = promise as Promise<void>;
+		p.then(() => setLoaded(true));
 	}
 
-	const geometry = useMemo(() => obj ? obj.clone() : null, [obj]);
-
-	const material = useMemo(() =>
-		geometry ? geometry.children[0].material.clone() : null
-	,[geometry]);
+	const geometry = useMemo(() => {
+		if (obj) {
+			const geometry = obj.clone();
+			const mesh = geometry.children[0] as Mesh;
+			const material = (mesh.material as Material).clone();
+			(geometry.children[0] as Mesh).material = material;
+			(material as unknown as ColoredMaterial).color.setHex(colorToInt(pieceColors[color]));
+			geometry.rotation.y = pieceRotations[color][piece];
+			return geometry;
+		} else {
+			return null;
+		}
+	}, [obj, color, piece]);
 
 	if (!geometry)
 		return null;
-
-	geometry.children[0].material = material;
-	material.color.setHex(colorToInt(pieceColors[color]));
-
-	geometry.rotation.y = pieceRotations[color][piece];
 
 	const position = getSquarePosition(file, rank, level);
 
 	return (
 		<group
-			metadata={{
+			userData={{
 				piece,
 				color,
 				file,

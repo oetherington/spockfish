@@ -1,14 +1,24 @@
 import React from 'react';
+import { Vector3 } from 'three';
 import { boardDepth } from './geometry';
+import { File, Rank, Level } from '~/engine/Square';
 
-const Square = ({ position, color, file, rank, level }) => {
+type SquareProps = {
+	position: Vector3,
+	color: string,
+	file: File,
+	rank: Rank,
+	level: Level,
+}
+
+const Square = ({ position, color, file, rank, level }: SquareProps) => {
 	const name = file + rank + level;
 
 	return (
 		<mesh
 			position={position}
 			scale={1}
-			metadata={{
+			userData={{
 				square: name,
 				file,
 				rank,

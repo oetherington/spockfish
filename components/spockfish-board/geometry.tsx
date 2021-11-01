@@ -1,3 +1,6 @@
+import { Vector3 } from 'three';
+import { File, Rank, Level, MainLevel } from '~/engine/Square';
+
 const trekColors = {
 	red: '#cc0c00',
 	blue: '#5c88da',
@@ -9,11 +12,11 @@ const trekColors = {
 	aquaGreen: '#00af66',
 };
 
-export const colorToInt = c => parseInt(c.substring(1), 16);
+export const colorToInt = (c: string) => parseInt(c.substring(1), 16);
 
 export const boardDepth = 0.1;
 
-export const rankOffsets = {
+export const rankOffsets: Record<MainLevel, number> = {
 	W: 0,
 	N: 2,
 	B: 4,
@@ -39,13 +42,14 @@ export const heightOffsets = {
 	QL6: 3 * levelGap,
 };
 
-const getAttackBoardFileOffset = level => level[0] === 'Q' ? -2.5 : 1.5;
+const getAttackBoardFileOffset =
+	(level: Level) => level[0] === 'Q' ? -2.5 : 1.5;
 
-export const getBoardPosition = level => [
+export const getBoardPosition = (level: Level) => new Vector3(
 	level.length === 1 ? -1.5 : getAttackBoardFileOffset(level),
 	heightOffsets[level] - boardDepth,
 	4.5,
-];
+);
 
 export const stalkSize = {
 	radius: 0.05,
@@ -53,21 +57,21 @@ export const stalkSize = {
 	segments: 6,
 };
 
-export const getStalkPosition = level => [
+export const getStalkPosition = (level: Level) => new Vector3(
 	getAttackBoardFileOffset(level) + 0.5,
 	heightOffsets[level] - (stalkSize.height / 2) - boardDepth,
 	4 - getAttackLevelRanks(level)[0],
-];
+);
 
 export const pieceScale = 0.14;
 
 const pieceOffset = -0.1;
 
-export const getAttackLevelFiles = level => level[0] === 'W'
+export const getAttackLevelFiles = (level: Level) => (level[0] === 'W'
 	? [ 'z', 'a' ]
-	: [ 'd', 'e' ];
+	: [ 'd', 'e' ]) as File[];
 
-export const getAttackLevelRanks = level => {
+export const getAttackLevelRanks = (level: Level) => {
 	const ranks = [
 		[ 0, 1 ],
 		[ 4, 5 ],
@@ -77,7 +81,7 @@ export const getAttackLevelRanks = level => {
 		[ 8, 9 ],
 	];
 
-	return ranks[parseInt(level[2]) - 1];
+	return ranks[parseInt(level[2]) - 1] as Rank[];
 };
 
 const pieceFileOffsets = {
@@ -89,16 +93,14 @@ const pieceFileOffsets = {
 	e: 2.5,
 };
 
-export const getSquarePosition = (file, rank, level) => {
-	return [
-		pieceFileOffsets[file],
-		heightOffsets[level] + pieceOffset,
-		4.5 - rank,
-	];
-};
+export const getSquarePosition = (file: File, rank: Rank, level: Level) => [
+	pieceFileOffsets[file],
+	heightOffsets[level] + pieceOffset,
+	4.5 - rank,
+];
 
 export const lightSquareColor = trekColors.green;
-export const darkDarkColor = trekColors.blue
+export const darkSquareColor = trekColors.blue;
 
 export const pieceColors = {
 	w: trekColors.grey,

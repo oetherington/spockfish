@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PageHead from './PageHead';
 import NavBar from './NavBar';
 
-const Layout = ({ title = 'Spockfish', children }) => {
+type LayoutProps = {
+	title?: string,
+	children: JSX.Element[] | JSX.Element,
+}
+
+const Layout = ({ title = 'Spockfish', children }: LayoutProps) => {
 	return (
 		<div className="page-container">
 			<PageHead title={title} />

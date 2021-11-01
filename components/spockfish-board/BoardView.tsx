@@ -4,24 +4,22 @@ import Board from './Board';
 import Position from '~/engine/Position';
 import useKeyBind from '~/hooks/useKeyBind';
 
-const getPixelRatio = () => typeof window === 'undefined'
-	? undefined
-	: window.devicePixelRatio;
+type BoardViewProps = {
+	width: number,
+	height: number,
+}
 
-const BoardView = props => {
-	const [position, setPosition] = useState(new Position());
+const BoardView = (props: BoardViewProps) => {
+	const [position, setPosition] = useState<Position>(new Position());
 
 	useKeyBind('KeyR', () => {
 		setPosition(new Position());
 		console.log('Refreshed!');
 	});
 
+	// TODO: Add option for perspective/orthographic cameras
 	return (
-		<Canvas
-			pixelRatio={getPixelRatio()}
-			perspective // TODO: Add option for orthographic camera
-			camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}
-		>
+		<Canvas camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}>
 			<ambientLight intensity={0.2} />
 			<pointLight position={[10, 10, 10]} />
 			<Board position={position} {...props} />

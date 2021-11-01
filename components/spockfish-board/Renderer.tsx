@@ -1,6 +1,17 @@
 import React, { useRef, useMemo, useEffect } from 'react';
-import { useThree, useFrame, extend } from '@react-three/fiber';
-import { Vector2, sRGBEncoding } from 'three';
+import {
+	ReactThreeFiber,
+	useThree,
+	useFrame,
+	extend,
+} from '@react-three/fiber';
+import {
+	Vector2,
+	sRGBEncoding,
+	PerspectiveCamera,
+	Color,
+	Group,
+} from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
@@ -14,20 +25,46 @@ import {
 
 extend({ EffectComposer, RenderPass, OutlinePass, ShaderPass });
 
-const Renderer = ({ outlinedRefs, children }) => {
+declare global {
+	namespace JSX {
+		interface IntrinsicElements {
+			effectComposer: ReactThreeFiber.Object3DNode<
+				EffectComposer, typeof EffectComposer>;
+			renderPass: ReactThreeFiber.Object3DNode<
+				RenderPass, typeof RenderPass>;
+			outlinePass: ReactThreeFiber.Object3DNode<
+				OutlinePass, typeof OutlinePass>;
+			shaderPass: ReactThreeFiber.Object3DNode<
+				ShaderPass, typeof ShaderPass>;
+		}
+	}
+}
+
+type RendererProps = {
+	outlinedRefs: Group[];
+	children: JSX.Element[] | JSX.Element;
+}
+
+const Renderer = ({ outlinedRefs, children }: RendererProps) => {
 	const { gl, scene, camera, size } = useThree();
 
 	gl.outputEncoding = sRGBEncoding;
 	gl.gammaFactor = 2.2;
-	camera.fov = 75;
+	(camera as PerspectiveCamera).fov = 75;
 
-	const composer = useRef();
+	const composer = useRef<EffectComposer | undefined>();
 
 	const aspect = useMemo(() => new Vector2(size.width, size.height), [size]);
 
-	useEffect(() => composer.current.setSize(size.width, size.height), [size]);
+	useEffect(() => {
+		if (composer.current)
+			composer.current.setSize(size.width, size.height);
+	}, [size]);
 
-	useFrame(() => composer.current.render(), 1);
+	useFrame(() => {
+		if (composer.current)
+			composer.current.render();
+	}, 1);
 
 	return (
 		<>
@@ -41,7 +78,7 @@ const Renderer = ({ outlinedRefs, children }) => {
 					attachArray='passes'
 					args={[aspect, scene, camera]}
 					selectedObjects={outlinedRefs}
-					visibleEdgeColor={outlineColor}
+					visibleEdgeColor={new Color(outlineColor)}
 					edgeStrength={outlineStrength}
 					edgeThickness={outlineThickness}
 				/>

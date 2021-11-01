@@ -1,10 +1,14 @@
 import Color from './Color';
 import { File, Rank, Level } from './Square';
 
-export default type Piece = {
-	piece: Piece,
+export type PieceType = 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
+
+type Piece = {
+	piece: PieceType,
 	color: Color,
 	file: File,
 	rank: Rank,
-	leve: Level,
+	level: Level,
 }
+
+export default Piece;

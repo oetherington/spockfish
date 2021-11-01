@@ -1,1 +1,2 @@
-export type Color = 'w' | 'b';
+type Color = 'w' | 'b';
+export default Color;

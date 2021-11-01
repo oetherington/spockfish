@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 
-const useDomEvent = (domElement, eventType, handler, ifChanged = []) => {
+const useDomEvent = (
+	domElement: HTMLElement | Window,
+	eventType: string,
+	handler: (ev: any) => void,
+	ifChanged: any[] = [],
+) => {
 	useEffect(() => {
 		domElement.addEventListener(eventType, handler);
 

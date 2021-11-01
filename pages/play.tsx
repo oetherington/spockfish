@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import Layout from '~/components/Layout';
 import BoardView from '~/components/spockfish-board/BoardView';
+import useDomEvent from '~/hooks/useDomEvent';
 
 const getNavbarHeight = () => parseInt(
 	getComputedStyle(document.body).getPropertyValue('--navbar-height')
 );
+
+type BoardSize = {
+	width: number,
+	height: number,
+}
 
 const calculateBoardSize = () => typeof window !== 'undefined'
 	? {
@@ -18,13 +24,10 @@ const calculateBoardSize = () => typeof window !== 'undefined'
 	};
 
 const Play: NextPage = () => {
-	const [boardSize, setBoardSize] = useState(calculateBoardSize());
+	const [boardSize, setBoardSize] = useState<BoardSize>(calculateBoardSize());
 
-	useEffect(() => {
-		const resize = ev => setBoardSize(calculateBoardSize());
-		window.addEventListener('resize', resize);
-		return () => window.removeEventListener('resize', resize);
-	});
+	if (typeof window !== 'undefined')
+		useDomEvent(window, 'resize', () => setBoardSize(calculateBoardSize()));
 
 	return (
 		<Layout>

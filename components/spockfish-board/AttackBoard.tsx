@@ -1,4 +1,5 @@
 import React from 'react';
+import { Vector3 } from 'three';
 import {
 	lightSquareColor,
 	darkSquareColor,
@@ -9,16 +10,25 @@ import {
 	getAttackLevelRanks,
 	stalkSize,
 } from './geometry';
+import Color from '~/engine/Color';
+import { File, AttackLevel } from '~/engine/Square';
 import Square from './Square';
 
-const fileIndices = {
+const fileIndices: Record<File, number> = {
 	z: 0,
 	a: 1,
+	b: Infinity,
+	c: Infinity,
 	d: 0,
 	e: 1,
 };
 
-const AttackBoard = ({ level, color }) => {
+type AttackBoardProps = {
+	level: AttackLevel,
+	color: Color,
+}
+
+const AttackBoard = ({ level, color }: AttackBoardProps) => {
 	const files = getAttackLevelFiles(level);
 	const ranks = getAttackLevelRanks(level);
 
@@ -31,7 +41,7 @@ const AttackBoard = ({ level, color }) => {
 			<mesh
 				position={getStalkPosition(level)}
 				scale={1}
-				metadata={{ abLevel: level }}
+				userData={{ abLevel: level }}
 			>
 				<cylinderGeometry args={[radius, radius, height, segments]} />
 				<meshStandardMaterial color={pieceColors[color]} />
@@ -41,11 +51,11 @@ const AttackBoard = ({ level, color }) => {
 					const fileIndex = fileIndices[file];
 					return <Square
 						key={file + rank}
-						position={[
-							position[0] + fileIndex,
-							position[1],
-							position[2] - rank,
-						]}
+						position={new Vector3(
+							position.x + fileIndex,
+							position.y,
+							position.z - rank,
+						)}
 						color={(fileIndex + rank) & 1
 							? darkSquareColor
 							: lightSquareColor}

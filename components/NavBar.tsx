@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import TrekIcon from '~/public/emblem.svg';
 
-const NavBar = props => {
+const NavBar = () => {
 	return (
 		<Flex
 			justifySpaceBetween
@@ -23,8 +23,8 @@ const NavBar = props => {
 		>
 			<Link href='/'>
 				<a>
-					<Flex alignItemsCenter columnGap={10}>
-						<img src={TrekIcon.src} height={30} />
+					<Flex alignItemsCenter columnGap='10px'>
+						<img src={TrekIcon.src} height='30px' />
 						<Typography
 							className='trek-font'
 							variant='h4'
