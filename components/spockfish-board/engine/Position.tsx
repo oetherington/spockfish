@@ -1,17 +1,6 @@
-type Color = 'w' | 'b';
-
-type File = 'z' | 'a' | 'b' | 'c'  | 'd' | 'e';
-
-type Level = 'W' | 'N' | 'B' | 'QL1' | 'QL2' | 'QL3' | 'QL4' | 'QL5' | 'QL6' |
-	'KL1' | 'KL2' | 'KL3' | 'KL4' | 'KL5' | 'KL6';
-
-type Piece = {
-	piece: Piece,
-	color: Color,
-	file: File,
-	rank: number,
-	leve: Level,
-}
+import Color from './Color';
+import { File, Rank, Level } from './Square';
+import Piece from './Piece';
 
 class AttackBoards {
 	// To make sure positions are serializable, make sure the arrays are
@@ -25,10 +14,6 @@ class CastlingRights {
 	wk: boolean = true;
 	bq: boolean = true;
 	bk: boolean = true;
-}
-
-class Move {
-
 }
 
 class Position {
