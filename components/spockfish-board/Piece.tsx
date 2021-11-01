@@ -46,18 +46,19 @@ const Piece = ({ piece, color, file, rank, level }) => {
 	const position = getSquarePosition(file, rank, level);
 
 	return (
-		<group>
+		<group
+			metadata={{
+				piece,
+				color,
+				file,
+				rank,
+				level,
+			}}
+		>
 			<primitive
 				object={geometry}
 				scale={pieceScale}
 				position={position}
-				metadata={{
-					piece,
-					color,
-					file,
-					rank,
-					level,
-				}}
 			/>
 		</group>
 	);
