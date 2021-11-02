@@ -10,6 +10,11 @@ export type AttackLevel =
 
 export type Level = MainLevel | AttackLevel;
 
+export type FlatSquare = {
+	file: File,
+	rank: Rank,
+}
+
 type Square = {
 	file: File,
 	rank: Rank,
