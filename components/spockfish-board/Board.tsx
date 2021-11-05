@@ -7,8 +7,10 @@ import MainBoard from './MainBoard';
 import AttackBoard from './AttackBoard';
 import PieceComponent from './Piece';
 import Renderer from './Renderer';
-import Piece from '~/engine/Piece';
+import LegalMoves from './LegalMoves';
 import Position from '~/engine/Position';
+import Piece from '~/engine/Piece';
+import Move from '~/engine/Move';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
@@ -24,6 +26,12 @@ const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	controls.maxPolarAngle = Math.PI * 0.6;
 	return controls;
 };
+
+type SelectedPiece = {
+	obj: Group;
+	piece: Piece;
+	legalMoves: Move[];
+}
 
 type BoardProps = {
 	position: Position,
@@ -42,12 +50,17 @@ const Board = ({ position, width, height }: BoardProps) => {
 		setSize(width, height);
 	}, [width, height]);
 
-	const [selected, setSelected] = useState<Group | null>(null);
-	if (selected)
-		console.log(position.getLegalMoves());
+	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
-	const selectPiece = (obj: Group) =>
-		setSelected(obj === selected ? null : obj);
+	const selectPiece = (obj: Group) => {
+		if (!obj || (selected && obj === selected.obj)) {
+			setSelected(null);
+		} else {
+			const piece = obj.userData as Piece;
+			const legalMoves = position.getLegalMovesForPiece(piece);
+			setSelected({ obj, piece, legalMoves, });
+		}
+	};
 
 	const clickObject = (obj: Group) => {
 		if (obj.userData.piece || obj.userData.abLevel) {
@@ -77,7 +90,7 @@ const Board = ({ position, width, height }: BoardProps) => {
 	const pieces = position.getPieces();
 
 	return (
-		<Renderer outlinedRefs={selected ? [selected] : []}>
+		<Renderer outlinedRefs={selected ? [selected.obj] : []}>
 			<MainBoard level={'W'} />
 			<MainBoard level={'N'} />
 			<MainBoard level={'B'} />
@@ -92,6 +105,7 @@ const Board = ({ position, width, height }: BoardProps) => {
 					)
 				}
 			</>
+			<LegalMoves moves={selected ? selected.legalMoves : []} />
 		</Renderer>
 	);
 };

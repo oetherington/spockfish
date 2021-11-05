@@ -327,11 +327,8 @@ describe('FlatBitboard', () => {
 			bb.setSquare(file, rank);
 
 			const result = bb.knightMoves().toSquares();
-
-			expect(result.length).toBe(squares.length);
-
-			for (const square of squares)
-				expect(result).toContainEqual(square);
+			expect(result).toHaveLength(squares.length);
+			expect(result).toEqual(expect.arrayContaining(squares));
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import Color from './Color';
-import { File, Rank, AttackLevel, Level, FlatSquare } from './Square';
+import Square, { File, Rank, AttackLevel, Level, FlatSquare } from './Square';
 import Piece from './Piece';
 import Move from './Move';
 import FlatBitboard from './FlatBitboard';
@@ -107,10 +107,17 @@ class Position {
 	fiftyMoveCount: number;
 	castlingRights: CastlingRights;
 
-	constructor() {
+	constructor(pieces: Piece[] = []) {
 		this.turn = 'w';
 		this.ply = 0;
-		this.pieces = [
+		this.pieces = pieces;
+		this.attackBoards = new AttackBoards();
+		this.fiftyMoveCount = 0;
+		this.castlingRights = new CastlingRights();
+	}
+
+	public static makeInitial() : Position {
+		return new Position([
 			{ piece: 'p', color: 'w', file: 'z', rank: 1, level: 'QL1', },
 			{ piece: 'p', color: 'w', file: 'a', rank: 1, level: 'QL1', },
 			{ piece: 'p', color: 'w', file: 'a', rank: 2, level: 'W', },
@@ -143,10 +150,7 @@ class Position {
 			{ piece: 'r', color: 'b', file: 'e', rank: 9, level: 'KL6', },
 			{ piece: 'q', color: 'b', file: 'a', rank: 9, level: 'QL6', },
 			{ piece: 'k', color: 'b', file: 'd', rank: 9, level: 'KL6', },
-		];
-		this.attackBoards = new AttackBoards();
-		this.fiftyMoveCount = 0;
-		this.castlingRights = new CastlingRights();
+		]);
 	}
 
 	getWhiteAttackBoards() : AttackLevel[] {
@@ -162,34 +166,38 @@ class Position {
 	}
 
 	getLevels() : Level[] {
-		const levels = [ 'W', 'N', 'B' ];
+		const levels: Level[] = [ 'W', 'N', 'B' ];
 		levels.concat(this.getWhiteAttackBoards());
 		levels.concat(this.getBlackAttackBoards());
 		return levels;
 	}
 
-	getLegalMovesForPiece({ piece, file, rank, color }: Piece) : Move[] {
+	getLegalMovesForPiece({ piece, file, rank, color, level }: Piece) : Move[] {
 		const levels = this.getLevels();
-		console.log("levels", levels.map(l => boardSquares[l]));
-
-		const result: Move[] = [];
+		let result: Move[] = [];
 
 		const bb = new FlatBitboard();
 		bb.setSquare(file, rank);
 
+		let targets = new FlatBitboard();
+
 		switch (piece) {
-			case 'n': {
-				const moves = bb.knightMoves();
+			case 'n':
+				targets = targets.either(bb.knightMoves());
 				break;
-			}
+
+			// TODO
 
 			default:
 				break;
 		}
 
-		for (const level in levels) {
-			const squares = bb.both(boardSquares[level]);
-			result.concat(squares.toPieces(piece, color, level));
+		const from: Square = { file, rank, level };
+
+		for (const targetLevel of levels) {
+			const squares = targets.both(boardSquares[targetLevel]);
+			const moves = squares.toMoves(piece, color, from, targetLevel);
+			result = result.concat(moves);
 		}
 
 		return result;

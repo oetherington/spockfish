@@ -54,7 +54,8 @@ const Piece = ({ piece, color, file, rank, level }: PieceProps) => {
 			const mesh = geometry.children[0] as Mesh;
 			const material = (mesh.material as Material).clone();
 			(geometry.children[0] as Mesh).material = material;
-			(material as unknown as ColoredMaterial).color.setHex(colorToInt(pieceColors[color]));
+			(material as unknown as ColoredMaterial)
+				.color.setHex(colorToInt(pieceColors[color]));
 			geometry.rotation.y = pieceRotations[color][piece];
 			return geometry;
 		} else {

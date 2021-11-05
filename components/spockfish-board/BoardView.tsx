@@ -10,10 +10,10 @@ type BoardViewProps = {
 }
 
 const BoardView = (props: BoardViewProps) => {
-	const [position, setPosition] = useState<Position>(new Position());
+	const [position, setPosition] = useState<Position>(Position.makeInitial());
 
 	useKeyBind('KeyR', () => {
-		setPosition(new Position());
+		setPosition(Position.makeInitial());
 		console.log('Refreshed!');
 	});
 

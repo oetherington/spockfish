@@ -1,6 +1,7 @@
 import Square, { Rank, File, Level, FlatSquare } from './Square';
 import Piece, { PieceType } from './Piece';
 import Color from './Color';
+import Move from './Move';
 
 const rankCount = 10;
 
@@ -218,6 +219,24 @@ class FlatBitboard {
 			rank,
 			color,
 			level,
+		}));
+	}
+
+	public toMoves(
+		piece: PieceType,
+		color: Color,
+		from: Square,
+		targetLevel: Level,
+	) : Move[] {
+		return this.toSquares().map(({ file, rank }) => ({
+			piece,
+			color,
+			from,
+			to: {
+				file,
+				rank,
+				level: targetLevel,
+			},
 		}));
 	}
 

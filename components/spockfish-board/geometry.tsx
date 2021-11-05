@@ -129,3 +129,8 @@ export const pieceRotations = {
 export const outlineColor = trekColors.aquaBlue;
 export const outlineStrength = 50;
 export const outlineThickness = 0.3;
+
+export const legalMoveColor = trekColors.red;
+export const legalMoveScale = new Vector3(0.3, 0.1, 0.3);
+export const legalMoveBobHeight = 0.04;
+export const legalMoveBobSpeed = 3;
