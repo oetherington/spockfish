@@ -43,6 +43,8 @@ const Board = ({ position, width, height }: BoardProps) => {
 	}, [width, height]);
 
 	const [selected, setSelected] = useState<Group | null>(null);
+	if (selected)
+		console.log(position.getLegalMoves());
 
 	const selectPiece = (obj: Group) =>
 		setSelected(obj === selected ? null : obj);

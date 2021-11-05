@@ -1,5 +1,5 @@
 import FlatBitboard from '~/engine/FlatBitboard';
-import { FlatSquare } from '~/engine/Square';
+import { File, Rank, FlatSquare } from '~/engine/Square';
 
 describe('FlatBitboard', () => {
 	it('can be default initialized', () => {
@@ -14,6 +14,15 @@ describe('FlatBitboard', () => {
 		const bb = new FlatBitboard(low, high);
 		expect(bb.low).toBe(low);
 		expect(bb.high).toBe(high);
+	});
+
+	it('can be initialized from squares', () => {
+		const bb = FlatBitboard.fromSquares([
+			{ file: 'z', rank: 0 },
+			{ file: 'a', rank: 0 },
+		]);
+		expect(bb.low).toBe(0b0100_0000_0001);
+		expect(bb.high).toBe(0);
 	});
 
 	it('can test equality', () => {
@@ -77,12 +86,12 @@ describe('FlatBitboard', () => {
 	});
 
 	it('can test if a particular bit is set', () => {
-		expect((new FlatBitboard(1, 0)).isSet(0)).toBe(true);
-		expect((new FlatBitboard(2, 0)).isSet(0)).toBe(false);
-		expect((new FlatBitboard(3, 0)).isSet(1)).toBe(true);
-		expect((new FlatBitboard(3, 0)).isSet(2)).toBe(false);
-		expect((new FlatBitboard(0, 3)).isSet(1)).toBe(false);
-		expect((new FlatBitboard(0, 1)).isSet(32)).toBe(true);
+		expect((new FlatBitboard(1, 0)).isBitSet(0)).toBe(true);
+		expect((new FlatBitboard(2, 0)).isBitSet(0)).toBe(false);
+		expect((new FlatBitboard(3, 0)).isBitSet(1)).toBe(true);
+		expect((new FlatBitboard(3, 0)).isBitSet(2)).toBe(false);
+		expect((new FlatBitboard(0, 3)).isBitSet(1)).toBe(false);
+		expect((new FlatBitboard(0, 1)).isBitSet(32)).toBe(true);
 	});
 
 	it('can set a bit by index', () => {
@@ -189,10 +198,12 @@ describe('FlatBitboard', () => {
 
 	it('can do index <-> square conversions', () => {
 		const data: FlatSquare[] = [];
+		const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
 
-		for (let rank = 1; rank < 10; rank++) {
-			for (const file of [ 'z', 'a', 'b', 'c', 'd', 'e' ]) {
+		for (let rank = 0; rank < 10; rank++) {
+			for (const file of files) {
 				const index = FlatBitboard.squareToIndex(file, rank);
+				expect(index >= 0 && index < 64).toBe(true);
 				expect(data[index]).toBe(undefined);
 				data[index] = { file, rank };
 			}
@@ -202,6 +213,125 @@ describe('FlatBitboard', () => {
 			const res = FlatBitboard.indexToSquare(index);
 			expect(res.file).toBe(file);
 			expect(res.rank).toBe(rank);
+		});
+	});
+
+	it('can set squares', () => {
+		const bb = new FlatBitboard();
+		bb.setSquare('z', 0);
+		expect(bb.low).toBe(1);
+		expect(bb.high).toBe(0);
+		bb.setSquare('z', 1);
+		expect(bb.low).toBe(3);
+		expect(bb.high).toBe(0);
+	});
+
+	it('can check if a square is set', () => {
+		const bb = new FlatBitboard(1, 0);
+		expect(bb.isSquareSet('z', 0)).toBe(true);
+		expect(bb.isSquareSet('z', 1)).toBe(false);
+	});
+
+	it('can convert to squares', () => {
+		const bb = new FlatBitboard(5);
+		const squares = bb.toSquares();
+		expect(squares[0]).toStrictEqual({ file: 'z', rank: 0 });
+		expect(squares[1]).toStrictEqual({ file: 'z', rank: 2 });
+	});
+
+	it('can convert to pieces', () => {
+		const bb = new FlatBitboard(5);
+		const pieces = bb.toPieces('n', 'w', 'W');
+		expect(pieces[0]).toStrictEqual({
+			piece: 'n',
+			color: 'w',
+			file: 'z',
+			rank: 0,
+			level: 'W',
+		});
+		expect(pieces[1]).toStrictEqual({
+			piece: 'n',
+			color: 'w',
+			file: 'z',
+			rank: 2,
+			level: 'W',
+		});
+	});
+
+	it('can calculate knight moves', () => {
+		type TestCase = {
+			file: File,
+			rank: Rank,
+			squares: FlatSquare[],
+		};
+
+		const data: TestCase[] = [
+			{
+				file: 'b',
+				rank: 5,
+				squares: [
+					{ file: 'z', rank: 6 },
+					{ file: 'z', rank: 4 },
+					{ file: 'a', rank: 7 },
+					{ file: 'a', rank: 3 },
+					{ file: 'c', rank: 7 },
+					{ file: 'c', rank: 3 },
+					{ file: 'd', rank: 6 },
+					{ file: 'd', rank: 4 },
+				],
+			},
+			{
+				file: 'a',
+				rank: 1,
+				squares: [
+					{ file: 'z', rank: 3 },
+					{ file: 'b', rank: 3 },
+					{ file: 'c', rank: 0 },
+					{ file: 'c', rank: 2 },
+				],
+			},
+			{
+				file: 'd',
+				rank: 1,
+				squares: [
+					{ file: 'b', rank: 2 },
+					{ file: 'b', rank: 0 },
+					{ file: 'c', rank: 3 },
+					{ file: 'e', rank: 3 },
+				],
+			},
+			{
+				file: 'a',
+				rank: 8,
+				squares: [
+					{ file: 'z', rank: 6 },
+					{ file: 'b', rank: 6 },
+					{ file: 'c', rank: 7 },
+					{ file: 'c', rank: 9 },
+				],
+			},
+			{
+				file: 'd',
+				rank: 8,
+				squares: [
+					{ file: 'b', rank: 9 },
+					{ file: 'b', rank: 7 },
+					{ file: 'c', rank: 6 },
+					{ file: 'e', rank: 6 },
+				],
+			},
+		];
+
+		data.forEach(({ file, rank, squares }) => {
+			const bb = new FlatBitboard();
+			bb.setSquare(file, rank);
+
+			const result = bb.knightMoves().toSquares();
+
+			expect(result.length).toBe(squares.length);
+
+			for (const square of squares)
+				expect(result).toContainEqual(square);
 		});
 	});
 });

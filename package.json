@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch"
+    "test": "jest --watch --config=jest.config.js",
+    "test-fast": "jest --watch --config=jest-fast.config.js"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -34,6 +35,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "react-test-renderer": "^17.0.2",
+    "ts-jest": "^27.0.7",
     "typescript": "4.4.4"
   }
 }

@@ -4,7 +4,7 @@ module.exports = {
 	...common,
 	transform: {
 		'^.+\\.(js|jsx|ts|tsx)$': [
-			'ts-jest', {},
+			'babel-jest', { presets: ['next/babel'] },
 		],
 	},
 };

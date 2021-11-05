@@ -1,17 +1,19 @@
-import { Rank, File, FlatSquare } from './Square';
+import Square, { Rank, File, Level, FlatSquare } from './Square';
+import Piece, { PieceType } from './Piece';
+import Color from './Color';
 
-const fileCount = 9;
+const rankCount = 10;
 
-const fileOffsets: Record<File, number> = {
-	'z': fileCount * 0,
-	'a': fileCount * 1,
-	'b': fileCount * 2,
-	'c': fileCount * 3,
-	'd': fileCount * 4,
-	'e': fileCount * 5,
+const fileIndices: Record<File, number> = {
+	'z': 0,
+	'a': 1,
+	'b': 2,
+	'c': 3,
+	'd': 4,
+	'e': 5,
 };
 
-const files = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
+const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
 
 class FlatBitboard {
 	low: number;
@@ -20,6 +22,13 @@ class FlatBitboard {
 	constructor(low: number = 0, high: number = 0) {
 		this.low = low >>> 0;
 		this.high = high >>> 0;
+	}
+
+	public static fromSquares(squares: FlatSquare[]) : FlatBitboard {
+		const result = new FlatBitboard();
+		for (const square of squares)
+			result.setSquare(square.file, square.rank);
+		return result;
 	}
 
 	public clone() : FlatBitboard {
@@ -63,12 +72,12 @@ class FlatBitboard {
 		return lowest;
 	}
 
-	public setAll() : FlatBitboard {
+	public setAll() : void {
 		this.low = 0xffffffff;
 		this.high = 0xffffffff;
 	}
 
-	public isSet(index: number) : boolean {
+	public isBitSet(index: number) : boolean {
 		index >>>= 0;
 
 		return !!(index < 32
@@ -79,9 +88,9 @@ class FlatBitboard {
 	public setBit(index: number) : void {
 		index >>>= 0;
 
-		if (index < 32)
+		if (index >= 0 && index < 32)
 			this.low = (this.low | (1 << index)) >>> 0;
-		else
+		else if (index < 64)
 			this.high = (this.high | (1 << (index - 32))) >>> 0;
 	}
 
@@ -171,14 +180,86 @@ class FlatBitboard {
 	}
 
 	static squareToIndex(file: File, rank: Rank) : number {
-		return fileOffsets[file] + rank - 1;
+		return fileIndices[file] * rankCount + rank;
 	}
 
 	static indexToSquare(index: number) : FlatSquare {
 		return {
-			file: files[Math.floor(index / fileCount)],
-			rank: (index % fileCount) + 1,
+			file: files[Math.floor(index / rankCount)],
+			rank: (index % rankCount),
 		};
+	}
+
+	public setSquare(file: File, rank: Rank) : void {
+		this.setBit(FlatBitboard.squareToIndex(file, rank));
+	}
+
+	public isSquareSet(file: File, rank: Rank) : boolean {
+		return this.isBitSet(FlatBitboard.squareToIndex(file, rank));
+	}
+
+	public toSquares() : FlatSquare[] {
+		const squares = this.clone();
+
+		const result: FlatSquare[] = [];
+
+		while (!squares.isEmpty()) {
+			const index = squares.popLowestBit();
+			result.push(FlatBitboard.indexToSquare(index));
+		}
+
+		return result;
+	}
+
+	public toPieces(piece: PieceType, color: Color, level: Level) : Piece[] {
+		return this.toSquares().map(({ file, rank }) => ({
+			piece,
+			file,
+			rank,
+			color,
+			level,
+		}));
+	}
+
+	public normalize() : void {
+		this.low = this.low & 0b1111_1111_1111_1111_1111_1111_1111_1111;
+		this.high = this.high & 0b0000_1111_1111_1111_1111_1111_1111_1111;
+	}
+
+	public knightMoves() : FlatBitboard {
+		const base = FlatBitboard.squareToIndex('b', 5);
+		const baseFile = 2;
+		const squaresFromBase = new FlatBitboard(139344, 20514);
+		const mask = new FlatBitboard(3222274047, 262143);
+		const ninthRank = new FlatBitboard(537395712, 134348928);
+		const zerothRank = new FlatBitboard(1074791425, 262400);
+
+		const knights = this.clone();
+		let result = new FlatBitboard();
+
+		while (!knights.isEmpty()) {
+			const index = knights.popLowestBit();
+			const shift = index - base;
+
+			const squares = squaresFromBase.clone();
+			squares.shiftLeft(index - base);
+
+			let filter = mask.clone();
+			const fs = rankCount * (Math.floor(index / rankCount) - baseFile);
+			filter.shiftLeft(fs);
+
+			const rank  = index % rankCount;
+			if (rank < 3)
+				filter = filter.onlyLeft(ninthRank);
+			else if (rank > 7)
+				filter = filter.onlyLeft(zerothRank);
+
+			const filtered = squares.both(filter);
+			result = result.either(filtered);
+		}
+
+		result.normalize();
+		return result;
 	}
 }
 
