@@ -26,8 +26,7 @@ const calculateBoardSize = () => typeof window !== 'undefined'
 const Play: NextPage = () => {
 	const [boardSize, setBoardSize] = useState<BoardSize>(calculateBoardSize());
 
-	if (typeof window !== 'undefined')
-		useDomEvent(window, 'resize', () => setBoardSize(calculateBoardSize()));
+	useDomEvent(null, 'resize', () => setBoardSize(calculateBoardSize()));
 
 	return (
 		<Layout>
