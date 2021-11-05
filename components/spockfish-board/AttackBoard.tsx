@@ -57,8 +57,8 @@ const AttackBoard = ({ level, color }: AttackBoardProps) => {
 							position.z - rank,
 						)}
 						color={(fileIndex + rank) & 1
-							? darkSquareColor
-							: lightSquareColor}
+							? lightSquareColor
+							: darkSquareColor}
 						{...{ file, rank, level }}
 					/>
 				}))
