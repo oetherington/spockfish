@@ -258,14 +258,72 @@ describe('FlatBitboard', () => {
 		});
 	});
 
-	it('can calculate knight moves', () => {
-		type TestCase = {
-			file: File,
-			rank: Rank,
-			squares: FlatSquare[],
-		};
+	type MovesTestCase = {
+		file: File,
+		rank: Rank,
+		squares: FlatSquare[],
+	};
 
-		const data: TestCase[] = [
+	const movesTestCase = (
+		{ file, rank, squares }: MovesTestCase,
+		toSquares: (bb: FlatBitboard) => FlatSquare[],
+	) => {
+		const bb = FlatBitboard.fromSquares([ { file, rank } ]);
+		const result = toSquares(bb);
+		expect(result).toHaveLength(squares.length);
+		expect(result).toEqual(expect.arrayContaining(squares));
+	};
+
+	it('can calculate pawn moves', () => {
+		const whiteTestCases: MovesTestCase[] = [
+			{
+				file: 'a',
+				rank: 2,
+				squares: [
+					{ file: 'a', rank: 3 },
+					{ file: 'a', rank: 4 },
+				],
+			},
+			{
+				file: 'a',
+				rank: 3,
+				squares: [
+					{ file: 'a', rank: 4 },
+				],
+			},
+		];
+
+		whiteTestCases.forEach(testCase => movesTestCase(
+			testCase,
+			bb => bb.pawnMoves('W', 'w').toSquares(),
+		));
+
+		const blackTestCases: MovesTestCase[] = [
+			{
+				file: 'a',
+				rank: 7,
+				squares: [
+					{ file: 'a', rank: 5 },
+					{ file: 'a', rank: 6 },
+				],
+			},
+			{
+				file: 'a',
+				rank: 6,
+				squares: [
+					{ file: 'a', rank: 5 },
+				],
+			},
+		];
+
+		blackTestCases.forEach(testCase => movesTestCase(
+			testCase,
+			bb => bb.pawnMoves('B', 'b').toSquares(),
+		));
+	});
+
+	it('can calculate knight moves', () => {
+		const testCases: MovesTestCase[] = [
 			{
 				file: 'b',
 				rank: 5,
@@ -322,13 +380,9 @@ describe('FlatBitboard', () => {
 			},
 		];
 
-		data.forEach(({ file, rank, squares }) => {
-			const bb = new FlatBitboard();
-			bb.setSquare(file, rank);
-
-			const result = bb.knightMoves().toSquares();
-			expect(result).toHaveLength(squares.length);
-			expect(result).toEqual(expect.arrayContaining(squares));
-		});
+		testCases.forEach(testCase => movesTestCase(
+			testCase,
+			bb => bb.knightMoves().toSquares(),
+		));
 	});
 });

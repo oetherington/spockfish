@@ -245,6 +245,38 @@ class FlatBitboard {
 		this.high = this.high & 0b0000_1111_1111_1111_1111_1111_1111_1111;
 	}
 
+	public pawnMoves(level: Level, color: Color) : FlatBitboard {
+		const pawns = this.clone();
+		let result = new FlatBitboard();
+
+		while (!pawns.isEmpty()) {
+			const index = pawns.popLowestBit();
+			const { file, rank } = FlatBitboard.indexToSquare(index);
+
+			if (color === 'w') {
+				result.setSquare(file, rank + 1);
+				if (
+					(rank === 2 && level === 'W') ||
+					(rank === 1 && (level === 'QL1' || level === 'KL1'))
+				) {
+					result.setSquare(file, rank + 2);
+				}
+			} else {
+				result.setSquare(file, rank - 1);
+				if (
+					(rank === 7 && level === 'B') ||
+					(rank === 8 && (level === 'QL6' || level === 'KL6'))
+				) {
+					result.setSquare(file, rank - 2);
+				}
+			}
+		}
+
+		// TODO: Handle promotions
+
+		return result;
+	}
+
 	public knightMoves() : FlatBitboard {
 		const base = FlatBitboard.squareToIndex('b', 5);
 		const baseFile = 2;

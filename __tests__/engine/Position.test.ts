@@ -27,45 +27,56 @@ describe('Position', () => {
 					{
 						piece: 'n',
 						color: 'w',
-						from: {
-							file: 'a',
-							rank: 1,
-							level: 'W',
-						},
-						to: {
-							file: 'b',
-							rank: 3,
-							level: 'W',
-						}
+						from: { file: 'a', rank: 1, level: 'W' },
+						to: { file: 'b', rank: 3, level: 'W' }
 					},
 					{
 						piece: 'n',
 						color: 'w',
-						from: {
-							file: 'a',
-							rank: 1,
-							level: 'W',
-						},
-						to: {
-							file: 'c',
-							rank: 2,
-							level: 'W',
-						},
+						from: { file: 'a', rank: 1, level: 'W' },
+						to: { file: 'c', rank: 2, level: 'W' },
 					},
 					{
 						piece: 'n',
 						color: 'w',
-						from: {
-							file: 'a',
-							rank: 1,
-							level: 'W',
-						},
-						to: {
-							file: 'b',
-							rank: 3,
-							level: 'N',
-						},
+						from: { file: 'a', rank: 1, level: 'W' },
+						to: { file: 'b', rank: 3, level: 'N' },
 					}
+				],
+			},
+			{
+				piece: {
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				expectedMoves: [
+					{
+						piece: 'p',
+						color: 'w',
+						from: { file: 'a', rank: 2, level: 'W' },
+						to: { file: 'a', rank: 3, level: 'W' }
+					},
+					{
+						piece: 'p',
+						color: 'w',
+						from: { file: 'a', rank: 2, level: 'W' },
+						to: { file: 'a', rank: 4, level: 'W' }
+					},
+					{
+						piece: 'p',
+						color: 'w',
+						from: { file: 'a', rank: 2, level: 'W' },
+						to: { file: 'a', rank: 3, level: 'N' }
+					},
+					{
+						piece: 'p',
+						color: 'w',
+						from: { file: 'a', rank: 2, level: 'W' },
+						to: { file: 'a', rank: 4, level: 'N' }
+					},
 				],
 			},
 		];

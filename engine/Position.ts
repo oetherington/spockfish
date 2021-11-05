@@ -182,11 +182,13 @@ class Position {
 		let targets = new FlatBitboard();
 
 		switch (piece) {
+			case 'p':
+				targets = targets.either(bb.pawnMoves(level, color));
+				break;
+
 			case 'n':
 				targets = targets.either(bb.knightMoves());
 				break;
-
-			// TODO
 
 			default:
 				break;
