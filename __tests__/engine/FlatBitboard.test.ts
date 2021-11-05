@@ -259,130 +259,138 @@ describe('FlatBitboard', () => {
 	});
 
 	type MovesTestCase = {
+		name: string,
 		file: File,
 		rank: Rank,
 		squares: FlatSquare[],
 	};
 
 	const movesTestCase = (
-		{ file, rank, squares }: MovesTestCase,
+		{ name, file, rank, squares }: MovesTestCase,
 		toSquares: (bb: FlatBitboard) => FlatSquare[],
 	) => {
-		const bb = FlatBitboard.fromSquares([ { file, rank } ]);
-		const result = toSquares(bb);
-		expect(result).toHaveLength(squares.length);
-		expect(result).toEqual(expect.arrayContaining(squares));
+		it(`can calculate legal moves - ${name}`, () => {
+			const bb = FlatBitboard.fromSquares([ { file, rank } ]);
+			const result = toSquares(bb);
+			expect(result).toHaveLength(squares.length);
+			expect(result).toEqual(expect.arrayContaining(squares));
+		});
 	};
 
-	it('can calculate pawn moves', () => {
-		const whiteTestCases: MovesTestCase[] = [
-			{
-				file: 'a',
-				rank: 2,
-				squares: [
-					{ file: 'a', rank: 3 },
-					{ file: 'a', rank: 4 },
-				],
-			},
-			{
-				file: 'a',
-				rank: 3,
-				squares: [
-					{ file: 'a', rank: 4 },
-				],
-			},
-		];
+	const whitePawnTestCases: MovesTestCase[] = [
+		{
+			name: 'white pawn on second rank',
+			file: 'a',
+			rank: 2,
+			squares: [
+				{ file: 'a', rank: 3 },
+				{ file: 'a', rank: 4 },
+			],
+		},
+		{
+			name: 'white pawn on third rank',
+			file: 'a',
+			rank: 3,
+			squares: [
+				{ file: 'a', rank: 4 },
+			],
+		},
+	];
 
-		whiteTestCases.forEach(testCase => movesTestCase(
-			testCase,
-			bb => bb.pawnMoves('W', 'w').toSquares(),
-		));
+	whitePawnTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.pawnMoves('W', 'w').toSquares(),
+	));
 
-		const blackTestCases: MovesTestCase[] = [
-			{
-				file: 'a',
-				rank: 7,
-				squares: [
-					{ file: 'a', rank: 5 },
-					{ file: 'a', rank: 6 },
-				],
-			},
-			{
-				file: 'a',
-				rank: 6,
-				squares: [
-					{ file: 'a', rank: 5 },
-				],
-			},
-		];
+	const blackPawnTestCases: MovesTestCase[] = [
+		{
+			name: 'black pawn on seventh rank',
+			file: 'a',
+			rank: 7,
+			squares: [
+				{ file: 'a', rank: 5 },
+				{ file: 'a', rank: 6 },
+			],
+		},
+		{
+			name: 'black pawn on sixth rank',
+			file: 'a',
+			rank: 6,
+			squares: [
+				{ file: 'a', rank: 5 },
+			],
+		},
+	];
 
-		blackTestCases.forEach(testCase => movesTestCase(
-			testCase,
-			bb => bb.pawnMoves('B', 'b').toSquares(),
-		));
-	});
+	blackPawnTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.pawnMoves('B', 'b').toSquares(),
+	));
 
-	it('can calculate knight moves', () => {
-		const testCases: MovesTestCase[] = [
-			{
-				file: 'b',
-				rank: 5,
-				squares: [
-					{ file: 'z', rank: 6 },
-					{ file: 'z', rank: 4 },
-					{ file: 'a', rank: 7 },
-					{ file: 'a', rank: 3 },
-					{ file: 'c', rank: 7 },
-					{ file: 'c', rank: 3 },
-					{ file: 'd', rank: 6 },
-					{ file: 'd', rank: 4 },
-				],
-			},
-			{
-				file: 'a',
-				rank: 1,
-				squares: [
-					{ file: 'z', rank: 3 },
-					{ file: 'b', rank: 3 },
-					{ file: 'c', rank: 0 },
-					{ file: 'c', rank: 2 },
-				],
-			},
-			{
-				file: 'd',
-				rank: 1,
-				squares: [
-					{ file: 'b', rank: 2 },
-					{ file: 'b', rank: 0 },
-					{ file: 'c', rank: 3 },
-					{ file: 'e', rank: 3 },
-				],
-			},
-			{
-				file: 'a',
-				rank: 8,
-				squares: [
-					{ file: 'z', rank: 6 },
-					{ file: 'b', rank: 6 },
-					{ file: 'c', rank: 7 },
-					{ file: 'c', rank: 9 },
-				],
-			},
-			{
-				file: 'd',
-				rank: 8,
-				squares: [
-					{ file: 'b', rank: 9 },
-					{ file: 'b', rank: 7 },
-					{ file: 'c', rank: 6 },
-					{ file: 'e', rank: 6 },
-				],
-			},
-		];
+	const knightTestCases: MovesTestCase[] = [
+		{
+			name: 'knight in center of board',
+			file: 'b',
+			rank: 5,
+			squares: [
+				{ file: 'z', rank: 6 },
+				{ file: 'z', rank: 4 },
+				{ file: 'a', rank: 7 },
+				{ file: 'a', rank: 3 },
+				{ file: 'c', rank: 7 },
+				{ file: 'c', rank: 3 },
+				{ file: 'd', rank: 6 },
+				{ file: 'd', rank: 4 },
+			],
+		},
+		{
+			name: 'knight in bottom-left corner',
+			file: 'a',
+			rank: 1,
+			squares: [
+				{ file: 'z', rank: 3 },
+				{ file: 'b', rank: 3 },
+				{ file: 'c', rank: 0 },
+				{ file: 'c', rank: 2 },
+			],
+		},
+		{
+			name: 'knight in bottom-right corner',
+			file: 'd',
+			rank: 1,
+			squares: [
+				{ file: 'b', rank: 2 },
+				{ file: 'b', rank: 0 },
+				{ file: 'c', rank: 3 },
+				{ file: 'e', rank: 3 },
+			],
+		},
+		{
+			name: 'knight in top-left corner',
+			file: 'a',
+			rank: 8,
+			squares: [
+				{ file: 'z', rank: 6 },
+				{ file: 'b', rank: 6 },
+				{ file: 'c', rank: 7 },
+				{ file: 'c', rank: 9 },
+			],
+		},
+		{
+			name: 'knight in top-right corner',
+			file: 'd',
+			rank: 8,
+			squares: [
+				{ file: 'b', rank: 9 },
+				{ file: 'b', rank: 7 },
+				{ file: 'c', rank: 6 },
+				{ file: 'e', rank: 6 },
+			],
+		},
+	];
 
-		testCases.forEach(testCase => movesTestCase(
-			testCase,
-			bb => bb.knightMoves().toSquares(),
-		));
-	});
+	knightTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.knightMoves().toSquares(),
+	));
 });
