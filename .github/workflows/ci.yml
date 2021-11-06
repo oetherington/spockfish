@@ -3,6 +3,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
