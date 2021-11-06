@@ -7,5 +7,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install modules
       run: npm install --production=false
+    - name: Run typechecker
+      run: npm run typecheck
+    - name: Run linter
+      run: npm run lint
     - name: Run tests
       run: npm run test-ci
