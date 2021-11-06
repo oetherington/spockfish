@@ -42,7 +42,9 @@ const Piece = ({ piece, color, file, rank, level }: PieceProps) => {
 	let obj: Group | undefined;
 
 	try {
+		/* eslint-disable react-hooks/rules-of-hooks */
 		obj = useLoader(OBJLoader, fileNames[piece]);
+		/* eslint-enable react-hooks/rules-of-hooks */
 	} catch (promise) {
 		const p = promise as Promise<void>;
 		p.then(() => setLoaded(true));

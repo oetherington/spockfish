@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Flex from '@react-css/flex';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -24,7 +25,12 @@ const NavBar = () => {
 			<Link href='/'>
 				<a>
 					<Flex alignItemsCenter columnGap='10px'>
-						<img src={TrekIcon.src} height='30px' />
+						<Image
+							src={TrekIcon.src}
+							alt='Spockfish Logo'
+							width='20px'
+							height='30px'
+						/>
 						<Typography
 							className='trek-font'
 							variant='h4'

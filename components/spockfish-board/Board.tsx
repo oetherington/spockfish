@@ -48,7 +48,7 @@ const Board = ({ position, width, height }: BoardProps) => {
 
 	useEffect(() => {
 		setSize(width, height);
-	}, [width, height]);
+	}, [width, height, setSize]);
 
 	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
