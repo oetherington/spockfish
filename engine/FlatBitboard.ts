@@ -403,6 +403,10 @@ class FlatBitboard {
 
 		return result;
 	}
+
+	public queenMoves() : FlatBitboard {
+		return this.bishopMoves().either(this.rookMoves());
+	}
 }
 
 export default FlatBitboard;

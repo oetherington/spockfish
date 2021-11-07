@@ -198,6 +198,10 @@ class Position {
 				targets = targets.either(bb.rookMoves());
 				break;
 
+			case 'q':
+				targets = targets.either(bb.queenMoves());
+				break;
+
 			default:
 				break;
 		}

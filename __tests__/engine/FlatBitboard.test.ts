@@ -494,4 +494,43 @@ describe('FlatBitboard', () => {
 		testCase,
 		bb => bb.rookMoves().toSquares(),
 	));
+
+	const queenTestCases: MovesTestCase[] = [
+		{
+			name: 'queen in center of board',
+			file: 'b',
+			rank: 5,
+			squares: [
+				{ file: 'z', rank: 5 },
+				{ file: 'a', rank: 5 },
+				{ file: 'c', rank: 5 },
+				{ file: 'd', rank: 5 },
+				{ file: 'e', rank: 5 },
+				{ file: 'b', rank: 0 },
+				{ file: 'b', rank: 1 },
+				{ file: 'b', rank: 2 },
+				{ file: 'b', rank: 3 },
+				{ file: 'b', rank: 4 },
+				{ file: 'b', rank: 6 },
+				{ file: 'b', rank: 7 },
+				{ file: 'b', rank: 8 },
+				{ file: 'b', rank: 9 },
+				{ file: 'z', rank: 3 },
+				{ file: 'z', rank: 7 },
+				{ file: 'a', rank: 4 },
+				{ file: 'a', rank: 6 },
+				{ file: 'c', rank: 4 },
+				{ file: 'c', rank: 6 },
+				{ file: 'd', rank: 3 },
+				{ file: 'd', rank: 7 },
+				{ file: 'e', rank: 2 },
+				{ file: 'e', rank: 8 },
+			],
+		},
+	];
+
+	queenTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.queenMoves().toSquares(),
+	));
 });
