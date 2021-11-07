@@ -25,6 +25,30 @@ describe('FlatBitboard', () => {
 		expect(bb.high).toBe(0);
 	});
 
+	it('can be initialized by rank', () => {
+		const r0 = FlatBitboard.fromRank(0).toSquares();
+		expect(r0).toHaveLength(6);
+		expect(r0).toEqual(expect.arrayContaining([
+			{ file: 'z', rank: 0 },
+			{ file: 'a', rank: 0 },
+			{ file: 'b', rank: 0 },
+			{ file: 'c', rank: 0 },
+			{ file: 'd', rank: 0 },
+			{ file: 'e', rank: 0 },
+		]));
+
+		const r5 = FlatBitboard.fromRank(5).toSquares();
+		expect(r5).toHaveLength(6);
+		expect(r5).toEqual(expect.arrayContaining([
+			{ file: 'z', rank: 5 },
+			{ file: 'a', rank: 5 },
+			{ file: 'b', rank: 5 },
+			{ file: 'c', rank: 5 },
+			{ file: 'd', rank: 5 },
+			{ file: 'e', rank: 5 },
+		]));
+	});
+
 	it('can test equality', () => {
 		const a = new FlatBitboard(323, 52);
 		const b = new FlatBitboard(323, 52);
@@ -49,6 +73,14 @@ describe('FlatBitboard', () => {
 		expect((new FlatBitboard(1, 0)).isEmpty()).toBe(false);
 		expect((new FlatBitboard(0, 1)).isEmpty()).toBe(false);
 		expect((new FlatBitboard(1, 1)).isEmpty()).toBe(false);
+	});
+
+	it('can convert to string', () => {
+		const bb = new FlatBitboard(1, 1);
+		const str = bb.toString();
+		expect(str).toBe(
+			'0000000000000000000000000000000100000000000000000000000000000001'
+		);
 	});
 
 	it('can calculate popcount', () => {
@@ -432,5 +464,34 @@ describe('FlatBitboard', () => {
 	bishopTestCases.forEach(testCase => movesTestCase(
 		testCase,
 		bb => bb.bishopMoves().toSquares(),
+	));
+
+	const rookTestCases: MovesTestCase[] = [
+		{
+			name: 'rook in center of board',
+			file: 'b',
+			rank: 5,
+			squares: [
+				{ file: 'z', rank: 5 },
+				{ file: 'a', rank: 5 },
+				{ file: 'c', rank: 5 },
+				{ file: 'd', rank: 5 },
+				{ file: 'e', rank: 5 },
+				{ file: 'b', rank: 0 },
+				{ file: 'b', rank: 1 },
+				{ file: 'b', rank: 2 },
+				{ file: 'b', rank: 3 },
+				{ file: 'b', rank: 4 },
+				{ file: 'b', rank: 6 },
+				{ file: 'b', rank: 7 },
+				{ file: 'b', rank: 8 },
+				{ file: 'b', rank: 9 },
+			],
+		},
+	];
+
+	rookTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.rookMoves().toSquares(),
 	));
 });

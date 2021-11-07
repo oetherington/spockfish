@@ -141,6 +141,114 @@ describe('Position', () => {
 				},
 			],
 		},
+		{
+			name: 'rooks',
+			piece: {
+				piece: 'r',
+				file: 'c',
+				rank: 4,
+				color: 'w',
+				level: 'N',
+			},
+			expectedMoves: [
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 1, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 2, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 3, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 3, level: 'N' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 5, level: 'N' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 6, level: 'N' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 5, level: 'B' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 6, level: 'B' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 7, level: 'B' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'c', rank: 8, level: 'B' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'a', rank: 4, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'b', rank: 4, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'd', rank: 4, level: 'W' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'a', rank: 4, level: 'N' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'b', rank: 4, level: 'N' }
+				},
+				{
+					piece: 'r',
+					color: 'w',
+					from: { file: 'c', rank: 4, level: 'N' },
+					to: { file: 'd', rank: 4, level: 'N' }
+				},
+			],
+		},
 	];
 
 	legalMovesTestCases.forEach(({ name, piece, expectedMoves }) => {

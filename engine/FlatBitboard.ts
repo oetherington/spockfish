@@ -62,6 +62,18 @@ class FlatBitboard {
 		return result;
 	}
 
+	public static fromRank(rank: Rank = 0) : FlatBitboard {
+		const zerothRank = new FlatBitboard(1074791425, 262400);
+		zerothRank.shiftLeft(rank);
+		return zerothRank;
+	}
+
+	public static fromFile(file: File = 'z') : FlatBitboard {
+		const zFile = new FlatBitboard(1023, 0);
+		zFile.shiftLeft(fileIndices[file] * rankCount);
+		return zFile;
+	}
+
 	public clone() : FlatBitboard {
 		return new FlatBitboard(this.low, this.high);
 	}
@@ -72,6 +84,11 @@ class FlatBitboard {
 
 	public isEmpty() : boolean {
 		return this.low === 0 && this.high === 0;
+	}
+
+	public toString(radix: number = 2) : string {
+		const fmt = (n: number) => n.toString(radix).padStart(32, '0');
+		return fmt(this.high) + fmt(this.low);
 	}
 
 	private static popcount32(v: number) : number {
@@ -312,8 +329,8 @@ class FlatBitboard {
 		const baseFile = 2;
 		const squaresFromBase = new FlatBitboard(139344, 20514);
 		const mask = new FlatBitboard(3222274047, 262143);
-		const ninthRank = new FlatBitboard(537395712, 134348928);
-		const zerothRank = new FlatBitboard(1074791425, 262400);
+		const zerothRank = FlatBitboard.fromRank(0);
+		const ninthRank = FlatBitboard.fromRank(9);
 
 		const knights = this.clone();
 		let result = new FlatBitboard();
@@ -368,6 +385,22 @@ class FlatBitboard {
 		}
 
 		result.normalize();
+		return result;
+	}
+
+	public rookMoves() : FlatBitboard {
+		const rooks = this.clone();
+		let result = new FlatBitboard();
+
+		while (!rooks.isEmpty()) {
+			const index = rooks.popLowestBit();
+			const { file, rank } = FlatBitboard.indexToSquare(index);
+			const column = FlatBitboard.fromFile(file);
+			const row = FlatBitboard.fromRank(rank);
+			result = result.either(column).either(row);
+			result.unsetBit(index);
+		}
+
 		return result;
 	}
 }

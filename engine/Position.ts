@@ -194,6 +194,10 @@ class Position {
 				targets = targets.either(bb.bishopMoves());
 				break;
 
+			case 'r':
+				targets = targets.either(bb.rookMoves());
+				break;
+
 			default:
 				break;
 		}
