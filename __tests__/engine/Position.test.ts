@@ -16,36 +16,6 @@ describe('Position', () => {
 
 	const legalMovesTestCases: LegalMovesTestCase[] = [
 		{
-			name: 'knights',
-			piece: {
-				piece: 'n',
-				file: 'a',
-				rank: 1,
-				color: 'w',
-				level: 'W',
-			},
-			expectedMoves: [
-				{
-					piece: 'n',
-					color: 'w',
-					from: { file: 'a', rank: 1, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'W' }
-				},
-				{
-					piece: 'n',
-					color: 'w',
-					from: { file: 'a', rank: 1, level: 'W' },
-					to: { file: 'c', rank: 2, level: 'W' },
-				},
-				{
-					piece: 'n',
-					color: 'w',
-					from: { file: 'a', rank: 1, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'N' },
-				}
-			],
-		},
-		{
 			name: 'pawns',
 			piece: {
 				piece: 'p',
@@ -81,13 +51,103 @@ describe('Position', () => {
 				},
 			],
 		},
+		{
+			name: 'knights',
+			piece: {
+				piece: 'n',
+				file: 'a',
+				rank: 1,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'n',
+					color: 'w',
+					from: { file: 'a', rank: 1, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'W' }
+				},
+				{
+					piece: 'n',
+					color: 'w',
+					from: { file: 'a', rank: 1, level: 'W' },
+					to: { file: 'c', rank: 2, level: 'W' },
+				},
+				{
+					piece: 'n',
+					color: 'w',
+					from: { file: 'a', rank: 1, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' },
+				}
+			],
+		},
+		{
+			name: 'bishops',
+			piece: {
+				piece: 'b',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'z', rank: 1, level: 'QL1' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 1, level: 'W' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'W' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'c', rank: 4, level: 'W' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'c', rank: 4, level: 'N' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'd', rank: 5, level: 'N' }
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'd', rank: 5, level: 'B' }
+				},
+			],
+		},
 	];
 
 	legalMovesTestCases.forEach(({ name, piece, expectedMoves }) => {
 		it(`can generate legal piece moves - ${name}`, () => {
 			const pos = Position.makeInitial();
 			const moves = pos.getLegalMovesForPiece(piece);
-			expect(expectedMoves).toHaveLength(moves.length);
+			expect(moves).toHaveLength(expectedMoves.length);
 			expect(moves).toEqual(expect.arrayContaining(expectedMoves));
 		});
 	});

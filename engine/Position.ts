@@ -167,9 +167,9 @@ class Position {
 
 	getLevels() : Level[] {
 		const levels: Level[] = [ 'W', 'N', 'B' ];
-		levels.concat(this.getWhiteAttackBoards());
-		levels.concat(this.getBlackAttackBoards());
-		return levels;
+		return levels
+			.concat(this.getWhiteAttackBoards())
+			.concat(this.getBlackAttackBoards());
 	}
 
 	getLegalMovesForPiece({ piece, file, rank, color, level }: Piece) : Move[] {
@@ -188,6 +188,10 @@ class Position {
 
 			case 'n':
 				targets = targets.either(bb.knightMoves());
+				break;
+
+			case 'b':
+				targets = targets.either(bb.bishopMoves());
 				break;
 
 			default:

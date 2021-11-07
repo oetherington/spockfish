@@ -4,6 +4,7 @@ import Color from './Color';
 import Move from './Move';
 
 const rankCount = 10;
+const fileCount = 6;
 
 const fileIndices: Record<File, number> = {
 	'z': 0,
@@ -15,6 +16,35 @@ const fileIndices: Record<File, number> = {
 };
 
 const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
+
+const DiagIter = function*(
+	startFile: File,
+	startRank: Rank,
+	fileInc: number = 1,
+	rankInc: number = 1,
+) : Generator<FlatSquare, void, void> {
+	const fCheck = fileInc > 0
+		? (n: number) => n <= fileCount - 1
+		: (n: number) => n >= 0;
+	const rCheck = rankInc > 0
+		? (n: number) => n <= rankCount - 1
+		: (n: number) => n >= 0;
+
+	let f = fileIndices[startFile] + fileInc;
+	let r = startRank + rankInc;
+
+	while (fCheck(f) && rCheck(r)) {
+		const result = {
+			file: files[f],
+			rank: r,
+		};
+
+		f += fileInc;
+		r += rankInc;
+
+		yield result;
+	}
+};
 
 class FlatBitboard {
 	low: number;
@@ -307,6 +337,34 @@ class FlatBitboard {
 
 			const filtered = squares.both(filter);
 			result = result.either(filtered);
+		}
+
+		result.normalize();
+		return result;
+	}
+
+	public bishopMoves() : FlatBitboard {
+		const bishops = this.clone();
+		let result = new FlatBitboard();
+
+		while (!bishops.isEmpty()) {
+			const index = bishops.popLowestBit();
+			const { file, rank } = FlatBitboard.indexToSquare(index);
+
+			const iters = [
+				DiagIter(file, rank, 1, 1),
+				DiagIter(file, rank, 1, -1),
+				DiagIter(file, rank, -1, 1),
+				DiagIter(file, rank, -1, -1),
+			];
+
+			for (const iter of iters) {
+				let cur = iter.next();
+				while (!cur.done) {
+					result.setSquare(cur.value.file, cur.value.rank);
+					cur = iter.next();
+				}
+			}
 		}
 
 		result.normalize();
