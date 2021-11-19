@@ -533,4 +533,75 @@ describe('FlatBitboard', () => {
 		testCase,
 		bb => bb.queenMoves().toSquares(),
 	));
+
+	const kingTestCases: MovesTestCase[] = [
+		{
+			name: 'king in center of board',
+			file: 'c',
+			rank: 4,
+			squares: [
+				{ file: 'b', rank: 3 },
+				{ file: 'b', rank: 4 },
+				{ file: 'b', rank: 5 },
+				{ file: 'c', rank: 3 },
+				{ file: 'c', rank: 5 },
+				{ file: 'd', rank: 3 },
+				{ file: 'd', rank: 4 },
+				{ file: 'd', rank: 5 },
+			],
+		},
+		{
+			name: 'king on left edge of board',
+			file: 'z',
+			rank: 4,
+			squares: [
+				{ file: 'z', rank: 3 },
+				{ file: 'z', rank: 5 },
+				{ file: 'a', rank: 3 },
+				{ file: 'a', rank: 4 },
+				{ file: 'a', rank: 5 },
+			],
+		},
+		{
+			name: 'king on right edge of board',
+			file: 'e',
+			rank: 4,
+			squares: [
+				{ file: 'd', rank: 3 },
+				{ file: 'd', rank: 4 },
+				{ file: 'd', rank: 5 },
+				{ file: 'e', rank: 3 },
+				{ file: 'e', rank: 5 },
+			],
+		},
+		{
+			name: 'king at bottom of board',
+			file: 'a',
+			rank: 0,
+			squares: [
+				{ file: 'z', rank: 0 },
+				{ file: 'z', rank: 1 },
+				{ file: 'a', rank: 1 },
+				{ file: 'b', rank: 0 },
+				{ file: 'b', rank: 1 },
+			],
+		},
+		{
+			name: 'king at top of board',
+			file: 'a',
+			rank: 9,
+			squares: [
+				{ file: 'z', rank: 8 },
+				{ file: 'z', rank: 9 },
+				{ file: 'a', rank: 8 },
+				{ file: 'b', rank: 8 },
+				{ file: 'b', rank: 9 },
+			],
+		},
+	];
+
+	kingTestCases.forEach(testCase => movesTestCase(
+		testCase,
+		bb => bb.kingMoves().toSquares(),
+	));
 });

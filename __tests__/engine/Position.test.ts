@@ -429,6 +429,72 @@ describe('Position', () => {
 				},
 			],
 		},
+		{
+			name: 'kings',
+			piece: {
+				piece: 'k',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 1, level: 'W' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'W' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 1, level: 'W' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 2, level: 'W' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'W' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'N' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'z', rank: 1, level: 'QL1' }
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 1, level: 'QL1' }
+				},
+			],
+		},
 	];
 
 	legalMovesTestCases.forEach(({ name, piece, expectedMoves }) => {

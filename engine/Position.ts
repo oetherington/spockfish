@@ -202,6 +202,10 @@ class Position {
 				targets = targets.either(bb.queenMoves());
 				break;
 
+			case 'k':
+				targets = targets.either(bb.kingMoves());
+				break;
+
 			default:
 				break;
 		}

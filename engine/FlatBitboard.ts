@@ -47,6 +47,9 @@ const DiagIter = function*(
 };
 
 class FlatBitboard {
+	private static readonly RANKS = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ].map(
+		(r) => FlatBitboard.fromRank(r));
+
 	low: number;
 	high: number;
 
@@ -329,8 +332,6 @@ class FlatBitboard {
 		const baseFile = 2;
 		const squaresFromBase = new FlatBitboard(139344, 20514);
 		const mask = new FlatBitboard(3222274047, 262143);
-		const zerothRank = FlatBitboard.fromRank(0);
-		const ninthRank = FlatBitboard.fromRank(9);
 
 		const knights = this.clone();
 		let result = new FlatBitboard();
@@ -348,9 +349,9 @@ class FlatBitboard {
 
 			const rank  = index % rankCount;
 			if (rank < 3)
-				filter = filter.onlyLeft(ninthRank);
+				filter = filter.onlyLeft(FlatBitboard.RANKS[9]);
 			else if (rank > 7)
-				filter = filter.onlyLeft(zerothRank);
+				filter = filter.onlyLeft(FlatBitboard.RANKS[0]);
 
 			const filtered = squares.both(filter);
 			result = result.either(filtered);
@@ -396,7 +397,7 @@ class FlatBitboard {
 			const index = rooks.popLowestBit();
 			const { file, rank } = FlatBitboard.indexToSquare(index);
 			const column = FlatBitboard.fromFile(file);
-			const row = FlatBitboard.fromRank(rank);
+			const row = FlatBitboard.RANKS[rank];
 			result = result.either(column).either(row);
 			result.unsetBit(index);
 		}
@@ -406,6 +407,32 @@ class FlatBitboard {
 
 	public queenMoves() : FlatBitboard {
 		return this.bishopMoves().either(this.rookMoves());
+	}
+
+	public kingMoves() : FlatBitboard {
+		const base = FlatBitboard.squareToIndex('b', 5);
+		const squaresFromBase = new FlatBitboard(84000768, 28);
+
+		const kings = this.clone();
+		let result = new FlatBitboard();
+
+		while (!kings.isEmpty()) {
+			const index = kings.popLowestBit();
+			const { file, rank } = FlatBitboard.indexToSquare(index);
+
+			let squares = squaresFromBase.clone();
+			squares.shiftLeft(index - base);
+
+			if (rank < 1)
+				squares = squares.onlyLeft(FlatBitboard.RANKS[9]);
+			else if (rank > 8)
+				squares = squares.onlyLeft(FlatBitboard.RANKS[0]);
+
+			result = result.either(squares);
+		}
+
+		result.normalize();
+		return result;
 	}
 }
 
