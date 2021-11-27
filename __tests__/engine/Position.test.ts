@@ -7,16 +7,81 @@ describe('Position', () => {
 		const pos = Position.makeInitial();
 		expect(pos.pieces.length).toBe(32);
 	});
+});
 
-	type LegalMovesTestCase = {
-		name: string,
-		piece: Piece,
-		expectedMoves: Move[],
-	}
+describe('Position', () => {
+	it('can get occupied squares', () => {
+		const pos = Position.makeInitial();
+		const occupied = pos.getOccupied('w');
 
+		expect(occupied['W'].toSquares()).toHaveLength(8);
+		expect(occupied['W'].toSquares()).toEqual(expect.arrayContaining([
+			{ file: 'a', rank: 1 },
+			{ file: 'b', rank: 1 },
+			{ file: 'c', rank: 1 },
+			{ file: 'd', rank: 1 },
+			{ file: 'a', rank: 2 },
+			{ file: 'b', rank: 2 },
+			{ file: 'c', rank: 2 },
+			{ file: 'd', rank: 2 },
+		]));
+
+		expect(occupied['QL1'].toSquares()).toHaveLength(4);
+		expect(occupied['QL1'].toSquares()).toEqual(expect.arrayContaining([
+			{ file: 'z', rank: 0 },
+			{ file: 'a', rank: 0 },
+			{ file: 'z', rank: 1 },
+			{ file: 'a', rank: 1 },
+		]));
+
+		expect(occupied['KL1'].toSquares()).toHaveLength(4);
+		expect(occupied['KL1'].toSquares()).toEqual(expect.arrayContaining([
+			{ file: 'd', rank: 0 },
+			{ file: 'e', rank: 0 },
+			{ file: 'd', rank: 1 },
+			{ file: 'e', rank: 1 },
+		]));
+
+		expect(occupied['N'].toSquares()).toHaveLength(0);
+		expect(occupied['B'].toSquares()).toHaveLength(0);
+		expect(occupied['QL2'].toSquares()).toHaveLength(0);
+		expect(occupied['QL3'].toSquares()).toHaveLength(0);
+		expect(occupied['QL4'].toSquares()).toHaveLength(0);
+		expect(occupied['QL5'].toSquares()).toHaveLength(0);
+		expect(occupied['QL6'].toSquares()).toHaveLength(0);
+		expect(occupied['KL2'].toSquares()).toHaveLength(0);
+		expect(occupied['KL3'].toSquares()).toHaveLength(0);
+		expect(occupied['KL4'].toSquares()).toHaveLength(0);
+		expect(occupied['KL5'].toSquares()).toHaveLength(0);
+		expect(occupied['KL6'].toSquares()).toHaveLength(0);
+	});
+});
+
+type LegalMovesTestCase = {
+	name: string,
+	position: Position,
+	piece: Piece,
+	expectedMoves: Move[],
+}
+
+const runLegalMovesTestCases = (
+	description: string,
+	legalMovesTestCases: LegalMovesTestCase[],
+) : void => {
+	legalMovesTestCases.forEach(({ name, position, piece, expectedMoves }) => {
+		it(`${description} - ${name}`, () => {
+			const moves = position.getLegalMovesForPiece(piece);
+			expect(moves).toHaveLength(expectedMoves.length);
+			expect(moves).toEqual(expect.arrayContaining(expectedMoves));
+		});
+	});
+}
+
+describe('Position - Empty board moves', () => {
 	const legalMovesTestCases: LegalMovesTestCase[] = [
 		{
 			name: 'pawns',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -53,6 +118,7 @@ describe('Position', () => {
 		},
 		{
 			name: 'knights',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'n',
 				file: 'a',
@@ -83,6 +149,7 @@ describe('Position', () => {
 		},
 		{
 			name: 'bishops',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'b',
 				file: 'a',
@@ -143,6 +210,7 @@ describe('Position', () => {
 		},
 		{
 			name: 'rooks',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'r',
 				file: 'c',
@@ -251,6 +319,7 @@ describe('Position', () => {
 		},
 		{
 			name: 'queens',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'q',
 				file: 'c',
@@ -431,6 +500,7 @@ describe('Position', () => {
 		},
 		{
 			name: 'kings',
+			position: Position.makeInitial(),
 			piece: {
 				piece: 'k',
 				file: 'a',
@@ -497,12 +567,49 @@ describe('Position', () => {
 		},
 	];
 
-	legalMovesTestCases.forEach(({ name, piece, expectedMoves }) => {
-		it(`can generate legal piece moves - ${name}`, () => {
-			const pos = Position.makeInitial();
-			const moves = pos.getLegalMovesForPiece(piece);
-			expect(moves).toHaveLength(expectedMoves.length);
-			expect(moves).toEqual(expect.arrayContaining(expectedMoves));
-		});
-	});
+	runLegalMovesTestCases(
+		'can generate legal piece moves',
+		legalMovesTestCases,
+	);
+});
+
+describe('Position - Piece collisions', () => {
+	const legalMovesTestCases: LegalMovesTestCase[] = [
+		/*
+		{
+			name: 'pawns - friendly piece one square ahead',
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [],
+		},
+		{
+			name: 'pawns - friendly piece two squares ahead',
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 1, level: 'QL1' }
+				},
+			],
+		},
+		*/
+	];
+
+	runLegalMovesTestCases(
+		'can detect piece collisions',
+		legalMovesTestCases,
+	);
 });

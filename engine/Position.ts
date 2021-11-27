@@ -18,6 +18,29 @@ class CastlingRights {
 	bk: boolean = true;
 }
 
+type FullBitboard = Record<Level, FlatBitboard>;
+
+const createFullBitboard = () => {
+	const bb: FullBitboard = {
+		'W': new FlatBitboard(),
+		'B': new FlatBitboard(),
+		'N': new FlatBitboard(),
+		'QL1': new FlatBitboard(),
+		'QL2': new FlatBitboard(),
+		'QL3': new FlatBitboard(),
+		'QL4': new FlatBitboard(),
+		'QL5': new FlatBitboard(),
+		'QL6': new FlatBitboard(),
+		'KL1': new FlatBitboard(),
+		'KL2': new FlatBitboard(),
+		'KL3': new FlatBitboard(),
+		'KL4': new FlatBitboard(),
+		'KL5': new FlatBitboard(),
+		'KL6': new FlatBitboard(),
+	};
+	return bb;
+};
+
 const boardSquares: Record<Level, FlatBitboard> = {
 	W: FlatBitboard.fromSquares([
 		{ file: 'a', rank: 1 }, { file: 'a', rank: 2 },
@@ -159,6 +182,14 @@ class Position {
 
 	getBlackAttackBoards() : AttackLevel[] {
 		return this.attackBoards.black;
+	}
+
+	getOccupied(color: Color) : FullBitboard {
+		const bb = createFullBitboard();
+		for (const piece of this.pieces)
+			if (color === piece.color)
+				bb[piece.level].setSquare(piece.file, piece.rank);
+		return bb;
 	}
 
 	getPieces() : Piece[] {
