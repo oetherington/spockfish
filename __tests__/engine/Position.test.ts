@@ -81,7 +81,7 @@ describe('Position - Empty board moves', () => {
 	const legalMovesTestCases: LegalMovesTestCase[] = [
 		{
 			name: 'pawns',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -118,7 +118,7 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'knights',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'n',
 				file: 'a',
@@ -149,7 +149,7 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'bishops',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'b',
 				file: 'a',
@@ -210,7 +210,7 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'rooks',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'r',
 				file: 'c',
@@ -319,7 +319,7 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'queens',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'q',
 				file: 'c',
@@ -500,7 +500,7 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'kings',
-			position: Position.makeInitial(),
+			position: new Position(),
 			piece: {
 				piece: 'k',
 				file: 'a',

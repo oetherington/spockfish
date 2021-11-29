@@ -3,43 +3,9 @@ import Square, { File, Rank, AttackLevel, Level, FlatSquare } from './Square';
 import Piece from './Piece';
 import Move from './Move';
 import FlatBitboard from './FlatBitboard';
-
-class AttackBoards {
-	// To make sure positions are serializable, make sure the arrays are
-	// always sorted
-	white: AttackLevel[] = [ 'KL1', 'QL1' ];
-	black: AttackLevel[] = [ 'KL6', 'QL6' ];
-}
-
-class CastlingRights {
-	wq: boolean = true;
-	wk: boolean = true;
-	bq: boolean = true;
-	bk: boolean = true;
-}
-
-type FullBitboard = Record<Level, FlatBitboard>;
-
-const createFullBitboard = () => {
-	const bb: FullBitboard = {
-		'W': new FlatBitboard(),
-		'B': new FlatBitboard(),
-		'N': new FlatBitboard(),
-		'QL1': new FlatBitboard(),
-		'QL2': new FlatBitboard(),
-		'QL3': new FlatBitboard(),
-		'QL4': new FlatBitboard(),
-		'QL5': new FlatBitboard(),
-		'QL6': new FlatBitboard(),
-		'KL1': new FlatBitboard(),
-		'KL2': new FlatBitboard(),
-		'KL3': new FlatBitboard(),
-		'KL4': new FlatBitboard(),
-		'KL5': new FlatBitboard(),
-		'KL6': new FlatBitboard(),
-	};
-	return bb;
-};
+import FullBitboard, { createFullBitboard } from './FullBitboard';
+import CastlingRights from './CastlingRights';
+import AttackBoards from './AttackBoards';
 
 const boardSquares: Record<Level, FlatBitboard> = {
 	W: FlatBitboard.fromSquares([
@@ -129,6 +95,8 @@ class Position {
 	attackBoards: AttackBoards;
 	fiftyMoveCount: number;
 	castlingRights: CastlingRights;
+	levels: Level[];
+	occupied: Record<Color, FullBitboard>;
 
 	constructor(pieces: Piece[] = []) {
 		this.turn = 'w';
@@ -137,6 +105,11 @@ class Position {
 		this.attackBoards = new AttackBoards();
 		this.fiftyMoveCount = 0;
 		this.castlingRights = new CastlingRights();
+		this.levels = this.generateLevels();
+		this.occupied = {
+			'w': this.generateOccupied('w'),
+			'b': this.generateOccupied('b'),
+		};
 	}
 
 	public static makeInitial() : Position {
@@ -184,7 +157,7 @@ class Position {
 		return this.attackBoards.black;
 	}
 
-	getOccupied(color: Color) : FullBitboard {
+	private generateOccupied(color: Color) : FullBitboard {
 		const bb = createFullBitboard();
 		for (const piece of this.pieces)
 			if (color === piece.color)
@@ -192,64 +165,95 @@ class Position {
 		return bb;
 	}
 
+	getOccupied(color: Color) : FullBitboard {
+		return this.occupied[color];
+	}
+
 	getPieces() : Piece[] {
 		return this.pieces;
 	}
 
-	getLevels() : Level[] {
+	generateLevels() : Level[] {
 		const levels: Level[] = [ 'W', 'N', 'B' ];
 		return levels
 			.concat(this.getWhiteAttackBoards())
 			.concat(this.getBlackAttackBoards());
 	}
 
-	getLegalMovesForPiece({ piece, file, rank, color, level }: Piece) : Move[] {
-		const levels = this.getLevels();
-		let result: Move[] = [];
+	getLevels() : Level[] {
+		return this.levels;
+	}
 
-		const bb = new FlatBitboard();
-		bb.setSquare(file, rank);
-
-		let targets = new FlatBitboard();
-
-		switch (piece) {
-			case 'p':
-				targets = targets.either(bb.pawnMoves(level, color));
-				break;
-
-			case 'n':
-				targets = targets.either(bb.knightMoves());
-				break;
-
-			case 'b':
-				targets = targets.either(bb.bishopMoves());
-				break;
-
-			case 'r':
-				targets = targets.either(bb.rookMoves());
-				break;
-
-			case 'q':
-				targets = targets.either(bb.queenMoves());
-				break;
-
-			case 'k':
-				targets = targets.either(bb.kingMoves());
-				break;
-
-			default:
-				break;
-		}
-
+	private expandBitboardSimple(
+		{ piece, file, rank, color, level }: Piece,
+		targets: FlatBitboard
+	) : Move[] {
 		const from: Square = { file, rank, level };
 
-		for (const targetLevel of levels) {
+		let result: Move[] = [];
+
+		for (const targetLevel of this.levels) {
 			const squares = targets.both(boardSquares[targetLevel]);
 			const moves = squares.toMoves(piece, color, from, targetLevel);
 			result = result.concat(moves);
 		}
 
 		return result;
+	}
+
+	private expandBitboardTemp(
+		{ piece, file, rank, color, level }: Piece,
+		targets: FlatBitboard
+	) : Move[] {
+		const from: Square = { file, rank, level };
+
+		let result: Move[] = [];
+
+		for (const targetLevel of this.levels) {
+			const squares = targets.both(boardSquares[targetLevel]);
+			const moves = squares.toMoves(piece, color, from, targetLevel);
+			result = result.concat(moves);
+		}
+
+		return result;
+	}
+
+	getLegalMovesForPiece(piece: Piece) : Move[] {
+		let result: Move[] = [];
+
+		const bb = new FlatBitboard();
+		bb.setSquare(piece.file, piece.rank);
+
+		let targets = new FlatBitboard();
+
+		switch (piece.piece) {
+			case 'p':
+				targets = bb.pawnMoves(piece.level, piece.color);
+				break;
+
+			case 'n':
+				return this.expandBitboardSimple(piece, bb.knightMoves());
+
+			case 'b':
+				targets = bb.bishopMoves();
+				break;
+
+			case 'r':
+				targets = bb.rookMoves();
+				break;
+
+			case 'q':
+				targets = bb.queenMoves();
+				break;
+
+			case 'k':
+				return this.expandBitboardSimple(piece, bb.kingMoves());
+
+			default:
+				throw new Error('Invalid piece type in getLegalMovesForPiece');
+		}
+
+		return this.expandBitboardTemp(piece, targets);
 	}
 
 	getLegalMoves(piece: Piece | null) : Move[] {
