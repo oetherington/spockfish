@@ -717,6 +717,69 @@ describe('Position - Piece collisions', () => {
 			],
 		},
 		{
+			name: 'bishop move collisions',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 4,
+					color: 'b',
+					level: 'W',
+				},
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 4,
+					color: 'w',
+					level: 'N',
+				},
+			]),
+			piece: {
+				piece: 'b',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'z', rank: 1, level: 'QL1' },
+					capture: false,
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 1, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'c', rank: 4, level: 'W' },
+					capture: true,
+				},
+				{
+					piece: 'b',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
 			name: 'king move collisions',
 			position: new Position([
 				{

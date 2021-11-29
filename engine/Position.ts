@@ -1,4 +1,4 @@
-import Color from './Color';
+import Color, { otherColor } from './Color';
 import Square, { File, Rank, AttackLevel, Level, FlatSquare } from './Square';
 import Piece from './Piece';
 import Move from './Move';
@@ -6,8 +6,6 @@ import FlatBitboard from './FlatBitboard';
 import FullBitboard, { createFullBitboard } from './FullBitboard';
 import CastlingRights from './CastlingRights';
 import AttackBoards from './AttackBoards';
-
-const otherColor = (color: Color) => color === 'w' ? 'b' : 'w';
 
 const boardSquares: Record<Level, FlatBitboard> = {
 	W: FlatBitboard.fromSquares([
@@ -99,6 +97,7 @@ class Position {
 	castlingRights: CastlingRights;
 	levels: Level[];
 	occupied: Record<Color, FullBitboard>;
+	allOccupied: FlatBitboard;
 
 	constructor(pieces: Piece[] = []) {
 		this.turn = 'w';
@@ -112,6 +111,9 @@ class Position {
 			'w': this.generateOccupied('w'),
 			'b': this.generateOccupied('b'),
 		};
+		this.allOccupied =
+			FlatBitboard.fromFullBitboard(this.occupied['w'])
+				.either(FlatBitboard.fromFullBitboard(this.occupied['b']));
 	}
 
 	public static makeInitial() : Position {
@@ -151,11 +153,11 @@ class Position {
 		]);
 	}
 
-	getWhiteAttackBoards() : AttackLevel[] {
+	public getWhiteAttackBoards() : AttackLevel[] {
 		return this.attackBoards.white;
 	}
 
-	getBlackAttackBoards() : AttackLevel[] {
+	public getBlackAttackBoards() : AttackLevel[] {
 		return this.attackBoards.black;
 	}
 
@@ -167,22 +169,22 @@ class Position {
 		return bb;
 	}
 
-	getOccupied(color: Color) : FullBitboard {
+	public getOccupied(color: Color) : FullBitboard {
 		return this.occupied[color];
 	}
 
-	getPieces() : Piece[] {
+	public getPieces() : Piece[] {
 		return this.pieces;
 	}
 
-	generateLevels() : Level[] {
+	public generateLevels() : Level[] {
 		const levels: Level[] = [ 'W', 'N', 'B' ];
 		return levels
 			.concat(this.getWhiteAttackBoards())
 			.concat(this.getBlackAttackBoards());
 	}
 
-	getLevels() : Level[] {
+	public getLevels() : Level[] {
 		return this.levels;
 	}
 
@@ -227,7 +229,7 @@ class Position {
 		return result;
 	}
 
-	getLegalMovesForPiece(piece: Piece) : Move[] {
+	public getLegalMovesForPiece(piece: Piece) : Move[] {
 		let result: Move[] = [];
 
 		const bb = new FlatBitboard();
@@ -244,15 +246,17 @@ class Position {
 				return this.expandBitboardSimple(piece, bb.knightMoves());
 
 			case 'b':
-				targets = bb.bishopMoves();
-				break;
+				return this.expandBitboardSimple(
+					piece,
+					bb.bishopMoves(this.allOccupied),
+				);
 
 			case 'r':
-				targets = bb.rookMoves();
+				targets = bb.rookMoves(this.allOccupied);
 				break;
 
 			case 'q':
-				targets = bb.queenMoves();
+				targets = bb.queenMoves(this.allOccupied);
 				break;
 
 			case 'k':
@@ -265,7 +269,7 @@ class Position {
 		return this.expandBitboardTemp(piece, targets);
 	}
 
-	getLegalMoves(piece: Piece | null) : Move[] {
+	public getLegalMoves(piece: Piece | null) : Move[] {
 		return piece
 			? this.getLegalMovesForPiece(piece)
 			: this.pieces.map(p => this.getLegalMovesForPiece(p)).flat();

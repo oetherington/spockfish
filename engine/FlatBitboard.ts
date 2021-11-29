@@ -2,6 +2,7 @@ import Square, { Rank, File, Level, FlatSquare } from './Square';
 import Piece, { PieceType } from './Piece';
 import Color from './Color';
 import Move from './Move';
+import FullBitboard from './FullBitboard';
 
 const rankCount = 10;
 const fileCount = 6;
@@ -75,6 +76,13 @@ class FlatBitboard {
 		const zFile = new FlatBitboard(1023, 0);
 		zFile.shiftLeft(fileIndices[file] * rankCount);
 		return zFile;
+	}
+
+	public static fromFullBitboard(fb: FullBitboard) : FlatBitboard {
+		let bb = new FlatBitboard();
+		for (const level of Object.keys(fb))
+			bb = bb.either(fb[level as Level]);
+		return bb;
 	}
 
 	public clone() : FlatBitboard {
@@ -363,7 +371,7 @@ class FlatBitboard {
 		return result;
 	}
 
-	public bishopMoves() : FlatBitboard {
+	public bishopMoves(occupied: FlatBitboard) : FlatBitboard {
 		const bishops = this.clone();
 		let result = new FlatBitboard();
 
@@ -381,7 +389,10 @@ class FlatBitboard {
 			for (const iter of iters) {
 				let cur = iter.next();
 				while (!cur.done) {
-					result.setSquare(cur.value.file, cur.value.rank);
+					const { file, rank } = cur.value;
+					result.setSquare(file, rank);
+					if (occupied.isSquareSet(file, rank))
+						break;
 					cur = iter.next();
 				}
 			}
@@ -391,7 +402,7 @@ class FlatBitboard {
 		return result;
 	}
 
-	public rookMoves() : FlatBitboard {
+	public rookMoves(occupied: FlatBitboard) : FlatBitboard {
 		const rooks = this.clone();
 		let result = new FlatBitboard();
 
@@ -407,8 +418,8 @@ class FlatBitboard {
 		return result;
 	}
 
-	public queenMoves() : FlatBitboard {
-		return this.bishopMoves().either(this.rookMoves());
+	public queenMoves(occupied: FlatBitboard) : FlatBitboard {
+		return this.bishopMoves(occupied).either(this.rookMoves(occupied));
 	}
 
 	public kingMoves() : FlatBitboard {

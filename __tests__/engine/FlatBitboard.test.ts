@@ -463,7 +463,7 @@ describe('FlatBitboard', () => {
 
 	bishopTestCases.forEach(testCase => movesTestCase(
 		testCase,
-		bb => bb.bishopMoves().toSquares(),
+		bb => bb.bishopMoves(new FlatBitboard()).toSquares(),
 	));
 
 	const rookTestCases: MovesTestCase[] = [
@@ -492,7 +492,7 @@ describe('FlatBitboard', () => {
 
 	rookTestCases.forEach(testCase => movesTestCase(
 		testCase,
-		bb => bb.rookMoves().toSquares(),
+		bb => bb.rookMoves(new FlatBitboard()).toSquares(),
 	));
 
 	const queenTestCases: MovesTestCase[] = [
@@ -531,7 +531,7 @@ describe('FlatBitboard', () => {
 
 	queenTestCases.forEach(testCase => movesTestCase(
 		testCase,
-		bb => bb.queenMoves().toSquares(),
+		bb => bb.queenMoves(new FlatBitboard()).toSquares(),
 	));
 
 	const kingTestCases: MovesTestCase[] = [
