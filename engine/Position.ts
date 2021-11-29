@@ -7,6 +7,8 @@ import FullBitboard, { createFullBitboard } from './FullBitboard';
 import CastlingRights from './CastlingRights';
 import AttackBoards from './AttackBoards';
 
+const otherColor = (color: Color) => color === 'w' ? 'b' : 'w';
+
 const boardSquares: Record<Level, FlatBitboard> = {
 	W: FlatBitboard.fromSquares([
 		{ file: 'a', rank: 1 }, { file: 'a', rank: 2 },
@@ -186,16 +188,23 @@ class Position {
 
 	private expandBitboardSimple(
 		{ piece, file, rank, color, level }: Piece,
-		targets: FlatBitboard
+		targets: FlatBitboard,
 	) : Move[] {
 		const from: Square = { file, rank, level };
 
 		let result: Move[] = [];
 
 		for (const targetLevel of this.levels) {
-			const squares = targets.both(boardSquares[targetLevel]);
-			const moves = squares.toMoves(piece, color, from, targetLevel);
-			result = result.concat(moves);
+			const allMoves = targets
+				.both(boardSquares[targetLevel])
+				.onlyLeft(this.occupied[color][targetLevel]);
+			const captures = allMoves
+				.both(this.occupied[otherColor(color)][targetLevel]);
+			const quietMoves = allMoves.onlyLeft(captures);
+
+			result = result
+				.concat(captures.toMoves(piece, color, from, targetLevel, true))
+				.concat(quietMoves.toMoves(piece, color, from, targetLevel));
 		}
 
 		return result;

@@ -7,6 +7,7 @@ type Move = {
 	color: Color,
 	from: Square,
 	to: Square,
+	capture: boolean,
 }
 
 export default Move;

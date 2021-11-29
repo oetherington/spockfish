@@ -94,25 +94,29 @@ describe('Position - Empty board moves', () => {
 					piece: 'p',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 3, level: 'W' }
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'p',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 4, level: 'W' }
+					to: { file: 'a', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'p',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 3, level: 'N' }
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'p',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 4, level: 'N' }
+					to: { file: 'a', rank: 4, level: 'N' },
+					capture: false,
 				},
 			],
 		},
@@ -131,19 +135,22 @@ describe('Position - Empty board moves', () => {
 					piece: 'n',
 					color: 'w',
 					from: { file: 'a', rank: 1, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'W' }
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'n',
 					color: 'w',
 					from: { file: 'a', rank: 1, level: 'W' },
 					to: { file: 'c', rank: 2, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'n',
 					color: 'w',
 					from: { file: 'a', rank: 1, level: 'W' },
 					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
 				}
 			],
 		},
@@ -162,49 +169,57 @@ describe('Position - Empty board moves', () => {
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'z', rank: 1, level: 'QL1' }
+					to: { file: 'z', rank: 1, level: 'QL1' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 1, level: 'W' }
+					to: { file: 'b', rank: 1, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'W' }
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'c', rank: 4, level: 'W' }
+					to: { file: 'c', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'N' }
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'c', rank: 4, level: 'N' }
+					to: { file: 'c', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'd', rank: 5, level: 'N' }
+					to: { file: 'd', rank: 5, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'b',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'd', rank: 5, level: 'B' }
+					to: { file: 'd', rank: 5, level: 'B' },
+					capture: false,
 				},
 			],
 		},
@@ -223,97 +238,113 @@ describe('Position - Empty board moves', () => {
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 1, level: 'W' }
+					to: { file: 'c', rank: 1, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 2, level: 'W' }
+					to: { file: 'c', rank: 2, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 3, level: 'W' }
+					to: { file: 'c', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 3, level: 'N' }
+					to: { file: 'c', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 5, level: 'N' }
+					to: { file: 'c', rank: 5, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 6, level: 'N' }
+					to: { file: 'c', rank: 6, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 5, level: 'B' }
+					to: { file: 'c', rank: 5, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 6, level: 'B' }
+					to: { file: 'c', rank: 6, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 7, level: 'B' }
+					to: { file: 'c', rank: 7, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 8, level: 'B' }
+					to: { file: 'c', rank: 8, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 4, level: 'W' }
+					to: { file: 'a', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 4, level: 'W' }
+					to: { file: 'b', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 4, level: 'W' }
+					to: { file: 'd', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 4, level: 'N' }
+					to: { file: 'a', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 4, level: 'N' }
+					to: { file: 'b', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'r',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 4, level: 'N' }
+					to: { file: 'd', rank: 4, level: 'N' },
+					capture: false,
 				},
 			],
 		},
@@ -332,169 +363,197 @@ describe('Position - Empty board moves', () => {
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 1, level: 'W' }
+					to: { file: 'c', rank: 1, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 2, level: 'W' }
+					to: { file: 'c', rank: 2, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 3, level: 'W' }
+					to: { file: 'c', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 3, level: 'N' }
+					to: { file: 'c', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 5, level: 'N' }
+					to: { file: 'c', rank: 5, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 6, level: 'N' }
+					to: { file: 'c', rank: 6, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 5, level: 'B' }
+					to: { file: 'c', rank: 5, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 6, level: 'B' }
+					to: { file: 'c', rank: 6, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 7, level: 'B' }
+					to: { file: 'c', rank: 7, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'c', rank: 8, level: 'B' }
+					to: { file: 'c', rank: 8, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 4, level: 'W' }
+					to: { file: 'a', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 4, level: 'W' }
+					to: { file: 'b', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 4, level: 'W' }
+					to: { file: 'd', rank: 4, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 4, level: 'N' }
+					to: { file: 'a', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 4, level: 'N' }
+					to: { file: 'b', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 4, level: 'N' }
+					to: { file: 'd', rank: 4, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'z', rank: 1, level: 'QL1' }
+					to: { file: 'z', rank: 1, level: 'QL1' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 3, level: 'W' }
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 2, level: 'W' }
+					to: { file: 'a', rank: 2, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 3, level: 'W' }
+					to: { file: 'd', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 3, level: 'N' }
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 5, level: 'N' }
+					to: { file: 'b', rank: 5, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 6, level: 'N' }
+					to: { file: 'a', rank: 6, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 3, level: 'N' }
+					to: { file: 'd', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 5, level: 'N' }
+					to: { file: 'd', rank: 5, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'b', rank: 5, level: 'B' }
+					to: { file: 'b', rank: 5, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'a', rank: 6, level: 'B' }
+					to: { file: 'a', rank: 6, level: 'B' },
+					capture: false,
 				},
 				{
 					piece: 'q',
 					color: 'w',
 					from: { file: 'c', rank: 4, level: 'N' },
-					to: { file: 'd', rank: 5, level: 'B' }
+					to: { file: 'd', rank: 5, level: 'B' },
+					capture: false,
 				},
 			],
 		},
@@ -513,55 +572,64 @@ describe('Position - Empty board moves', () => {
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 1, level: 'W' }
+					to: { file: 'a', rank: 1, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 3, level: 'W' }
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 1, level: 'W' }
+					to: { file: 'b', rank: 1, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 2, level: 'W' }
+					to: { file: 'b', rank: 2, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'W' }
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 3, level: 'N' }
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 3, level: 'N' }
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'z', rank: 1, level: 'QL1' }
+					to: { file: 'z', rank: 1, level: 'QL1' },
+					capture: false,
 				},
 				{
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 1, level: 'QL1' }
+					to: { file: 'a', rank: 1, level: 'QL1' },
+					capture: false,
 				},
 			],
 		},
@@ -606,6 +674,132 @@ describe('Position - Piece collisions', () => {
 			],
 		},
 		*/
+		{
+			name: 'knight move collisions',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'b',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 2,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'n',
+				file: 'a',
+				rank: 1,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'n',
+					color: 'w',
+					from: { file: 'a', rank: 1, level: 'W' },
+					to: { file: 'c', rank: 2, level: 'W' },
+					capture: true,
+				},
+				{
+					piece: 'n',
+					color: 'w',
+					from: { file: 'a', rank: 1, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
+				}
+			],
+		},
+		{
+			name: 'king move collisions',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 1,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 3,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'k',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: true,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 1, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 2, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'b', rank: 3, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'z', rank: 1, level: 'QL1' },
+					capture: false,
+				},
+				{
+					piece: 'k',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 1, level: 'QL1' },
+					capture: false,
+				},
+			],
+		},
 	];
 
 	runLegalMovesTestCases(

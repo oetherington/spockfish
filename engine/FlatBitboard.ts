@@ -277,6 +277,7 @@ class FlatBitboard {
 		color: Color,
 		from: Square,
 		targetLevel: Level,
+		capture: boolean = false,
 	) : Move[] {
 		return this.toSquares().map(({ file, rank }) => ({
 			piece,
@@ -287,6 +288,7 @@ class FlatBitboard {
 				rank,
 				level: targetLevel,
 			},
+			capture,
 		}));
 	}
 
