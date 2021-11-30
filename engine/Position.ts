@@ -188,7 +188,7 @@ class Position {
 		return this.levels;
 	}
 
-	private expandBitboardSimple(
+	private expandBitboard(
 		{ piece, file, rank, color, level }: Piece,
 		targets: FlatBitboard,
 	) : Move[] {
@@ -243,24 +243,28 @@ class Position {
 				break;
 
 			case 'n':
-				return this.expandBitboardSimple(piece, bb.knightMoves());
+				return this.expandBitboard(piece, bb.knightMoves());
 
 			case 'b':
-				return this.expandBitboardSimple(
+				return this.expandBitboard(
 					piece,
 					bb.bishopMoves(this.allOccupied),
 				);
 
 			case 'r':
-				targets = bb.rookMoves(this.allOccupied);
-				break;
+				return this.expandBitboard(
+					piece,
+					bb.rookMoves(this.allOccupied),
+				);
 
 			case 'q':
-				targets = bb.queenMoves(this.allOccupied);
-				break;
+				return this.expandBitboard(
+					piece,
+					bb.queenMoves(this.allOccupied),
+				);
 
 			case 'k':
-				return this.expandBitboardSimple(piece, bb.kingMoves());
+				return this.expandBitboard(piece, bb.kingMoves());
 
 			default:
 				throw new Error('Invalid piece type in getLegalMovesForPiece');

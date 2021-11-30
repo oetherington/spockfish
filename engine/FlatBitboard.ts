@@ -1,51 +1,17 @@
-import Square, { Rank, File, Level, FlatSquare } from './Square';
+import Square, {
+	Rank,
+	File,
+	Level,
+	FlatSquare,
+	rankCount,
+	fileIndices,
+	files,
+} from './Square';
 import Piece, { PieceType } from './Piece';
 import Color from './Color';
 import Move from './Move';
 import FullBitboard from './FullBitboard';
-
-const rankCount = 10;
-const fileCount = 6;
-
-const fileIndices: Record<File, number> = {
-	'z': 0,
-	'a': 1,
-	'b': 2,
-	'c': 3,
-	'd': 4,
-	'e': 5,
-};
-
-const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
-
-const DiagIter = function*(
-	startFile: File,
-	startRank: Rank,
-	fileInc: number = 1,
-	rankInc: number = 1,
-) : Generator<FlatSquare, void, void> {
-	const fCheck = fileInc > 0
-		? (n: number) => n <= fileCount - 1
-		: (n: number) => n >= 0;
-	const rCheck = rankInc > 0
-		? (n: number) => n <= rankCount - 1
-		: (n: number) => n >= 0;
-
-	let f = fileIndices[startFile] + fileInc;
-	let r = startRank + rankInc;
-
-	while (fCheck(f) && rCheck(r)) {
-		const result = {
-			file: files[f],
-			rank: r,
-		};
-
-		f += fileInc;
-		r += rankInc;
-
-		yield result;
-	}
-};
+import { SquareIter, DiagIter, RankIter, FileIter } from './Iterators';
 
 class FlatBitboard {
 	private static readonly RANKS = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ].map(
@@ -129,6 +95,26 @@ class FlatBitboard {
 		const lowest = this.lowestBit();
 		this.unsetBit(lowest);
 		return lowest;
+	}
+
+	private static highestBit32(v: number) : number {
+		v >>>= 0;
+		let r = 0;
+		while (v >>>= 1)
+			++r;
+		return r;
+	}
+
+	public highestBit() : number {
+		return this.high
+			? 32 + FlatBitboard.highestBit32(this.high)
+			: FlatBitboard.highestBit32(this.low);
+	}
+
+	public popHighestBit() : number {
+		const highest = this.highestBit();
+		this.unsetBit(highest);
+		return highest;
 	}
 
 	public setAll() : void {
@@ -371,22 +357,19 @@ class FlatBitboard {
 		return result;
 	}
 
-	public bishopMoves(occupied: FlatBitboard) : FlatBitboard {
-		const bishops = this.clone();
+	private movesFromIters(
+		occupied: FlatBitboard,
+		iters: ((file: File, rank: Rank) => SquareIter)[],
+	) : FlatBitboard {
+		const pieces = this.clone();
 		let result = new FlatBitboard();
 
-		while (!bishops.isEmpty()) {
-			const index = bishops.popLowestBit();
+		while (!pieces.isEmpty()) {
+			const index = pieces.popLowestBit();
 			const { file, rank } = FlatBitboard.indexToSquare(index);
 
-			const iters = [
-				DiagIter(file, rank, 1, 1),
-				DiagIter(file, rank, 1, -1),
-				DiagIter(file, rank, -1, 1),
-				DiagIter(file, rank, -1, -1),
-			];
-
-			for (const iter of iters) {
+			for (const iterGen of iters) {
+				const iter = iterGen(file, rank);
 				let cur = iter.next();
 				while (!cur.done) {
 					const { file, rank } = cur.value;
@@ -402,20 +385,22 @@ class FlatBitboard {
 		return result;
 	}
 
+	public bishopMoves(occupied: FlatBitboard) : FlatBitboard {
+		return this.movesFromIters(occupied, [
+			(file, rank) => DiagIter(file, rank, 1, 1),
+			(file, rank) => DiagIter(file, rank, 1, -1),
+			(file, rank) => DiagIter(file, rank, -1, 1),
+			(file, rank) => DiagIter(file, rank, -1, -1),
+		]);
+	}
+
 	public rookMoves(occupied: FlatBitboard) : FlatBitboard {
-		const rooks = this.clone();
-		let result = new FlatBitboard();
-
-		while (!rooks.isEmpty()) {
-			const index = rooks.popLowestBit();
-			const { file, rank } = FlatBitboard.indexToSquare(index);
-			const column = FlatBitboard.fromFile(file);
-			const row = FlatBitboard.RANKS[rank];
-			result = result.either(column).either(row);
-			result.unsetBit(index);
-		}
-
-		return result;
+		return this.movesFromIters(occupied, [
+			(file, rank) => FileIter(file, rank, 1),
+			(file, rank) => FileIter(file, rank, -1),
+			(file, rank) => RankIter(rank, file, 1),
+			(file, rank) => RankIter(rank, file, -1),
+		]);
 	}
 
 	public queenMoves(occupied: FlatBitboard) : FlatBitboard {

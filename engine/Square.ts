@@ -22,3 +22,17 @@ type Square = {
 }
 
 export default Square;
+
+export const rankCount = 10;
+export  const fileCount = 6;
+
+export const fileIndices: Record<File, number> = {
+	'z': 0,
+	'a': 1,
+	'b': 2,
+	'c': 3,
+	'd': 4,
+	'e': 5,
+};
+
+export const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];

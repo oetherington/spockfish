@@ -110,6 +110,27 @@ describe('FlatBitboard', () => {
 		expect(bb.high).toBe(0);
 	});
 
+	it('can get the highest set bit', () => {
+		expect((new FlatBitboard(1, 0)).highestBit()).toBe(0);
+		expect((new FlatBitboard(4, 0)).highestBit()).toBe(2);
+		expect((new FlatBitboard(0, 1)).highestBit()).toBe(32);
+		expect((new FlatBitboard(0, 4)).highestBit()).toBe(34);
+		expect((new FlatBitboard(4, 4)).highestBit()).toBe(34);
+		expect((new FlatBitboard(5, 4)).highestBit()).toBe(34);
+	});
+
+	it('can pop the highest set bit', () => {
+		const bb = new FlatBitboard(1, 1);
+		const a = bb.popHighestBit();
+		expect(a).toBe(32);
+		expect(bb.low).toBe(1);
+		expect(bb.high).toBe(0);
+		const b = bb.popHighestBit();
+		expect(b).toBe(0);
+		expect(bb.low).toBe(0);
+		expect(bb.high).toBe(0);
+	});
+
 	it('can set all bits', () => {
 		const bb = new FlatBitboard();
 		bb.setAll();
