@@ -188,10 +188,34 @@ class Position {
 		return this.levels;
 	}
 
-	private expandBitboard(
-		{ piece, file, rank, color, level }: Piece,
-		targets: FlatBitboard,
-	) : Move[] {
+	private getLegalSquaresForPiece(
+		{ piece, color, file, rank, level }: Piece,
+	) : FlatBitboard {
+		const bb = new FlatBitboard();
+		bb.setSquare(file, rank);
+
+		switch (piece) {
+			case 'p':
+				return bb.pawnMoves(level, color);
+			case 'n':
+				return bb.knightMoves();
+			case 'b':
+				return bb.bishopMoves(this.allOccupied);
+			case 'r':
+				return bb.rookMoves(this.allOccupied);
+			case 'q':
+				return bb.queenMoves(this.allOccupied);
+			case 'k':
+				return bb.kingMoves();
+			default:
+				throw new Error('Invalid piece in getLegalSquaresForPiece');
+		}
+	}
+
+	public getLegalMovesForPiece(p: Piece) : Move[] {
+		const targets = this.getLegalSquaresForPiece(p);
+
+		const { piece, color, file, rank, level } = p;
 		const from: Square = { file, rank, level };
 
 		let result: Move[] = [];
@@ -210,67 +234,6 @@ class Position {
 		}
 
 		return result;
-	}
-
-	private expandBitboardTemp(
-		{ piece, file, rank, color, level }: Piece,
-		targets: FlatBitboard
-	) : Move[] {
-		const from: Square = { file, rank, level };
-
-		let result: Move[] = [];
-
-		for (const targetLevel of this.levels) {
-			const squares = targets.both(boardSquares[targetLevel]);
-			const moves = squares.toMoves(piece, color, from, targetLevel);
-			result = result.concat(moves);
-		}
-
-		return result;
-	}
-
-	public getLegalMovesForPiece(piece: Piece) : Move[] {
-		let result: Move[] = [];
-
-		const bb = new FlatBitboard();
-		bb.setSquare(piece.file, piece.rank);
-
-		let targets = new FlatBitboard();
-
-		switch (piece.piece) {
-			case 'p':
-				targets = bb.pawnMoves(piece.level, piece.color);
-				break;
-
-			case 'n':
-				return this.expandBitboard(piece, bb.knightMoves());
-
-			case 'b':
-				return this.expandBitboard(
-					piece,
-					bb.bishopMoves(this.allOccupied),
-				);
-
-			case 'r':
-				return this.expandBitboard(
-					piece,
-					bb.rookMoves(this.allOccupied),
-				);
-
-			case 'q':
-				return this.expandBitboard(
-					piece,
-					bb.queenMoves(this.allOccupied),
-				);
-
-			case 'k':
-				return this.expandBitboard(piece, bb.kingMoves());
-
-			default:
-				throw new Error('Invalid piece type in getLegalMovesForPiece');
-		}
-
-		return this.expandBitboardTemp(piece, targets);
 	}
 
 	public getLegalMoves(piece: Piece | null) : Move[] {
