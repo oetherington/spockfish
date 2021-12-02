@@ -643,20 +643,17 @@ describe('Position - Empty board moves', () => {
 
 describe('Position - Piece collisions', () => {
 	const legalMovesTestCases: LegalMovesTestCase[] = [
-		/*
 		{
-			name: 'pawns - friendly piece one square ahead',
-			piece: {
-				piece: 'p',
-				file: 'a',
-				rank: 2,
-				color: 'w',
-				level: 'W',
-			},
-			expectedMoves: [],
-		},
-		{
-			name: 'pawns - friendly piece two squares ahead',
+			name: 'white pawn collisions - friendly piece one square ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+			]),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -669,11 +666,291 @@ describe('Position - Piece collisions', () => {
 					piece: 'p',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'a', rank: 1, level: 'QL1' }
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
 				},
 			],
 		},
-		*/
+		{
+			name: 'white pawn collisions - enemy piece one square ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 3,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: true,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'white pawn collisions - friendly piece two squares ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 4,
+					color: 'w',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 4, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'white pawn collisions - enemy piece two squares ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 4,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 3, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 4, level: 'W' },
+					capture: true,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'a', rank: 2, level: 'W' },
+					to: { file: 'a', rank: 4, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'black pawn collisions - friendly piece one square ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 6,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 7,
+				color: 'b',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'black pawn collisions - enemy piece one square ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 6,
+					color: 'w',
+					level: 'B',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 7,
+				color: 'b',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'B' },
+					capture: true,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'black pawn collisions - friendly piece two squares ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 5,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 7,
+				color: 'b',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'B' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 5, level: 'N' },
+					capture: false,
+				},
+			],
+		},
+		{
+			name: 'black pawn collisions - enemy piece two squares ahead',
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 5,
+					color: 'w',
+					level: 'B',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'a',
+				rank: 7,
+				color: 'b',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'B' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 6, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 5, level: 'B' },
+					capture: true,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'a', rank: 7, level: 'B' },
+					to: { file: 'a', rank: 5, level: 'N' },
+					capture: false,
+				},
+			],
+		},
 		{
 			name: 'knight move collisions',
 			position: new Position([

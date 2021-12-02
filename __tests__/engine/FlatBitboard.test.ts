@@ -352,7 +352,12 @@ describe('FlatBitboard', () => {
 
 	whitePawnTestCases.forEach(testCase => movesTestCase(
 		testCase,
-		bb => bb.pawnMoves('W', 'w').toSquares(),
+		bb => bb.pawnMoves(
+			'W',
+			'w',
+			FlatBitboard.getAllStartingPawns(),
+			new FlatBitboard(),
+		).toSquares(),
 	));
 
 	const blackPawnTestCases: MovesTestCase[] = [
@@ -377,7 +382,12 @@ describe('FlatBitboard', () => {
 
 	blackPawnTestCases.forEach(testCase => movesTestCase(
 		testCase,
-		bb => bb.pawnMoves('B', 'b').toSquares(),
+		bb => bb.pawnMoves(
+			'B',
+			'b',
+			FlatBitboard.getAllStartingPawns(),
+			new FlatBitboard(),
+		).toSquares(),
 	));
 
 	const knightTestCases: MovesTestCase[] = [

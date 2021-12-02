@@ -51,6 +51,10 @@ class FlatBitboard {
 		return bb;
 	}
 
+	public static getAllStartingPawns() : FlatBitboard {
+		return new FlatBitboard(138811650, 67733025);
+	}
+
 	public clone() : FlatBitboard {
 		return new FlatBitboard(this.low, this.high);
 	}
@@ -291,7 +295,12 @@ class FlatBitboard {
 		this.high = this.high & 0b0000_1111_1111_1111_1111_1111_1111_1111;
 	}
 
-	public pawnMoves(level: Level, color: Color) : FlatBitboard {
+	public pawnMoves(
+		level: Level,
+		color: Color,
+		unmovedPawns: FlatBitboard,
+		occupied: FlatBitboard,
+	) : FlatBitboard {
 		const pawns = this.clone();
 		let result = new FlatBitboard();
 
@@ -299,26 +308,13 @@ class FlatBitboard {
 			const index = pawns.popLowestBit();
 			const { file, rank } = FlatBitboard.indexToSquare(index);
 
-			if (color === 'w') {
-				result.setSquare(file, rank + 1);
-				if (
-					(rank === 2 && level === 'W') ||
-					(rank === 1 && (level === 'QL1' || level === 'KL1'))
-				) {
-					result.setSquare(file, rank + 2);
-				}
-			} else {
-				result.setSquare(file, rank - 1);
-				if (
-					(rank === 7 && level === 'B') ||
-					(rank === 8 && (level === 'QL6' || level === 'KL6'))
-				) {
-					result.setSquare(file, rank - 2);
-				}
-			}
-		}
+			const offs = color === 'w' ? 1 : -1;
+			const target = FlatBitboard.squareToIndex(file, rank + offs);
 
-		// TODO: Handle promotions
+			result.setBit(target);
+			if (unmovedPawns.isBitSet(index) && !occupied.isBitSet(target))
+				result.setSquare(file, rank + offs * 2);
+		}
 
 		return result;
 	}
