@@ -11,6 +11,7 @@ import LegalMoves from './LegalMoves';
 import Position from '~/engine/Position';
 import Piece from '~/engine/Piece';
 import Move from '~/engine/Move';
+import Engine from '~/engine/Engine';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
@@ -35,11 +36,12 @@ type SelectedPiece = {
 
 type BoardProps = {
 	position: Position,
+	engine: Engine,
 	width: number,
 	height: number,
 }
 
-const Board = ({ position, width, height }: BoardProps) => {
+const Board = ({ position, engine, width, height }: BoardProps) => {
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
 	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
