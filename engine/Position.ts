@@ -83,6 +83,14 @@ class Position {
 		]);
 	}
 
+	public getTurn() : Color {
+		return this.turn;
+	}
+
+	public getPly() : number {
+		return this.ply;
+	}
+
 	public getWhiteAttackBoards() : AttackLevel[] {
 		return this.attackBoards.white;
 	}

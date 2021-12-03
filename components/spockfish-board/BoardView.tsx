@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Board from './Board';
-import Position from '~/engine/Position';
 import useKeyBind from '~/hooks/useKeyBind';
 import useEngine from '~/hooks/useEngine';
 
@@ -11,12 +10,11 @@ type BoardViewProps = {
 }
 
 const BoardView = (props: BoardViewProps) => {
-	const [position, setPosition] = useState<Position>(Position.makeInitial());
-
-	const engine = useEngine();
+	const { engine, position } = useEngine();
 
 	useKeyBind('KeyR', () => {
-		setPosition(Position.makeInitial());
+		// TODO
+		// setPosition(Position.makeInitial());
 		console.log('Refreshed!');
 	});
 
@@ -25,7 +23,8 @@ const BoardView = (props: BoardViewProps) => {
 		<Canvas camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}>
 			<ambientLight intensity={0.2} />
 			<pointLight position={[10, 10, 10]} />
-			<Board {...{ position, engine }} {...props} />
+			{engine && position &&
+				<Board {...{ engine, position }} {...props} />}
 		</Canvas>
 	);
 };

@@ -8,10 +8,10 @@ import AttackBoard from './AttackBoard';
 import PieceComponent from './Piece';
 import Renderer from './Renderer';
 import LegalMoves from './LegalMoves';
-import Position from '~/engine/Position';
 import Piece from '~/engine/Piece';
 import Move from '~/engine/Move';
-import Engine from '~/engine/Engine';
+import Color, { colors } from '~/engine/Color';
+import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
@@ -35,13 +35,13 @@ type SelectedPiece = {
 }
 
 type BoardProps = {
-	position: Position,
-	engine: Engine,
+	engine: RemoteEngine,
+	position: SerializedPosition,
 	width: number,
 	height: number,
 }
 
-const Board = ({ position, engine, width, height }: BoardProps) => {
+const Board = ({ engine, position, width, height }: BoardProps) => {
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
 	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
@@ -54,13 +54,13 @@ const Board = ({ position, engine, width, height }: BoardProps) => {
 
 	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
-	const selectPiece = (obj: Group) => {
+	const selectPiece = async (obj: Group) => {
 		if (!obj || (selected && obj === selected.obj)) {
 			setSelected(null);
 		} else {
 			const piece = obj.userData as Piece;
-			const legalMoves = position.getLegalMovesForPiece(piece);
-			setSelected({ obj, piece, legalMoves, });
+			const legalMoves = await engine.getLegalMovesForPiece(piece);
+			setSelected({ obj, piece, legalMoves });
 		}
 	};
 
@@ -86,23 +86,23 @@ const Board = ({ position, engine, width, height }: BoardProps) => {
 		}
 	}, [scene.children, selected]);
 
-	const whiteAttackBoards = position.getWhiteAttackBoards();
-	const blackAttackBoards = position.getBlackAttackBoards();
-
-	const pieces = position.getPieces();
-
 	return (
 		<Renderer outlinedRefs={selected ? [selected.obj] : []}>
 			<MainBoard level={'W'} />
 			<MainBoard level={'N'} />
 			<MainBoard level={'B'} />
-			<AttackBoard color={'w'} level={whiteAttackBoards[0]} />
-			<AttackBoard color={'w'} level={whiteAttackBoards[1]} />
-			<AttackBoard color={'b'} level={blackAttackBoards[0]} />
-			<AttackBoard color={'b'} level={blackAttackBoards[1]} />
 			<>
 				{
-					pieces.map((piece: Piece, index: number) =>
+					colors.map((color) =>
+						position.attackBoards[color as Color].map((level) =>
+							<AttackBoard key={level} {...{ color, level }} />
+						)
+					)
+				}
+			</>
+			<>
+				{
+					position.pieces.map((piece: Piece, index: number) =>
 						<PieceComponent key={index} {...piece} />
 					)
 				}

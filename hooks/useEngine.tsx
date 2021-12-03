@@ -1,28 +1,36 @@
 import { useState, useEffect } from 'react';
-import { wrap } from 'comlink';
-import Engine, { nullEngine } from '~/engine/Engine';
+import { wrap, Remote } from 'comlink';
+import Engine, { SerializedPosition } from '~/engine/Engine';
 
-type Payload = {
+type EnginePayload = {
 	worker: Worker | null,
-	engine: Engine,
+	engine: Remote<Engine> | null,
+	position: SerializedPosition | null,
+};
+
+const loadWorker = async (setPayload: (payload: EnginePayload) => void) => {
+	const worker = new Worker(new URL(
+		'~/engine/Spockfish.worker.ts',
+		import.meta.url,
+	));
+	const RemoteEngine = wrap<typeof Engine>(worker);
+	const engine = await new RemoteEngine();
+	const position = await engine.getSerializedPosition();
+	setPayload({ worker, engine, position });
 };
 
 const useEngine = () => {
-	const [payload, setPayload] = useState<Payload>({
+	const [payload, setPayload] = useState<EnginePayload>({
 		worker: null,
-		engine: nullEngine,
+		engine: null,
+		position: null,
 	});
 
 	useEffect(() => {
-		const worker = new Worker(new URL(
-			'~/engine/Spockfish.worker.ts',
-			import.meta.url,
-		));
-		const engine = wrap(worker) as Engine;
-		setPayload({ worker, engine });
+		loadWorker(setPayload);
 	}, []);
 
-	return payload.engine;
+	return payload;
 };
 
 export default useEngine;
