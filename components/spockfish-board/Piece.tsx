@@ -78,6 +78,7 @@ const Piece = ({ piece, color, file, rank, level }: PieceProps) => {
 				file,
 				rank,
 				level,
+				clickable: true,
 			}}
 		>
 			<primitive

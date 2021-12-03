@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Board from './Board';
-import useKeyBind from '~/hooks/useKeyBind';
 import useEngine from '~/hooks/useEngine';
 
 type BoardViewProps = {
@@ -10,13 +9,7 @@ type BoardViewProps = {
 }
 
 const BoardView = (props: BoardViewProps) => {
-	const { engine, position } = useEngine();
-
-	useKeyBind('KeyR', () => {
-		// TODO
-		// setPosition(Position.makeInitial());
-		console.log('Refreshed!');
-	});
+	const { engine, position, setPosition } = useEngine();
 
 	// TODO: Add option for perspective/orthographic cameras
 	return (
@@ -24,7 +17,7 @@ const BoardView = (props: BoardViewProps) => {
 			<ambientLight intensity={0.2} />
 			<pointLight position={[10, 10, 10]} />
 			{engine && position &&
-				<Board {...{ engine, position }} {...props} />}
+				<Board {...{ engine, position, setPosition }} {...props} />}
 		</Canvas>
 	);
 };

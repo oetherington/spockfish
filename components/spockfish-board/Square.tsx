@@ -23,6 +23,7 @@ const Square = ({ position, color, file, rank, level }: SquareProps) => {
 				file,
 				rank,
 				level,
+				clickable: true,
 			}}
 		>
 			<boxGeometry args={[1, boardDepth, 1]} />

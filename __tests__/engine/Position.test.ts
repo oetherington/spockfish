@@ -807,7 +807,7 @@ describe('Position - Piece collisions', () => {
 					color: 'b',
 					level: 'B',
 				},
-			]),
+			], 'b'),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -835,7 +835,7 @@ describe('Position - Piece collisions', () => {
 					color: 'w',
 					level: 'B',
 				},
-			]),
+			], 'b'),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -870,7 +870,7 @@ describe('Position - Piece collisions', () => {
 					color: 'b',
 					level: 'B',
 				},
-			]),
+			], 'b'),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -912,7 +912,7 @@ describe('Position - Piece collisions', () => {
 					color: 'w',
 					level: 'B',
 				},
-			]),
+			], 'b'),
 			piece: {
 				piece: 'p',
 				file: 'a',

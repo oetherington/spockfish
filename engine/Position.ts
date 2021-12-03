@@ -46,6 +46,27 @@ class Position {
 				.either(FlatBitboard.fromFullBitboard(this.occupied['b']));
 	}
 
+	public makeMove({ piece, color, from, to }: Move) : Position {
+		const pieces: Piece[] = [];
+
+		for (const p of this.pieces) {
+			const hit = p.file === from.file &&
+				p.rank === from.rank &&
+				p.level === from.level;
+			pieces.push(hit ? { piece, color, ...to } : p);
+		}
+
+		return new Position(
+			pieces,
+			otherColor(this.turn),
+			this.ply + 1,
+			this.attackBoards, // TODO Update this
+			piece === 'p' ? 0 : this.fiftyMoveCount + 1,
+			this.castlingRights, // TODO Update this
+			this.unmovedPawns, // TODO Update this
+		);
+	}
+
 	public static makeInitial() : Position {
 		return new Position([
 			{ piece: 'p', color: 'w', file: 'z', rank: 1, level: 'QL1', },
@@ -157,6 +178,9 @@ class Position {
 	}
 
 	public getLegalMovesForPiece(p: Piece) : Move[] {
+		if (p.color !== this.turn)
+			return [];
+
 		const targets = this.getLegalSquaresForPiece(p);
 
 		const { piece, color, file, rank, level } = p;

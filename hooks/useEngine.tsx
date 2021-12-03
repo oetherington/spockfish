@@ -30,7 +30,13 @@ const useEngine = () => {
 		loadWorker(setPayload);
 	}, []);
 
-	return payload;
+	const setPosition = (position: SerializedPosition) =>
+		setPayload({ ...payload, position });
+
+	return {
+		...payload,
+		setPosition,
+	};
 };
 
 export default useEngine;

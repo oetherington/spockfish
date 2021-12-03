@@ -37,11 +37,18 @@ type SelectedPiece = {
 type BoardProps = {
 	engine: RemoteEngine,
 	position: SerializedPosition,
+	setPosition: (position: SerializedPosition) => void,
 	width: number,
 	height: number,
 }
 
-const Board = ({ engine, position, width, height }: BoardProps) => {
+const Board = ({
+	engine,
+	position,
+	setPosition,
+	width,
+	height,
+}: BoardProps) => {
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
 	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
@@ -64,26 +71,39 @@ const Board = ({ engine, position, width, height }: BoardProps) => {
 		}
 	};
 
-	const clickObject = (obj: Group) => {
+	const clickObject = async (obj: Group) => {
 		if (obj.userData.piece || obj.userData.abLevel) {
-			selectPiece(obj);
+			// TODO: Handle case where user clicks on a piece they are taking
+			await selectPiece(obj);
 		} else if (obj.userData.square) {
+			if (selected) {
+				const { file, rank, level } = obj.userData;
+				const target = selected.legalMoves.find(({ to }) =>
+					to.file === file && to.rank === rank && to.level === level);
+				if (target) {
+					const newPosition = await engine.makeMove(target);
+					setPosition(newPosition);
+				}
+			}
 			setSelected(null);
 		}
 	};
 
 	useDomEvent(gl.domElement, 'click', () => {
 		const objects = raycaster.intersectObjects(scene.children);
-		if (objects.length > 0) {
-			let obj = objects[0].object;
+
+		for (const object of objects) {
+			let obj = object.object;
 			while (obj.parent && obj.parent.type === 'Group')
 				obj = obj.parent;
-			if (!obj.userData)
+
+			if (obj.userData && obj.userData.clickable) {
+				clickObject(obj as Group);
 				return;
-			clickObject(obj as Group);
-		} else {
-			setSelected(null);
+			}
 		}
+
+		setSelected(null);
 	}, [scene.children, selected]);
 
 	return (
