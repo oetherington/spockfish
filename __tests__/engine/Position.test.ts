@@ -872,6 +872,62 @@ describe('Position - Piece collisions', () => {
 			],
 		},
 		{
+			name: 'white pawn collisions - taking diagonally',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 4,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 4,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			piece: {
+				piece: 'p',
+				file: 'b',
+				rank: 3,
+				color: 'w',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'b', rank: 3, level: 'W' },
+					to: { file: 'b', rank: 4, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'b', rank: 3, level: 'W' },
+					to: { file: 'b', rank: 4, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'b', rank: 3, level: 'W' },
+					to: { file: 'c', rank: 4, level: 'W' },
+					capture: true,
+				},
+			],
+		},
+		{
 			name: 'black pawn collisions - friendly piece one square ahead',
 			position: new Position([
 				{

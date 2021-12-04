@@ -6,6 +6,8 @@ import Square, {
 	rankCount,
 	fileIndices,
 	files,
+	nextFile,
+	prevFile,
 } from './Square';
 import Piece, { PieceType } from './Piece';
 import Color from './Color';
@@ -16,6 +18,11 @@ import { SquareIter, DiagIter, RankIter, FileIter } from './Iterators';
 class FlatBitboard {
 	private static readonly RANKS = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ].map(
 		(r) => FlatBitboard.fromRank(r));
+
+	private static readonly PAWN_TAKES = [
+		{ limitFile: 'z', incrementer: nextFile },
+		{ limitFile: 'e', incrementer: prevFile },
+	];
 
 	low: number;
 	high: number;
@@ -314,6 +321,16 @@ class FlatBitboard {
 			result.setBit(target);
 			if (unmovedPawns.isBitSet(index) && !occupied.isBitSet(target))
 				result.setSquare(file, rank + offs * 2);
+
+			for (const { limitFile, incrementer } of FlatBitboard.PAWN_TAKES) {
+				if (file !== limitFile) {
+					const takeIndex = FlatBitboard.squareToIndex(
+						incrementer(file), rank + offs);
+
+					if (occupied.isBitSet(takeIndex))
+						result.setBit(takeIndex);
+				}
+			}
 		}
 
 		return result;

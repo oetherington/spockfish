@@ -39,3 +39,6 @@ export const fileIndices: Record<File, number> = {
 };
 
 export const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
+
+export const nextFile = (f: File) => files[fileIndices[f] + 1];
+export const prevFile = (f: File) => files[fileIndices[f] - 1];

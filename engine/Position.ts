@@ -209,7 +209,10 @@ class Position {
 				.onlyLeft(this.occupied[color][targetLevel]);
 			const captures = allMoves
 				.both(this.occupied[otherColor(color)][targetLevel]);
-			const quietMoves = allMoves.onlyLeft(captures);
+			let quietMoves = allMoves.onlyLeft(captures);
+
+			if (p.piece === 'p')
+				quietMoves = quietMoves.both(FlatBitboard.fromFile(p.file));
 
 			result = result
 				.concat(captures.toMoves(piece, color, from, targetLevel, true))
