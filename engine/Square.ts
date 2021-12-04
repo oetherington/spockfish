@@ -23,6 +23,9 @@ type Square = {
 
 export default Square;
 
+export const squaresEqual = (a: any, b: any) : boolean =>
+	a.file === b.file && a.rank === b.rank && a.level === b.level;
+
 export const rankCount = 10;
 export  const fileCount = 6;
 

@@ -5,7 +5,7 @@ import Move from '~/engine/Move';
 describe('Position', () => {
 	it('can be initialized to the initial position', () => {
 		const pos = Position.makeInitial();
-		expect(pos.pieces.length).toBe(32);
+		expect(pos.getPieces().length).toBe(32);
 	});
 
 	it('can get occupied squares', () => {
@@ -1524,13 +1524,6 @@ describe('Position - Piece collisions', () => {
 					piece: 'k',
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'b', rank: 1, level: 'W' },
-					capture: false,
-				},
-				{
-					piece: 'k',
-					color: 'w',
-					from: { file: 'a', rank: 2, level: 'W' },
 					to: { file: 'b', rank: 2, level: 'W' },
 					capture: false,
 				},
@@ -1553,13 +1546,6 @@ describe('Position - Piece collisions', () => {
 					color: 'w',
 					from: { file: 'a', rank: 2, level: 'W' },
 					to: { file: 'b', rank: 3, level: 'N' },
-					capture: false,
-				},
-				{
-					piece: 'k',
-					color: 'w',
-					from: { file: 'a', rank: 2, level: 'W' },
-					to: { file: 'z', rank: 1, level: 'QL1' },
 					capture: false,
 				},
 				{
@@ -1603,5 +1589,123 @@ describe('Position - Checks', () => {
 			},
 		]);
 		expect(pos.isCheck()).toBe(true);
+	});
+
+	it('a king in check must resolve the check', () => {
+		const position = new Position([
+			{
+				piece: 'k',
+				file: 'c',
+				rank: 3,
+				color: 'w',
+				level: 'W',
+			},
+			{
+				piece: 'r',
+				file: 'c',
+				rank: 1,
+				color: 'b',
+				level: 'W',
+			},
+			{
+				piece: 'r',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+		]);
+
+		const piece: Piece = {
+			piece: 'k',
+			file: 'c',
+			rank: 3,
+			color: 'w',
+			level: 'W',
+		};
+
+		const expectedMoves: Move[] = [
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'b', rank: 2, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'b', rank: 3, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'b', rank: 4, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'd', rank: 2, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'd', rank: 3, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'd', rank: 4, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'b', rank: 3, level: 'N' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'b', rank: 4, level: 'N' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'd', rank: 3, level: 'N' },
+				capture: false,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'c', rank: 3, level: 'W' },
+				to: { file: 'd', rank: 4, level: 'N' },
+				capture: false,
+			},
+			{
+				piece: 'r',
+				color: 'w',
+				from: { file: 'a', rank: 2, level: 'W' },
+				to: { file: 'c', rank: 2, level: 'W' },
+				capture: false,
+			},
+		];
+
+		const moves = position.getLegalMoves();
+		expect(moves).toHaveLength(expectedMoves.length);
+		expect(moves).toEqual(expect.arrayContaining(expectedMoves));
 	});
 });

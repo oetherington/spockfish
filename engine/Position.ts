@@ -1,5 +1,12 @@
 import Color, { otherColor } from './Color';
-import Square, { File, Rank, AttackLevel, Level, FlatSquare } from './Square';
+import Square, {
+	File,
+	Rank,
+	AttackLevel,
+	Level,
+	FlatSquare,
+	squaresEqual,
+} from './Square';
 import Piece from './Piece';
 import Move from './Move';
 import FlatBitboard from './FlatBitboard';
@@ -9,18 +16,20 @@ import AttackBoards from './AttackBoards';
 import { boardSquares } from './BoardSquares';
 
 class Position {
-	turn: Color;
-	ply: number;
-	pieces: Piece[];
-	attackBoards: AttackBoards;
-	fiftyMoveCount: number;
-	castlingRights: CastlingRights;
-	unmovedPawns: FlatBitboard;
-	levels: Level[];
-	occupied: Record<Color, FullBitboard>;
-	allOccupied: FlatBitboard;
-	legalMoves: Move[];
-	check: boolean;
+	private static readonly DEFAULT_CHECK_DEPTH: number = 1;
+
+	private turn: Color;
+	private ply: number;
+	private pieces: Piece[];
+	private attackBoards: AttackBoards;
+	private fiftyMoveCount: number;
+	private castlingRights: CastlingRights;
+	private unmovedPawns: FlatBitboard;
+	private levels: Level[];
+	private occupied: Record<Color, FullBitboard>;
+	private allOccupied: FlatBitboard;
+	private legalMoves: Move[];
+	private check: boolean;
 
 	constructor(
 		pieces: Piece[] = [],
@@ -30,6 +39,7 @@ class Position {
 		fiftyMoveCount: number = 0,
 		castlingRights: CastlingRights = new CastlingRights(),
 		unmovedPawns: FlatBitboard = FlatBitboard.getAllStartingPawns(),
+		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) {
 		this.turn = turn;
 		this.ply = ply;
@@ -51,18 +61,17 @@ class Position {
 
 		this.legalMoves = [];
 		this.check = false;
-		this.generateLegalMoves();
+		this.generateLegalMoves(checkDepth);
 	}
 
-	public makeMove({ piece, color, from, to }: Move) : Position {
+	public makeMove(
+		{ piece, color, from, to }: Move,
+		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
+	) : Position {
 		const pieces: Piece[] = [];
 
-		for (const p of this.pieces) {
-			const hit = p.file === from.file &&
-				p.rank === from.rank &&
-				p.level === from.level;
-			pieces.push(hit ? { piece, color, ...to } : p);
-		}
+		for (const p of this.pieces)
+			pieces.push(squaresEqual(p, from) ? { piece, color, ...to } : p);
 
 		return new Position(
 			pieces,
@@ -72,6 +81,7 @@ class Position {
 			piece === 'p' ? 0 : this.fiftyMoveCount + 1,
 			this.castlingRights, // TODO Update this
 			this.unmovedPawns, // TODO Update this
+			checkDepth,
 		);
 	}
 
@@ -209,42 +219,47 @@ class Position {
 		return result;
 	}
 
-	private generateLegalMoves() : void {
+	private generateLegalMoves(checkDepth: number) : void {
 		// TODO: Generate legal moves for attack boards
-
-		let attacked: Move[] = [];
-
-		for (const piece of this.pieces) {
-			const moves = this.generateLegalMovesForPiece(piece)
-			if (piece.color === this.turn)
-				this.legalMoves = this.legalMoves.concat(moves);
-			else
-				attacked = attacked.concat(moves);
-		}
 
 		const king = this.pieces.find(({ piece, color }) =>
 			piece === 'k' && color === this.turn);
 
-		if (king) {
-			const check = attacked.find(({ capture, to }) =>
-				capture &&
-				to.rank === king.rank &&
-				to.file === king.file &&
-				to.level === king.level
-			);
+		const searchDeeper = king && checkDepth > 0;
 
-			this.check = !!check;
+		let attacked: Move[] = [];
+
+		for (const piece of this.pieces) {
+			if (piece.color === this.turn) {
+				const moves = this.generateLegalMovesForPiece(piece)
+				this.legalMoves = this.legalMoves.concat(moves);
+			} else if (searchDeeper) {
+				const moves = this.generateLegalMovesForPiece(piece)
+				attacked = attacked.concat(moves);
+			}
 		}
+
+		if (!searchDeeper)
+			return;
+
+		this.check = !!attacked.find(({ capture, to }) =>
+			capture && squaresEqual(to, king));
+
+		this.legalMoves = this.legalMoves.filter((move) => {
+			const pos = this.makeMove(move, checkDepth - 1);
+			const moves = pos.getLegalMoves();
+			for (const { capture, to } of moves) {
+				const kingPos = move.piece === 'k' ? move.to : king;
+				if (capture && squaresEqual(to, kingPos))
+					return false;
+			}
+			return true;
+		});
 	}
 
 	public getLegalMovesForPiece(p: Piece) : Move[] {
 		return this.legalMoves.filter(({ piece, color, from }: Move) =>
-			p.piece === piece &&
-			p.color === color &&
-			p.rank === from.rank &&
-			p.file === from.file &&
-			p.level === from.level
-		);
+			p.piece === piece && p.color === color && squaresEqual(p, from));
 	}
 
 	public getLegalMoves() : Move[] {
