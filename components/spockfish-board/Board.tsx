@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { WebGLRenderer, Camera, Vector3, Group } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import useDomEvent from '~/hooks/useDomEvent';
 import MainBoard from './MainBoard';
 import AttackBoard from './AttackBoard';
 import PieceComponent from './Piece';
@@ -12,6 +11,10 @@ import Piece from '~/engine/Piece';
 import Move from '~/engine/Move';
 import Color, { colors } from '~/engine/Color';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
+import PlayerController from '~/controllers/players/PlayerController';
+import LocalPlayerController from '~/controllers/players/LocalPlayerController';
+import EnginePlayerController from '~/controllers/players/EnginePlayerController';
+import SelectedPiece from '~/controllers/players/SelectedPiece';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
@@ -27,12 +30,6 @@ const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	controls.maxPolarAngle = Math.PI * 0.6;
 	return controls;
 };
-
-type SelectedPiece = {
-	obj: Group;
-	piece: Piece;
-	legalMoves: Move[];
-}
 
 type BoardProps = {
 	engine: RemoteEngine,
@@ -61,50 +58,22 @@ const Board = ({
 
 	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
-	const selectPiece = async (obj: Group) => {
-		if (!obj || (selected && obj === selected.obj)) {
-			setSelected(null);
-		} else {
-			const piece = obj.userData as Piece;
-			const legalMoves = await engine.getLegalMovesForPiece(piece);
-			setSelected({ obj, piece, legalMoves });
-		}
-	};
+	const controllers = useRef<PlayerController[]>([
+		new LocalPlayerController('w'),
+		new EnginePlayerController('b'),
+	]);
 
-	const clickObject = async (obj: Group) => {
-		if (obj.userData.piece || obj.userData.abLevel) {
-			// TODO: Handle case where user clicks on a piece they are taking
-			await selectPiece(obj);
-		} else if (obj.userData.square) {
-			if (selected) {
-				const { file, rank, level } = obj.userData;
-				const target = selected.legalMoves.find(({ to }) =>
-					to.file === file && to.rank === rank && to.level === level);
-				if (target) {
-					const newPosition = await engine.makeMove(target);
-					setPosition(newPosition);
-				}
-			}
-			setSelected(null);
-		}
-	};
-
-	useDomEvent(gl.domElement, 'click', () => {
-		const objects = raycaster.intersectObjects(scene.children);
-
-		for (const object of objects) {
-			let obj = object.object;
-			while (obj.parent && obj.parent.type === 'Group')
-				obj = obj.parent;
-
-			if (obj.userData && obj.userData.clickable) {
-				clickObject(obj as Group);
-				return;
-			}
-		}
-
-		setSelected(null);
-	}, [scene.children, selected]);
+	for (const controller of controllers.current)
+		controller.onRender(
+			engine,
+			position,
+			setPosition,
+			selected,
+			setSelected,
+			gl,
+			scene,
+			raycaster,
+		);
 
 	return (
 		<Renderer outlinedRefs={selected ? [selected.obj] : []}>

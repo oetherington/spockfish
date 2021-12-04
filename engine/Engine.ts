@@ -35,6 +35,10 @@ class Engine {
 		return this.position.getLegalMovesForPiece(p);
 	}
 
+	public getLegalMoves() : Move[] {
+		return this.position.getLegalMoves();
+	}
+
 	public makeMove(move: Move) : SerializedPosition {
 		this.position = this.position.makeMove(move);
 		return this.getSerializedPosition();

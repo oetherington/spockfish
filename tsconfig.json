@@ -4,6 +4,7 @@
 		"paths": {
 			"~/styles/*": ["styles/*"],
 			"~/components/*": ["components/*"],
+			"~/controllers/*": ["controllers/*"],
 			"~/hooks/*": ["hooks/*"],
 			"~/engine/*": ["engine/*"],
 			"~/public/*": ["public/*"]

@@ -11,6 +11,7 @@ module.exports = {
 		'<rootDir>/__mocks__/fileMock.js',
 		'^~/styles/(.*)$': '<rootDir>/styles/$1',
 		'^~/components/(.*)$': '<rootDir>/components/$1',
+		'^~/controllers/(.*)$': '<rootDir>/controllers/$1',
 		'^~/hooks/(.*)$': '<rootDir>/hooks/$1',
 		'^~/engine/(.*)$': '<rootDir>/engine/$1',
 		'^~/public/(.*)$': '<rootDir>/public/$1',
