@@ -7,9 +7,7 @@ describe('Position', () => {
 		const pos = Position.makeInitial();
 		expect(pos.pieces.length).toBe(32);
 	});
-});
 
-describe('Position', () => {
 	it('can get occupied squares', () => {
 		const pos = Position.makeInitial();
 		const occupied = pos.getOccupied('w');
@@ -81,7 +79,15 @@ describe('Position - Empty board moves', () => {
 	const legalMovesTestCases: LegalMovesTestCase[] = [
 		{
 			name: 'pawns',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+			]),
 			piece: {
 				piece: 'p',
 				file: 'a',
@@ -122,7 +128,15 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'knights',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 1,
+					color: 'w',
+					level: 'W',
+				},
+			]),
 			piece: {
 				piece: 'n',
 				file: 'a',
@@ -156,7 +170,15 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'bishops',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'b',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+			]),
 			piece: {
 				piece: 'b',
 				file: 'a',
@@ -225,7 +247,15 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'rooks',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'r',
+					file: 'c',
+					rank: 4,
+					color: 'w',
+					level: 'N',
+				},
+			]),
 			piece: {
 				piece: 'r',
 				file: 'c',
@@ -350,7 +380,15 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'queens',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'q',
+					file: 'c',
+					rank: 4,
+					color: 'w',
+					level: 'N',
+				},
+			]),
 			piece: {
 				piece: 'q',
 				file: 'c',
@@ -559,7 +597,15 @@ describe('Position - Empty board moves', () => {
 		},
 		{
 			name: 'kings',
-			position: new Position(),
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+			]),
 			piece: {
 				piece: 'k',
 				file: 'a',
@@ -653,6 +699,13 @@ describe('Position - Piece collisions', () => {
 					color: 'w',
 					level: 'W',
 				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
 			]),
 			piece: {
 				piece: 'p',
@@ -679,6 +732,13 @@ describe('Position - Piece collisions', () => {
 					file: 'a',
 					rank: 3,
 					color: 'b',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
 					level: 'W',
 				},
 			]),
@@ -713,6 +773,13 @@ describe('Position - Piece collisions', () => {
 					piece: 'n',
 					file: 'a',
 					rank: 4,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
 					color: 'w',
 					level: 'W',
 				},
@@ -756,6 +823,13 @@ describe('Position - Piece collisions', () => {
 					file: 'a',
 					rank: 4,
 					color: 'b',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
 					level: 'W',
 				},
 			]),
@@ -807,6 +881,13 @@ describe('Position - Piece collisions', () => {
 					color: 'b',
 					level: 'B',
 				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
 			], 'b'),
 			piece: {
 				piece: 'p',
@@ -833,6 +914,13 @@ describe('Position - Piece collisions', () => {
 					file: 'a',
 					rank: 6,
 					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 7,
+					color: 'b',
 					level: 'B',
 				},
 			], 'b'),
@@ -867,6 +955,13 @@ describe('Position - Piece collisions', () => {
 					piece: 'n',
 					file: 'a',
 					rank: 5,
+					color: 'b',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 7,
 					color: 'b',
 					level: 'B',
 				},
@@ -910,6 +1005,13 @@ describe('Position - Piece collisions', () => {
 					file: 'a',
 					rank: 5,
 					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 7,
+					color: 'b',
 					level: 'B',
 				},
 			], 'b'),
@@ -968,6 +1070,13 @@ describe('Position - Piece collisions', () => {
 					color: 'b',
 					level: 'W',
 				},
+				{
+					piece: 'n',
+					file: 'a',
+					rank: 1,
+					color: 'w',
+					level: 'W',
+				},
 			]),
 			piece: {
 				piece: 'n',
@@ -1009,6 +1118,13 @@ describe('Position - Piece collisions', () => {
 					rank: 4,
 					color: 'w',
 					level: 'N',
+				},
+				{
+					piece: 'b',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
 				},
 			]),
 			piece: {
@@ -1071,6 +1187,13 @@ describe('Position - Piece collisions', () => {
 					file: 'b',
 					rank: 4,
 					color: 'b',
+					level: 'N',
+				},
+				{
+					piece: 'r',
+					file: 'c',
+					rank: 4,
+					color: 'w',
 					level: 'N',
 				},
 			]),
@@ -1176,6 +1299,13 @@ describe('Position - Piece collisions', () => {
 					file: 'c',
 					rank: 6,
 					color: 'b',
+					level: 'N',
+				},
+				{
+					piece: 'q',
+					file: 'c',
+					rank: 4,
+					color: 'w',
 					level: 'N',
 				},
 			]),
@@ -1367,6 +1497,13 @@ describe('Position - Piece collisions', () => {
 					color: 'b',
 					level: 'W',
 				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
 			]),
 			piece: {
 				piece: 'k',
@@ -1440,4 +1577,31 @@ describe('Position - Piece collisions', () => {
 		'can detect piece collisions',
 		legalMovesTestCases,
 	);
+});
+
+describe('Position - Checks', () => {
+	it('can detect when a position is not check', () => {
+		const pos = Position.makeInitial();
+		expect(pos.isCheck()).toBe(false);
+	});
+
+	it('can detect when a position is check', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'a',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			{
+				piece: 'r',
+				file: 'a',
+				rank: 4,
+				color: 'b',
+				level: 'W',
+			},
+		]);
+		expect(pos.isCheck()).toBe(true);
+	});
 });

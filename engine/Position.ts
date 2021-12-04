@@ -19,6 +19,8 @@ class Position {
 	levels: Level[];
 	occupied: Record<Color, FullBitboard>;
 	allOccupied: FlatBitboard;
+	legalMoves: Move[];
+	check: boolean;
 
 	constructor(
 		pieces: Piece[] = [],
@@ -36,7 +38,9 @@ class Position {
 		this.fiftyMoveCount = fiftyMoveCount;
 		this.castlingRights = castlingRights;
 		this.unmovedPawns = unmovedPawns;
+
 		this.levels = this.generateLevels();
+
 		this.occupied = {
 			'w': this.generateOccupied('w'),
 			'b': this.generateOccupied('b'),
@@ -44,6 +48,10 @@ class Position {
 		this.allOccupied =
 			FlatBitboard.fromFullBitboard(this.occupied['w'])
 				.either(FlatBitboard.fromFullBitboard(this.occupied['b']));
+
+		this.legalMoves = [];
+		this.check = false;
+		this.generateLegalMoves();
 	}
 
 	public makeMove({ piece, color, from, to }: Move) : Position {
@@ -177,10 +185,7 @@ class Position {
 		}
 	}
 
-	public getLegalMovesForPiece(p: Piece) : Move[] {
-		if (p.color !== this.turn)
-			return [];
-
+	private generateLegalMovesForPiece(p: Piece) : Move[] {
 		const targets = this.getLegalSquaresForPiece(p);
 
 		const { piece, color, file, rank, level } = p;
@@ -204,10 +209,50 @@ class Position {
 		return result;
 	}
 
-	public getLegalMoves(piece: Piece | null) : Move[] {
-		return piece
-			? this.getLegalMovesForPiece(piece)
-			: this.pieces.map(p => this.getLegalMovesForPiece(p)).flat();
+	private generateLegalMoves() : void {
+		// TODO: Generate legal moves for attack boards
+
+		let attacked: Move[] = [];
+
+		for (const piece of this.pieces) {
+			const moves = this.generateLegalMovesForPiece(piece)
+			if (piece.color === this.turn)
+				this.legalMoves = this.legalMoves.concat(moves);
+			else
+				attacked = attacked.concat(moves);
+		}
+
+		const king = this.pieces.find(({ piece, color }) =>
+			piece === 'k' && color === this.turn);
+
+		if (king) {
+			const check = attacked.find(({ capture, to }) =>
+				capture &&
+				to.rank === king.rank &&
+				to.file === king.file &&
+				to.level === king.level
+			);
+
+			this.check = !!check;
+		}
+	}
+
+	public getLegalMovesForPiece(p: Piece) : Move[] {
+		return this.legalMoves.filter(({ piece, color, from }: Move) =>
+			p.piece === piece &&
+			p.color === color &&
+			p.rank === from.rank &&
+			p.file === from.file &&
+			p.level === from.level
+		);
+	}
+
+	public getLegalMoves() : Move[] {
+		return this.legalMoves;
+	}
+
+	public isCheck() : boolean {
+		return this.check;
 	}
 }
 
