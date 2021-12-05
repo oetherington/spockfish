@@ -71,7 +71,10 @@ class Position {
 		const pieces: Piece[] = [];
 
 		for (const p of this.pieces)
-			pieces.push(squaresEqual(p, from) ? { piece, color, ...to } : p);
+			if (!squaresEqual(p, to))
+				pieces.push(squaresEqual(p, from)
+					? { piece, color, ...to }
+					: p);
 
 		return new Position(
 			pieces,

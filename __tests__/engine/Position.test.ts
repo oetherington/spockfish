@@ -1110,6 +1110,62 @@ describe('Position - Piece collisions', () => {
 			],
 		},
 		{
+			name: 'black pawn collisions - taking diagonally',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 6,
+					color: 'b',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 5,
+					color: 'b',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 5,
+					color: 'w',
+					level: 'B',
+				},
+			], 'b'),
+			piece: {
+				piece: 'p',
+				file: 'b',
+				rank: 6,
+				color: 'b',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'b', rank: 6, level: 'B' },
+					to: { file: 'b', rank: 5, level: 'B' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'b', rank: 6, level: 'B' },
+					to: { file: 'b', rank: 5, level: 'N' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'b', rank: 6, level: 'B' },
+					to: { file: 'c', rank: 5, level: 'B' },
+					capture: true,
+				},
+			],
+		},
+		{
 			name: 'knight move collisions',
 			position: new Position([
 				{
@@ -1615,10 +1671,7 @@ describe('Position - Piece collisions', () => {
 		},
 	];
 
-	runLegalMovesTestCases(
-		'can detect piece collisions',
-		legalMovesTestCases,
-	);
+	runLegalMovesTestCases('can detect piece collisions', legalMovesTestCases);
 });
 
 describe('Position - Checks', () => {
@@ -1764,4 +1817,137 @@ describe('Position - Checks', () => {
 		expect(moves).toHaveLength(expectedMoves.length);
 		expect(moves).toEqual(expect.arrayContaining(expectedMoves));
 	});
+});
+
+type MakeMoveTestCase = {
+	name: string,
+	position: Position,
+	move: Move,
+	expectedPieces: Piece[],
+}
+
+const runMakeMoveTestCases = (
+	description: string,
+	makeMoveTestCases: MakeMoveTestCase[],
+) : void => {
+	makeMoveTestCases.forEach(({ name, position, move, expectedPieces }) => {
+		it(`${description} - ${name}`, () => {
+			const res = position.makeMove(move);
+			const pieces = res.getPieces();
+			expect(pieces).toHaveLength(expectedPieces.length);
+			expect(pieces).toEqual(expect.arrayContaining(expectedPieces));
+		});
+	});
+}
+
+describe('Position - Making moves', () => {
+	const makeMoveTestCases: MakeMoveTestCase[] = [
+		{
+			name: 'can make quiet moves',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			move:{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 2, level: 'W' },
+				to: { file: 'b', rank: 3, level: 'W' },
+				capture: false,
+			},
+			expectedPieces: [
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			],
+		},
+		{
+			name: 'can make capture moves',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 4,
+					color: 'b',
+					level: 'W',
+				},
+			]),
+			move:{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 3, level: 'W' },
+				to: { file: 'c', rank: 4, level: 'W' },
+				capture: true,
+			},
+			expectedPieces: [
+				{
+					piece: 'p',
+					file: 'a',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 4,
+					color: 'w',
+					level: 'W',
+				},
+			],
+		},
+	];
+
+	runMakeMoveTestCases('can make moves', makeMoveTestCases);
 });
