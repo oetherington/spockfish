@@ -58,8 +58,8 @@ class FlatBitboard {
 		return bb;
 	}
 
-	public static getAllStartingPawns() : FlatBitboard {
-		return new FlatBitboard(138811650, 67733025);
+	public static getAllStartingPieces() : FlatBitboard {
+		return new FlatBitboard(2557353731, 202344289);
 	}
 
 	public clone() : FlatBitboard {
@@ -250,6 +250,10 @@ class FlatBitboard {
 		this.setBit(FlatBitboard.squareToIndex(file, rank));
 	}
 
+	public unsetSquare(file: File, rank: Rank) : void {
+		this.unsetBit(FlatBitboard.squareToIndex(file, rank));
+	}
+
 	public isSquareSet(file: File, rank: Rank) : boolean {
 		return this.isBitSet(FlatBitboard.squareToIndex(file, rank));
 	}
@@ -305,7 +309,7 @@ class FlatBitboard {
 	public pawnMoves(
 		level: Level,
 		color: Color,
-		unmovedPawns: FlatBitboard,
+		unmovedPieces: FlatBitboard,
 		occupied: FlatBitboard,
 	) : FlatBitboard {
 		const pawns = this.clone();
@@ -319,7 +323,7 @@ class FlatBitboard {
 			const target = FlatBitboard.squareToIndex(file, rank + offs);
 
 			result.setBit(target);
-			if (unmovedPawns.isBitSet(index) && !occupied.isBitSet(target))
+			if (unmovedPieces.isBitSet(index) && !occupied.isBitSet(target))
 				result.setSquare(file, rank + offs * 2);
 
 			for (const { limitFile, incrementer } of FlatBitboard.PAWN_TAKES) {

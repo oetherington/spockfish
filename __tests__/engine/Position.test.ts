@@ -1,6 +1,7 @@
 import Position from '~/engine/Position';
 import Piece from  '~/engine/Piece';
 import Move from '~/engine/Move';
+import { FlatSquare } from '~/engine/Square';
 
 describe('Position', () => {
 	it('can be initialized to the initial position', () => {
@@ -1867,7 +1868,7 @@ describe('Position - Making moves', () => {
 					level: 'B',
 				},
 			]),
-			move:{
+			move: {
 				piece: 'p',
 				color: 'w',
 				from: { file: 'b', rank: 2, level: 'W' },
@@ -1950,4 +1951,60 @@ describe('Position - Making moves', () => {
 	];
 
 	runMakeMoveTestCases('can make moves', makeMoveTestCases);
+
+	it('pawns are marked as moved after their first move', () => {
+		const pos = Position.makeInitial();
+
+		const expectedUnmoved1: FlatSquare[] = [
+			{ file: 'z', rank: 1 },
+			{ file: 'a', rank: 1 },
+			{ file: 'a', rank: 2 },
+			{ file: 'b', rank: 2 },
+			{ file: 'c', rank: 2 },
+			{ file: 'd', rank: 2 },
+			{ file: 'd', rank: 1 },
+			{ file: 'e', rank: 1 },
+			{ file: 'b', rank: 1 },
+			{ file: 'c', rank: 1 },
+			{ file: 'z', rank: 0 },
+			{ file: 'e', rank: 0 },
+			{ file: 'a', rank: 0 },
+			{ file: 'd', rank: 0 },
+			{ file: 'z', rank: 8 },
+			{ file: 'a', rank: 7 },
+			{ file: 'b', rank: 7 },
+			{ file: 'c', rank: 7 },
+			{ file: 'd', rank: 7 },
+			{ file: 'e', rank: 8 },
+			{ file: 'a', rank: 8 },
+			{ file: 'd', rank: 8 },
+			{ file: 'b', rank: 8 },
+			{ file: 'c', rank: 8 },
+			{ file: 'z', rank: 9 },
+			{ file: 'e', rank: 9 },
+			{ file: 'a', rank: 9 },
+			{ file: 'd', rank: 9 },
+		];
+
+		const unmoved1 = pos.getUnmovedPieces().toSquares();
+		expect(unmoved1).toHaveLength(expectedUnmoved1.length);
+		expect(unmoved1).toEqual(expect.arrayContaining(expectedUnmoved1));
+
+		const res = pos.makeMove({
+			piece: 'p',
+			color: 'w',
+			from: { file: 'b', rank: 2, level: 'W' },
+			to: { file: 'b', rank: 3, level: 'W' },
+			capture: false,
+		});
+
+		const expectedUnmoved2 = expectedUnmoved1.filter(({ file, rank }) =>
+			file !== 'b' || rank !== 2);
+
+		expect(expectedUnmoved2).toHaveLength(expectedUnmoved1.length - 1);
+
+		const unmoved2 = res.getUnmovedPieces().toSquares();
+		expect(unmoved2).toHaveLength(expectedUnmoved2.length);
+		expect(unmoved2).toEqual(expect.arrayContaining(expectedUnmoved2));
+	});
 });

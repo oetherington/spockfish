@@ -1,5 +1,5 @@
 import FlatBitboard from '~/engine/FlatBitboard';
-import { File, Rank, FlatSquare } from '~/engine/Square';
+import { File, Rank, FlatSquare, files } from '~/engine/Square';
 
 describe('FlatBitboard', () => {
 	it('can be default initialized', () => {
@@ -269,7 +269,7 @@ describe('FlatBitboard', () => {
 		});
 	});
 
-	it('can set squares', () => {
+	it('can set and unset squares', () => {
 		const bb = new FlatBitboard();
 		bb.setSquare('z', 0);
 		expect(bb.low).toBe(1);
@@ -277,6 +277,23 @@ describe('FlatBitboard', () => {
 		bb.setSquare('z', 1);
 		expect(bb.low).toBe(3);
 		expect(bb.high).toBe(0);
+		bb.unsetSquare('z', 0);
+		expect(bb.low).toBe(2);
+		expect(bb.high).toBe(0);
+	});
+
+	it('can access all squares', () => {
+		const ranks = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+		for (const file of files) {
+			for (const rank of ranks) {
+				const bb = new FlatBitboard();
+				bb.setSquare(file, rank);
+				expect(bb.popcount()).toBe(1);
+				expect(bb.toSquares()).toEqual(expect.arrayContaining([
+					{ file, rank }
+				]));
+			}
+		}
 	});
 
 	it('can check if a square is set', () => {
@@ -309,6 +326,45 @@ describe('FlatBitboard', () => {
 			rank: 2,
 			level: 'W',
 		});
+	});
+
+	it('can get starting piece locations`', () => {
+		const bb = FlatBitboard.getAllStartingPieces();
+		const squares = bb.toSquares();
+
+		const expectedSquares: FlatSquare[] = [
+			{ file: 'z', rank: 1 },
+			{ file: 'a', rank: 1 },
+			{ file: 'a', rank: 2 },
+			{ file: 'b', rank: 2 },
+			{ file: 'c', rank: 2 },
+			{ file: 'd', rank: 2 },
+			{ file: 'd', rank: 1 },
+			{ file: 'e', rank: 1 },
+			{ file: 'b', rank: 1 },
+			{ file: 'c', rank: 1 },
+			{ file: 'z', rank: 0 },
+			{ file: 'e', rank: 0 },
+			{ file: 'a', rank: 0 },
+			{ file: 'd', rank: 0 },
+			{ file: 'z', rank: 8 },
+			{ file: 'a', rank: 7 },
+			{ file: 'b', rank: 7 },
+			{ file: 'c', rank: 7 },
+			{ file: 'd', rank: 7 },
+			{ file: 'e', rank: 8 },
+			{ file: 'a', rank: 8 },
+			{ file: 'd', rank: 8 },
+			{ file: 'b', rank: 8 },
+			{ file: 'c', rank: 8 },
+			{ file: 'z', rank: 9 },
+			{ file: 'e', rank: 9 },
+			{ file: 'a', rank: 9 },
+			{ file: 'd', rank: 9 },
+		];
+
+		expect(squares).toHaveLength(expectedSquares.length);
+		expect(squares).toEqual(expect.arrayContaining(expectedSquares));
 	});
 
 	type MovesTestCase = {
@@ -355,7 +411,7 @@ describe('FlatBitboard', () => {
 		bb => bb.pawnMoves(
 			'W',
 			'w',
-			FlatBitboard.getAllStartingPawns(),
+			FlatBitboard.getAllStartingPieces(),
 			new FlatBitboard(),
 		).toSquares(),
 	));
@@ -385,7 +441,7 @@ describe('FlatBitboard', () => {
 		bb => bb.pawnMoves(
 			'B',
 			'b',
-			FlatBitboard.getAllStartingPawns(),
+			FlatBitboard.getAllStartingPieces(),
 			new FlatBitboard(),
 		).toSquares(),
 	));

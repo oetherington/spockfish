@@ -24,7 +24,7 @@ class Position {
 	private attackBoards: AttackBoards;
 	private fiftyMoveCount: number;
 	private castlingRights: CastlingRights;
-	private unmovedPawns: FlatBitboard;
+	private unmovedPieces: FlatBitboard;
 	private levels: Level[];
 	private occupied: Record<Color, FullBitboard>;
 	private allOccupied: FlatBitboard;
@@ -38,7 +38,7 @@ class Position {
 		attackBoards: AttackBoards = new AttackBoards(),
 		fiftyMoveCount: number = 0,
 		castlingRights: CastlingRights = new CastlingRights(),
-		unmovedPawns: FlatBitboard = FlatBitboard.getAllStartingPawns(),
+		unmovedPieces: FlatBitboard = FlatBitboard.getAllStartingPieces(),
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) {
 		this.turn = turn;
@@ -47,7 +47,7 @@ class Position {
 		this.attackBoards = attackBoards;
 		this.fiftyMoveCount = fiftyMoveCount;
 		this.castlingRights = castlingRights;
-		this.unmovedPawns = unmovedPawns;
+		this.unmovedPieces = unmovedPieces;
 
 		this.levels = this.generateLevels();
 
@@ -76,6 +76,9 @@ class Position {
 					? { piece, color, ...to }
 					: p);
 
+		const unmovedPieces = this.unmovedPieces.clone();
+		unmovedPieces.unsetSquare(from.file, from.rank);
+
 		return new Position(
 			pieces,
 			otherColor(this.turn),
@@ -83,7 +86,7 @@ class Position {
 			this.attackBoards, // TODO Update this
 			piece === 'p' ? 0 : this.fiftyMoveCount + 1,
 			this.castlingRights, // TODO Update this
-			this.unmovedPawns, // TODO Update this
+			unmovedPieces,
 			checkDepth,
 		);
 	}
@@ -168,6 +171,10 @@ class Position {
 		return this.levels;
 	}
 
+	public getUnmovedPieces() : FlatBitboard {
+		return this.unmovedPieces;
+	}
+
 	private getLegalSquaresForPiece(
 		{ piece, color, file, rank, level }: Piece,
 	) : FlatBitboard {
@@ -180,7 +187,7 @@ class Position {
 				return bb.pawnMoves(
 					level,
 					color,
-					this.unmovedPawns,
+					this.unmovedPieces,
 					this.allOccupied,
 				);
 			case 'n':
