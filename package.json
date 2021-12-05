@@ -10,7 +10,7 @@
     "lint": "next lint",
     "test": "jest --watch --config=jest.config.js",
     "test-fast": "jest --watch --config=jest-fast.config.js",
-    "test-ci": "jest --config=jest.config.js --ci"
+    "test-ci": "jest --verbose --config=jest.config.js --ci"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
