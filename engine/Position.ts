@@ -11,19 +11,41 @@ import Piece from './Piece';
 import Move from './Move';
 import FlatBitboard from './FlatBitboard';
 import FullBitboard, { createFullBitboard } from './FullBitboard';
-import CastlingRights from './CastlingRights';
 import AttackBoards from './AttackBoards';
 import { boardSquares } from './BoardSquares';
 
+type Castle = {
+	rook: Square,
+	target: Square,
+}
+
 class Position {
 	private static readonly DEFAULT_CHECK_DEPTH: number = 1;
+
+	private static readonly CASTLING_TARGETS: Castle[] = [
+		{
+			rook: { file: 'z', rank: 0, level: 'QL1' },
+			target: { file: 'a', rank: 0, level: 'QL1' },
+		},
+		{
+			rook: { file: 'e', rank: 0, level: 'KL1' },
+			target: { file: 'e', rank: 0, level: 'KL1' },
+		},
+		{
+			rook: { file: 'z', rank: 9, level: 'QL6' },
+			target: { file: 'a', rank: 9, level: 'QL6' },
+		},
+		{
+			rook: { file: 'e', rank: 9, level: 'KL6' },
+			target: { file: 'e', rank: 9, level: 'KL6' },
+		},
+	];
 
 	private turn: Color;
 	private ply: number;
 	private pieces: Piece[];
 	private attackBoards: AttackBoards;
 	private fiftyMoveCount: number;
-	private castlingRights: CastlingRights;
 	private unmovedPieces: FlatBitboard;
 	private levels: Level[];
 	private occupied: Record<Color, FullBitboard>;
@@ -37,7 +59,6 @@ class Position {
 		ply: number = 0,
 		attackBoards: AttackBoards = new AttackBoards(),
 		fiftyMoveCount: number = 0,
-		castlingRights: CastlingRights = new CastlingRights(),
 		unmovedPieces: FlatBitboard = FlatBitboard.getAllStartingPieces(),
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) {
@@ -46,7 +67,6 @@ class Position {
 		this.pieces = pieces;
 		this.attackBoards = attackBoards;
 		this.fiftyMoveCount = fiftyMoveCount;
-		this.castlingRights = castlingRights;
 		this.unmovedPieces = unmovedPieces;
 
 		this.levels = this.generateLevels();
@@ -65,10 +85,10 @@ class Position {
 	}
 
 	public makeMove(
-		{ piece, color, from, to }: Move,
+		{ piece, color, from, to, castle }: Move,
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) : Position {
-		const pieces: Piece[] = [];
+		let pieces: Piece[] = [];
 
 		for (const p of this.pieces)
 			if (!squaresEqual(p, to))
@@ -79,16 +99,42 @@ class Position {
 		const unmovedPieces = this.unmovedPieces.clone();
 		unmovedPieces.unsetSquare(from.file, from.rank);
 
+		if (castle) {
+			let rookFrom: Square = to;
+
+			if (to.file === 'a') {
+				rookFrom = { ...rookFrom, file: 'z' };
+			} else if (to.file !== 'e') {
+				const target = JSON.stringify(to);
+				throw new Error('Invalid castling target: ' + target);
+			}
+
+			unmovedPieces.unsetSquare(rookFrom.file, rookFrom.rank);
+			pieces = pieces.filter((piece) =>
+				piece.piece !== 'r' || !squaresEqual(rookFrom, piece));
+			pieces.push({
+				piece: 'r',
+				color: this.turn,
+				file: from.file,
+				rank: from.rank,
+				level: from.level,
+			});
+		}
+
 		return new Position(
 			pieces,
 			otherColor(this.turn),
 			this.ply + 1,
 			this.attackBoards, // TODO Update this
 			piece === 'p' ? 0 : this.fiftyMoveCount + 1,
-			this.castlingRights, // TODO Update this
 			unmovedPieces,
 			checkDepth,
 		);
+	}
+
+	public makeRandomMove() : Position {
+		const index = Math.floor(Math.random() * this.legalMoves.length);
+		return this.makeMove(this.legalMoves[index]);
 	}
 
 	public static makeInitial() : Position {
@@ -232,6 +278,55 @@ class Position {
 		return result;
 	}
 
+	private static getCastle(square: any) : Castle | null {
+		for (const target of Position.CASTLING_TARGETS)
+			if (squaresEqual(square, target.rook))
+				return target;
+		return null;
+	}
+
+	private static isAttacked(attacked: Move[], square: any) : boolean {
+		return !!attacked.find(({ to }) => squaresEqual(square, to));
+	}
+
+	private generateLegalCastlingMoves(king: Piece, attacked: Move[]) : Move[] {
+		if (this.ply < 2 ||
+				!this.unmovedPieces.isSquareSet(king.file, king.rank) ||
+				Position.isAttacked(attacked, king))
+			return [];
+
+		const rooks = this.pieces.filter(({ piece, color, file, rank, level })=>
+			piece === 'r' &&
+			color === this.turn &&
+			!Position.isAttacked(attacked, { file, rank, level })
+		);
+
+		const result: Move[] = [];
+
+		for (const rook of rooks) {
+			const target = Position.getCastle(rook);
+
+			if (!target ||
+					!this.unmovedPieces.isSquareSet(rook.file, rook.rank) ||
+					Position.isAttacked(attacked, target.target) ||
+					(!squaresEqual(target.rook, target.target) &&
+						this.allOccupied.isSquareSet(
+							target.target.file, target.target.rank)))
+				continue;
+
+			result.push({
+				piece: 'k',
+				color: this.turn,
+				from: { file: king.file, rank: king.rank, level: king.level },
+				to: target.target,
+				capture: false,
+				castle: true,
+			});
+		}
+
+		return result;
+	}
+
 	private generateLegalMoves(checkDepth: number) : void {
 		// TODO: Generate legal moves for attack boards
 
@@ -251,6 +346,10 @@ class Position {
 				attacked = attacked.concat(moves);
 			}
 		}
+
+		if (king)
+			this.legalMoves = this.legalMoves.concat(
+				this.generateLegalCastlingMoves(king, attacked));
 
 		if (!searchDeeper)
 			return;

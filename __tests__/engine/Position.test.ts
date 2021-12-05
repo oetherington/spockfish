@@ -1,7 +1,9 @@
 import Position from '~/engine/Position';
 import Piece from  '~/engine/Piece';
 import Move from '~/engine/Move';
+import AttackBoards from '~/engine/AttackBoards';
 import { FlatSquare } from '~/engine/Square';
+import FlatBitboard from '~/engine/FlatBitboard';
 
 describe('Position', () => {
 	it('can be initialized to the initial position', () => {
@@ -1841,6 +1843,230 @@ const runMakeMoveTestCases = (
 	});
 }
 
+describe('Position - Castling', () => {
+	it('Castling is illegal on move 1', () => {
+		const pos = Position.makeInitial();
+
+		const moves1 = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves1).toHaveLength(0);
+
+		const res = pos.makeRandomMove();
+
+		const moves2 = res.getLegalMoves().filter((move) => move.castle);
+		expect(moves2).toHaveLength(0);
+	});
+
+	it('Castling is illegal if the king has moved', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'e', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(0);
+	});
+
+	it('Castling is illegal if the rook has moved', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'd', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(0);
+	});
+
+	it('Castling is illegal if the king is in check', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'n',
+				file: 'c',
+				rank: 2,
+				color: 'b',
+				level: 'W',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'd', rank: 0 },
+			{ file: 'e', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(0);
+	});
+
+	it('Castling is illegal if the target square is attacked', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'z',
+				rank: 0,
+				color: 'w',
+				level: 'QL1',
+			},
+			{
+				piece: 'r',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'n',
+				file: 'd',
+				rank: 2,
+				color: 'b',
+				level: 'W',
+			},
+			{
+				piece: 'n',
+				file: 'b',
+				rank: 2,
+				color: 'b',
+				level: 'W',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'z', rank: 0 },
+			{ file: 'd', rank: 0 },
+			{ file: 'e', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(0);
+	});
+
+	it('Castling is illegal if there is a piece between king and rook', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'z',
+				rank: 0,
+				color: 'w',
+				level: 'QL1',
+			},
+			{
+				piece: 'n',
+				file: 'a',
+				rank: 0,
+				color: 'w',
+				level: 'QL1',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'd', rank: 0 },
+			{ file: 'z', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(0);
+	});
+
+	it('Kings can castle when legal', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'r',
+				file: 'z',
+				rank: 0,
+				color: 'w',
+				level: 'QL1',
+			},
+		], 'w', 2, new AttackBoards(), 0, FlatBitboard.fromSquares([
+			{ file: 'z', rank: 0 },
+			{ file: 'd', rank: 0 },
+			{ file: 'e', rank: 0 },
+		]));
+
+		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		expect(moves).toHaveLength(2);
+		expect(moves).toEqual(expect.arrayContaining([
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'd', rank: 0, level: 'KL1' },
+				to: { file: 'a', rank: 0, level: 'QL1' },
+				capture: false,
+				castle: true,
+			},
+			{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'd', rank: 0, level: 'KL1' },
+				to: { file: 'e', rank: 0, level: 'KL1' },
+				capture: false,
+				castle: true,
+			},
+		]));
+	});
+});
+
 describe('Position - Making moves', () => {
 	const makeMoveTestCases: MakeMoveTestCase[] = [
 		{
@@ -1945,6 +2171,92 @@ describe('Position - Making moves', () => {
 					rank: 4,
 					color: 'w',
 					level: 'W',
+				},
+			],
+		},
+		{
+			name: 'can castle kingside',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+				{
+					piece: 'r',
+					file: 'e',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+			]),
+			move:{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'd', rank: 0, level: 'KL1' },
+				to: { file: 'e', rank: 0, level: 'KL1' },
+				capture: false,
+				castle: true,
+			},
+			expectedPieces: [
+				{
+					piece: 'k',
+					file: 'e',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+				{
+					piece: 'r',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+			],
+		},
+		{
+			name: 'can castle queenside',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+				{
+					piece: 'r',
+					file: 'z',
+					rank: 0,
+					color: 'w',
+					level: 'QL1',
+				},
+			]),
+			move:{
+				piece: 'k',
+				color: 'w',
+				from: { file: 'd', rank: 0, level: 'KL1' },
+				to: { file: 'a', rank: 0, level: 'QL1' },
+				capture: false,
+				castle: true,
+			},
+			expectedPieces: [
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 0,
+					color: 'w',
+					level: 'QL1',
+				},
+				{
+					piece: 'r',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
 				},
 			],
 		},
