@@ -2150,7 +2150,7 @@ describe('Position - Making moves', () => {
 					level: 'W',
 				},
 			]),
-			move:{
+			move: {
 				piece: 'p',
 				color: 'w',
 				from: { file: 'b', rank: 3, level: 'W' },
@@ -2192,7 +2192,7 @@ describe('Position - Making moves', () => {
 					level: 'KL1',
 				},
 			]),
-			move:{
+			move: {
 				piece: 'k',
 				color: 'w',
 				from: { file: 'd', rank: 0, level: 'KL1' },
@@ -2235,7 +2235,7 @@ describe('Position - Making moves', () => {
 					level: 'QL1',
 				},
 			]),
-			move:{
+			move: {
 				piece: 'k',
 				color: 'w',
 				from: { file: 'd', rank: 0, level: 'KL1' },
@@ -2264,7 +2264,7 @@ describe('Position - Making moves', () => {
 
 	runMakeMoveTestCases('can make moves', makeMoveTestCases);
 
-	it('pawns are marked as moved after their first move', () => {
+	it('pieces are marked as moved after their first move', () => {
 		const pos = Position.makeInitial();
 
 		const expectedUnmoved1: FlatSquare[] = [
