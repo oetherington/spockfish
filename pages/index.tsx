@@ -2,13 +2,16 @@ import React from 'react';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '~/components/Layout';
+import NewGame from '~/components/NewGame';
 
 const Home: NextPage = () => {
 	return (
 		<Layout>
-			<Link href='/play'>
-				<a>Play</a>
-			</Link>
+			<div className='spacer'/>
+
+			<NewGame />
+
+			<div className='spacer'/>
 
 			<div className='space-hero'>
 				<div className='space-hero-twinkle'></div>

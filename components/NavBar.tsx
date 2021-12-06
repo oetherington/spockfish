@@ -32,7 +32,7 @@ const NavBar = () => {
 							height='30px'
 						/>
 						<Typography
-							className='trek-font'
+							className='treky-link'
 							variant='h4'
 							component='span'
 						>
