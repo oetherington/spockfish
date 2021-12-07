@@ -6,35 +6,58 @@ import TimerIcon from '@mui/icons-material/Timer';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
+import Color from '~/engine/Color';
 
-const TimeControl = ({ minutes, increment, selected, onClick }) => {
-	let tooltip = `${minutes} minute${minutes === 1 ? '' : 's'} per side`
-	if (increment > 0)
-		tooltip += ` plus ${increment} seconds extra each move`
+type TimeControl = {
+	mins: number,
+	inc: number,
+}
+
+const timeControlsEqual = (a: TimeControl, b: TimeControl) =>
+	a.mins === b.mins && a.inc === b.inc;
+
+type TimeControlOptProps = {
+	timeControl: TimeControl,
+	selected: boolean,
+	onClick: () => void,
+}
+
+const TimeControlOpt = ({
+	timeControl,
+	selected,
+	onClick,
+}: TimeControlOptProps) => {
+	const { mins, inc } = timeControl;
+
+	let tooltip = `${mins} minute${mins === 1 ? '' : 's'} per side`
+	if (inc > 0)
+		tooltip += ` plus ${inc} seconds extra each move`
 
 	return (
 		<Tooltip title={tooltip}>
-			<span className={selected ? 'selected' : null} onClick={onClick}>
-				{minutes + '+' + increment}
+			<span
+				className={selected ? 'selected' : undefined}
+				onClick={onClick}
+			>
+				{mins + '+' + inc}
 			</span>
 		</Tooltip>
 	);
 };
 
-const PlayTheComputer = () => {
-	const timeControls = [
-		[ 1, 0 ],
-		[ 3, 2 ],
-		[ 5, 5 ],
-		[ 10, 5 ],
+const PlayTheAI = () => {
+	const timeControls: TimeControl[] = [
+		{ mins: 1,  inc: 0 },
+		{ mins: 3,  inc: 2 },
+		{ mins: 5,  inc: 5 },
+		{ mins: 10, inc: 5 },
 	];
 
-	const [timeControl, setTimeControl] = useState(timeControls[1]);
-	const [color, setColor] = useState('w');
+	const [timeControl, setTimeControl] =
+		useState<TimeControl>(timeControls[1]);
+	const [color, setColor] = useState<Color>('w');
 
-	const timeControlsEqual = ([ ma, ia ], [mb, ib]) => ma === mb && ia === ib;
-
-	const url = `/play/ai/${color}/${timeControl[0]}/${timeControl[1]}`;
+	const url = `/play/ai/${color}/${timeControl.mins}/${timeControl.inc}`;
 
 	return (
 		<Flex column gap='10px' alignItems='center'>
@@ -58,12 +81,11 @@ const PlayTheComputer = () => {
 			<Flex alignItems='center' gap='2em'>
 				<TimerIcon />
 				{
-					timeControls.map(([ mins, inc ], index) => <TimeControl
+					timeControls.map((tc, index) => <TimeControlOpt
 						key={index}
-						minutes={mins}
-						increment={inc}
-						selected={timeControlsEqual(timeControl, [ mins, inc ])}
-						onClick={() => setTimeControl([ mins, inc ])}
+						timeControl={tc}
+						selected={timeControlsEqual(timeControl, tc)}
+						onClick={() => setTimeControl(tc)}
 					/>)
 				}
 			</Flex>
@@ -107,45 +129,66 @@ const CustomChallenge = () => {
 	);
 };
 
-const NewGameContent = ({ value }) => {
+type NewGamePage = 'play-the-ai' | 'find-a-game' | 'custom-challenge';
+
+type NewGameContentProps = {
+	value: NewGamePage,
+}
+
+const NewGameContent = ({ value }: NewGameContentProps) => {
 	switch (value) {
-		case 1:  return <FindAGame />;
-		case 2:  return <CustomChallenge />;
-		default: return <PlayTheComputer />;
+		case 'play-the-ai':       return <PlayTheAI />;
+		case 'find-a-game':       return <FindAGame />;
+		case 'custom-challenge':  return <CustomChallenge />;
 	}
 };
 
 const Chevron = () => <ArrowForwardIosIcon fontSize='small' />;
 
+type PageSpec = {
+	page: NewGamePage,
+	text: string,
+	color: string,
+}
+
 const NewGame = () => {
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = useState<NewGamePage>('play-the-ai');
+
+	const pages: PageSpec[] = [
+		{
+			page: 'play-the-ai',
+			text: 'Plat the AI',
+			color: 'trek-blue-bg',
+		},
+		{
+			page: 'find-a-game',
+			text: 'Find A Game',
+			color: 'trek-green-bg',
+		},
+		{
+			page: 'custom-challenge',
+			text: 'Custom Challenge',
+			color: 'trek-yellow-bg',
+		},
+	];
 
 	return (
 		<Flex justifyContent='center'>
 			<Flex column className='icars-1'>
 				<div className='icars-top-1'></div>
 				<div className='icars-subtop-1'></div>
-				<div
-					className='icars-menu-item trek-blue-bg'
-					onClick={() => setValue(0)}
-				>
-					{value === 0 && <Chevron />}
-					Play the AI
-				</div>
-				<div
-					className='icars-menu-item trek-green-bg'
-					onClick={() => setValue(1)}
-				>
-					{value === 1 && <Chevron />}
-					Find a game
-				</div>
-				<div
-					className='icars-menu-item trek-yellow-bg'
-					onClick={() => setValue(2)}
-				>
-					{value === 2 && <Chevron />}
-					Custom challenge
-				</div>
+				{
+					pages.map(({ page, text, color }, index) =>
+						<div
+							key={index}
+							className={`icars-menu-item ${color}`}
+							onClick={() => setValue(page)}
+						>
+							{value === page && <Chevron />}
+							{text}
+						</div>
+					)
+				}
 				<div className='icars-subbottom-1'></div>
 				<div className='icars-bottom-1'></div>
 			</Flex>
