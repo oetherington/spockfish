@@ -8,6 +8,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import TrekIcon from '~/public/emblem.svg';
 
 const NavBar = () => {
+	const showMenuButton = false;
+
 	return (
 		<Flex
 			justifySpaceBetween
@@ -41,14 +43,15 @@ const NavBar = () => {
 					</Flex>
 				</a>
 			</Link>
-			<IconButton
-				edge='start'
-				color='inherit'
-				aria-label='menu'
-				sx={{ mr: 2 }}
-			>
-				<MenuIcon />
-			</IconButton>
+			{showMenuButton &&
+				<IconButton
+					edge='start'
+					color='inherit'
+					aria-label='menu'
+					sx={{ mr: 2 }}
+				>
+					<MenuIcon />
+				</IconButton>}
 		</Flex>
 	);
 };
