@@ -243,6 +243,21 @@ a {
 		text-transform: uppercase;
 		font-weight: bold;
 		font: sans-serif;
+
+		span {
+			color: var(--trek-grey);
+			user-select: none;
+			transition: color 0.3s;
+
+			&:hover {
+				cursor: pointer;
+				color: var(--trek-blue);
+			}
+
+			&.selected {
+				color: var(--trek-yellow);
+			}
+		}
 	}
 
 	.icars-subbottom-2-wrapper {
@@ -261,19 +276,11 @@ a {
 		border-bottom-left-radius: var(--icars-banner-overlap);
 	}
 
-	span {
-		color: var(--trek-grey);
-		user-select: none;
-		transition: color 0.3s;
-
-		&:hover {
-			cursor: pointer;
-			color: var(--trek-blue);
-		}
-
-		&.selected {
-			color: var(--trek-yellow);
-		}
+	.icars-notch {
+		width: 6px;
+		height: var(--icars-banner-height);
+		background: var(--icars-content-bg);
+		margin-left: 60px;
 	}
 
 	.new-game-engage {

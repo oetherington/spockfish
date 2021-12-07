@@ -193,7 +193,9 @@ const NewGame = () => {
 				<div className='icars-bottom-1'></div>
 			</Flex>
 			<Flex column justifyContent='center' className='icars-2'>
-				<div className='icars-top-2'></div>
+				<div className='icars-top-2'>
+					<div className='icars-notch'></div>
+				</div>
 				<div className='icars-subtop-2'></div>
 				<div className='icars-content' style={{ width: '100%' }}>
 					<NewGameContent value={value} />
@@ -201,7 +203,9 @@ const NewGame = () => {
 				<div className='icars-subbottom-2-wrapper'>
 					<div className='icars-subbottom-2'></div>
 				</div>
-				<div className='icars-bottom-2'></div>
+				<div className='icars-bottom-2'>
+					<div className='icars-notch'></div>
+				</div>
 			</Flex>
 		</Flex>
 	);
