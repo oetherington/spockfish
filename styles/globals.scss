@@ -1,3 +1,5 @@
+@use './mixins';
+
 html,
 body {
 	--trek-font: StarTrekBT, sans-serif;
@@ -41,16 +43,7 @@ a {
 }
 
 .page-container {
-	@mixin trek-font {
-		font-family: var(--trek-font);
-		text-transform: uppercase;
-	}
-
-	@mixin trek-outline {
-		-webkit-text-stroke: 1px black;
-	}
-
-	.trek-font { @include trek-font; }
+	.trek-font { @include mixins.trek-font; }
 
 	.trek-red { color: var(--trek-red); }
 	.trek-blue { color: var(--trek-blue); }
@@ -75,8 +68,8 @@ a {
 	}
 
 	.treky-link {
-		@include trek-font;
-		@include trek-outline;
+		@include mixins.trek-font;
+		@include mixins.trek-outline;
 		font-style: italic;
 		color: var(--trek-yellow);
 		transition: color 0.3s;
@@ -90,7 +83,7 @@ a {
 	.text-x2 { font-size: 2em; }
 
 	.space-hero {
-		@include trek-font;
+		@include mixins.trek-font;
 		color: var(--trek-yellow);
 		background: #ccc;
 		background: black url("/stars.png") repeat;
@@ -180,7 +173,7 @@ a {
 	}
 
 	.icars-menu-item {
-		@include trek-font;
+		@include mixins.trek-font;
 		margin-top: var(--icars-menu-gap);
 		width: 220px;
 		height: 60px;
@@ -284,7 +277,7 @@ a {
 	}
 
 	.new-game-engage {
-		@include trek-font;
+		@include mixins.trek-font;
 		font-size: 1.5em;
 		margin-top: 1em;
 		color: var(--trek-aqua-green);

@@ -14,10 +14,14 @@ class EnginePlayerController extends PlayerController {
 
 		const moves = await engine.getLegalMoves();
 		const index = Math.floor(Math.random() * moves.length);
-		const newPosition = await engine.makeMove(moves[index]);
-		setPosition(newPosition);
 
-		this.triggered = false;
+		return new Promise((resolve, reject) => {
+			setTimeout(async () => {
+				const newPosition = await engine.makeMove(moves[index]);
+				setPosition(newPosition);
+				this.triggered = false;
+			}, 1500);
+		});
 	}
 
 	public onRender(

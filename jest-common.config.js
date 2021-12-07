@@ -15,6 +15,7 @@ module.exports = {
 		'^~/hooks/(.*)$': '<rootDir>/hooks/$1',
 		'^~/engine/(.*)$': '<rootDir>/engine/$1',
 		'^~/public/(.*)$': '<rootDir>/public/$1',
+		'^~/utils/(.*)$': '<rootDir>/utils/$1',
 	},
 	testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
 	testEnvironment: 'jsdom',

@@ -7,11 +7,7 @@ import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import Color from '~/engine/Color';
-
-type TimeControl = {
-	mins: number,
-	inc: number,
-}
+import TimeControl from '~/utils/TimeControl';
 
 const timeControlsEqual = (a: TimeControl, b: TimeControl) =>
 	a.mins === b.mins && a.inc === b.inc;

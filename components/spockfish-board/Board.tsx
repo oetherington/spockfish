@@ -12,8 +12,6 @@ import Move from '~/engine/Move';
 import Color, { colors } from '~/engine/Color';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import PlayerController from '~/controllers/players/PlayerController';
-import LocalPlayerController from '~/controllers/players/LocalPlayerController';
-import EnginePlayerController from '~/controllers/players/EnginePlayerController';
 import SelectedPiece from '~/controllers/players/SelectedPiece';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
@@ -37,6 +35,7 @@ type BoardProps = {
 	setPosition: (position: SerializedPosition) => void,
 	width: number,
 	height: number,
+	controllers: PlayerController[],
 }
 
 const Board = ({
@@ -45,6 +44,7 @@ const Board = ({
 	setPosition,
 	width,
 	height,
+	controllers,
 }: BoardProps) => {
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
@@ -58,12 +58,7 @@ const Board = ({
 
 	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
-	const controllers = useRef<PlayerController[]>([
-		new LocalPlayerController('w'),
-		new EnginePlayerController('b'),
-	]);
-
-	for (const controller of controllers.current)
+	for (const controller of controllers)
 		controller.onRender(
 			engine,
 			position,

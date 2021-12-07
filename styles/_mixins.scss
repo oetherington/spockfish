@@ -1,0 +1,8 @@
+@mixin trek-font {
+	font-family: var(--trek-font);
+	text-transform: uppercase;
+}
+
+@mixin trek-outline {
+	-webkit-text-stroke: 1px black;
+}

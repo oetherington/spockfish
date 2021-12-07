@@ -1,0 +1,39 @@
+@use './mixins';
+@use './theme';
+
+.clock {
+	$clockBorder: 2px solid theme.$trekBlue;
+
+	@include mixins.trek-font;
+
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	font-size: 2em;
+	opacity: 70%;
+
+	div {
+		padding: 0.5em;
+		display: inline-block;
+		width: 100px;
+		text-align: center;
+	}
+
+	.clockWhite {
+		background: white;
+		color: black;
+		border-top: $clockBorder;
+	}
+
+	.clockBlack {
+		background: black;
+		color: white;
+		border-top-right-radius: 20px;
+		border-top: $clockBorder;
+		border-right: $clockBorder;
+	}
+
+	.active {
+		text-decoration: underline;
+	}
+}
