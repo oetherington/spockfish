@@ -1,6 +1,122 @@
 @use './theme';
 @use './mixins';
 
+$icarsBannerHeight: 35px;
+$icarsBannerInset: 20px;
+$icarsBannerOverlap: 10px;
+$icarsMenuGap: 5px;
+$icarsContentBg: black;
+
+.icars1 {
+	background: $icarsContentBg;
+	border-radius: $icarsBannerHeight;
+}
+
+.icarsMenuItem {
+	@include mixins.trek-font;
+
+	margin-top: $icarsMenuGap;
+	width: 220px;
+	height: 60px;
+	padding: 30px 5px 0 0;
+	font-size: 1.6em;
+	text-align: right;
+	user-select: none;
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.icarsTop1 {
+	min-height: $icarsBannerHeight;
+	background: theme.$trekRed;
+	border-top-left-radius: $icarsBannerHeight;
+}
+
+.icarsSubtop1 {
+	min-height: $icarsBannerInset;
+	background: theme.$trekRed;
+}
+
+.icarsBottom1 {
+	min-height: $icarsBannerHeight;
+	background: theme.$trekAquaGreen;
+	border-bottom-left-radius: $icarsBannerHeight;
+}
+
+.icarsSubbottom1 {
+	min-height: $icarsBannerInset;
+	background: theme.$trekAquaGreen;
+	margin-top: $icarsMenuGap;
+}
+
+.icars2 {
+	background: theme.$trekRed;
+	border-radius: $icarsBannerHeight;
+}
+
+.icarsTop2 {
+	min-height: $icarsBannerHeight;
+	background: theme.$trekRed;
+	border-top-right-radius: $icarsBannerInset;
+}
+
+.icarsSubtop2 {
+	min-height: $icarsBannerInset;
+	background: $icarsContentBg;
+	border-top-left-radius: $icarsBannerOverlap;
+}
+
+.icarsContent {
+	min-width: 55ch;
+	height: 100%;
+	color: theme.$trekGrey;
+	padding: $icarsBannerOverlap 40px;
+	background: $icarsContentBg;
+	text-transform: uppercase;
+	font-weight: bold;
+	font: sans-serif;
+
+	span {
+		color: theme.$trekGrey;
+		user-select: none;
+		transition: color 0.3s;
+
+		&:hover {
+			cursor: pointer;
+			color: theme.$trekBlue;
+		}
+
+		&.selected {
+			color: theme.$trekYellow;
+		}
+	}
+}
+
+.icarsSubbottom2Wrapper {
+	background: theme.$trekAquaGreen;
+}
+
+.icarsBottom2 {
+	min-height: $icarsBannerHeight;
+	background: theme.$trekAquaGreen;
+	border-bottom-right-radius: $icarsBannerInset;
+}
+
+.icarsSubbottom2 {
+	min-height: $icarsBannerInset;
+	background: $icarsContentBg;
+	border-bottom-left-radius: $icarsBannerOverlap;
+}
+
+.icarsNotch {
+	width: 6px;
+	height: $icarsBannerHeight;
+	background: $icarsContentBg;
+	margin-left: 60px;
+}
+
 .engage {
 	@include mixins.trek-font;
 	font-size: 1.5em;

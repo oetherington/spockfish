@@ -23,7 +23,7 @@ const ColorOpt = ({ color, name, selected, setColor }: ColorOptProps) => {
 	return (
 		<Tooltip title={tooltip} placement='top'>
 			<span
-				className={selected ? 'selected' : ''}
+				className={selected ? s.selected : ''}
 				onClick={() => setColor(color)}
 			>
 				{name}
@@ -55,7 +55,7 @@ const TimeControlOpt = ({
 	return (
 		<Tooltip title={tooltip} placement='bottom'>
 			<span
-				className={selected ? 'selected' : undefined}
+				className={selected ? s.selected : undefined}
 				onClick={onClick}
 			>
 				{mins + '+' + inc}
@@ -189,14 +189,14 @@ const NewGame = () => {
 
 	return (
 		<Flex justifyContent='center'>
-			<Flex column className='icars-1'>
-				<div className='icars-top-1'></div>
-				<div className='icars-subtop-1'></div>
+			<Flex column className={s.icars1}>
+				<div className={s.icarsTop1}></div>
+				<div className={s.icarsSubtop1}></div>
 				{
 					pages.map(({ page, text, color }, index) =>
 						<div
 							key={index}
-							className={`icars-menu-item ${color}`}
+							className={`${s.icarsMenuItem} ${color}`}
 							onClick={() => setValue(page)}
 						>
 							{value === page && <Chevron />}
@@ -204,22 +204,22 @@ const NewGame = () => {
 						</div>
 					)
 				}
-				<div className='icars-subbottom-1'></div>
-				<div className='icars-bottom-1'></div>
+				<div className={s.icarsSubbottom1}></div>
+				<div className={s.icarsBottom1}></div>
 			</Flex>
-			<Flex column justifyContent='center' className='icars-2'>
-				<div className='icars-top-2'>
-					<div className='icars-notch'></div>
+			<Flex column justifyContent='center' className={s.icars2}>
+				<div className={s.icarsTop2}>
+					<div className={s.icarsNotch}></div>
 				</div>
-				<div className='icars-subtop-2'></div>
-				<div className='icars-content' style={{ width: '100%' }}>
+				<div className={s.icarsSubtop2}></div>
+				<div className={s.icarsContent}>
 					<NewGameContent value={value} />
 				</div>
-				<div className='icars-subbottom-2-wrapper'>
-					<div className='icars-subbottom-2'></div>
+				<div className={s.icarsSubbottom2Wrapper}>
+					<div className={s.icarsSubbottom2}></div>
 				</div>
-				<div className='icars-bottom-2'>
-					<div className='icars-notch'></div>
+				<div className={s.icarsBottom2}>
+					<div className={s.icarsNotch}></div>
 				</div>
 			</Flex>
 		</Flex>
