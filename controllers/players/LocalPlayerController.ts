@@ -12,11 +12,32 @@ class LocalPlayerController extends PlayerController {
 		return true;
 	}
 
+	private async takeOrMoveTo(
+		obj: Group,
+		selected: SelectedPiece | null,
+		setSelected: (piece: SelectedPiece | null) => void,
+		engine: RemoteEngine,
+		setPosition: (position: SerializedPosition) => void,
+	) : Promise<void> {
+		if (selected) {
+			const target = selected.legalMoves.find(({ to }: Move) =>
+				squaresEqual(obj.userData, to));
+
+			if (target) {
+				const newPosition = await engine.makeMove(target);
+				setPosition(newPosition);
+			}
+		}
+
+		setSelected(null);
+	}
+
 	private async selectPiece(
 		obj: Group,
 		selected: SelectedPiece | null,
 		setSelected: (piece: SelectedPiece | null) => void,
 		engine: RemoteEngine,
+		setPosition: (position: SerializedPosition) => void,
 	) : Promise<void> {
 		if (!obj || (selected && obj === selected.obj)) {
 			setSelected(null);
@@ -26,7 +47,8 @@ class LocalPlayerController extends PlayerController {
 				const legalMoves = await engine.getLegalMovesForPiece(piece);
 				setSelected({ obj, piece, legalMoves });
 			} else {
-				setSelected(null);
+				await this.takeOrMoveTo(
+					obj, selected, setSelected, engine, setPosition);
 			}
 		}
 	}
@@ -39,20 +61,11 @@ class LocalPlayerController extends PlayerController {
 		setPosition: (position: SerializedPosition) => void,
 	) : Promise<void> {
 		if (obj.userData.piece || obj.userData.abLevel) {
-			// TODO: Handle case when clicking on a piece to take it
-			await this.selectPiece(obj, selected, setSelected, engine);
+			await this.selectPiece(
+				obj, selected, setSelected, engine, setPosition);
 		} else if (obj.userData.square) {
-			if (selected) {
-				const target = selected.legalMoves.find(({ to }: Move) =>
-					squaresEqual(obj.userData, to));
-
-				if (target) {
-					const newPosition = await engine.makeMove(target);
-					setPosition(newPosition);
-				}
-			}
-
-			setSelected(null);
+			await this.takeOrMoveTo(
+				obj, selected, setSelected, engine, setPosition);
 		}
 	}
 
