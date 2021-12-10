@@ -1,0 +1,41 @@
+@use './theme';
+@use './mixins';
+
+.header {
+	padding: 2em;
+	text-align: center;
+}
+
+.title {
+	@include mixins.trek-font;
+	@include mixins.trek-outline;
+	color: theme.$trekYellow;
+	font-size: 2.5em;
+}
+
+.reason {
+	color: white;
+	margin-top: 0.5em;
+}
+
+.win {
+	background: darken(theme.$trekGreen, 10%);
+}
+
+.lose {
+	background: theme.$trekRed;
+}
+
+.draw {
+	background: theme.$trekGrey;
+}
+
+.wrapper {
+	display: flex;
+	gap: 10px;
+	padding: 1em;
+
+	button {
+		width: 200px;
+	}
+}

@@ -20,6 +20,14 @@ abstract class PlayerController {
 		scene: Scene,
 		raycaster: Raycaster,
 	) : void;
+
+	public getColor() : Color {
+		return this.color;
+	}
+
+	public isLocal() : boolean {
+		return false;
+	}
 }
 
 export default PlayerController;

@@ -5,18 +5,46 @@ import Piece from './Piece';
 import Move from './Move';
 import { AttackLevel } from './Square';
 
+export type GameResult = Color | 'draw';
+
+export type GameOverReason
+	= 'timeout'
+	| 'checkmate'
+	| 'resignation'
+	| 'disconnection'
+	| 'stalemate'
+	| 'insufficient-material'
+	| '50-move-rule'
+	| 'repetition'
+	| 'agreement';
+
+export type GameStatus = 'playing' | GameOverReason;
+
 export type SerializedPosition = {
 	turn: Color,
 	ply: number,
 	pieces: Piece[],
 	attackBoards: Record<Color, AttackLevel[]>,
+	status: GameStatus,
+	result: GameResult | null,
 };
 
 class Engine {
 	private position: Position;
+	private status: GameStatus = 'playing';
+	private result: GameResult | null = null;
 
 	constructor() {
 		this.position = Position.makeInitial();
+	}
+
+	public setStatus(
+		status: GameStatus,
+		result: GameResult | null,
+	) : SerializedPosition {
+		this.status = status;
+		this.result = result;
+		return this.getSerializedPosition();
 	}
 
 	public getSerializedPosition() : SerializedPosition {
@@ -28,6 +56,8 @@ class Engine {
 				w: this.position.getWhiteAttackBoards(),
 				b: this.position.getBlackAttackBoards(),
 			},
+			status: this.status,
+			result: this.result,
 		};
 	}
 
@@ -40,7 +70,8 @@ class Engine {
 	}
 
 	public makeMove(move: Move) : SerializedPosition {
-		this.position = this.position.makeMove(move);
+		if (this.status === 'playing')
+			this.position = this.position.makeMove(move);
 		return this.getSerializedPosition();
 	}
 }

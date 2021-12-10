@@ -8,6 +8,10 @@ import Move from '~/engine/Move';
 import { squaresEqual } from '~/engine/Square';
 
 class LocalPlayerController extends PlayerController {
+	public isLocal() : boolean {
+		return true;
+	}
+
 	private async selectPiece(
 		obj: Group,
 		selected: SelectedPiece | null,

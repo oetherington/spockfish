@@ -1,5 +1,7 @@
+@use './theme';
+
 @mixin trek-font {
-	font-family: var(--trek-font);
+	font-family: theme.$trekFont;
 	text-transform: uppercase;
 }
 

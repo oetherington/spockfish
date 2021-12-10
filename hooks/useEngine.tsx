@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { wrap, Remote } from 'comlink';
-import Engine, { SerializedPosition } from '~/engine/Engine';
+import Engine, {
+	RemoteEngine,
+	SerializedPosition,
+	GameStatus,
+	GameResult,
+} from '~/engine/Engine';
 
 type EnginePayload = {
 	worker: Worker | null,
@@ -33,9 +38,16 @@ const useEngine = () => {
 	const setPosition = (position: SerializedPosition) =>
 		setPayload({ ...payload, position });
 
+	const setStatus = async (status: GameStatus, result: GameResult | null) => {
+		const eng = payload.engine as RemoteEngine;
+		const newPosition = await eng.setStatus(status, result);
+		setPayload({ ...payload, position: newPosition });
+	};
+
 	return {
 		...payload,
 		setPosition,
+		setStatus,
 	};
 };
 
