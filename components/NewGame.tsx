@@ -10,6 +10,28 @@ import Color from '~/engine/Color';
 import TimeControl from '~/utils/TimeControl';
 import s from '~/styles/NewGame.module.scss';
 
+type ColorOptProps = {
+	color: Color,
+	name: string,
+	selected: boolean,
+	setColor: (color: Color) => void,
+}
+
+const ColorOpt = ({ color, name, selected, setColor }: ColorOptProps) => {
+	const tooltip = `Play as the ${name.toLowerCase()} pieces`;
+
+	return (
+		<Tooltip title={tooltip} placement='top'>
+			<span
+				className={selected ? 'selected' : ''}
+				onClick={() => setColor(color)}
+			>
+				{name}
+			</span>
+		</Tooltip>
+	);
+};
+
 const timeControlsEqual = (a: TimeControl, b: TimeControl) =>
 	a.mins === b.mins && a.inc === b.inc;
 
@@ -31,7 +53,7 @@ const TimeControlOpt = ({
 		tooltip += ` plus ${inc} seconds extra each move`
 
 	return (
-		<Tooltip title={tooltip}>
+		<Tooltip title={tooltip} placement='bottom'>
 			<span
 				className={selected ? 'selected' : undefined}
 				onClick={onClick}
@@ -61,19 +83,19 @@ const PlayTheAI = () => {
 			<div className='trek-aqua-green trek-font text-x2'>Play The AI</div>
 			<br />
 			<Flex gap='15px' alignItems='center' className='new-game-color'>
-				<span
-					className={color === 'b' ? 'selected' : ''}
-					onClick={() => setColor('b')}
-				>
-					Black
-				</span>
+				<ColorOpt
+					color={'b'}
+					name={'Black'}
+					selected={color === 'b'}
+					setColor={setColor}
+				/>
 				<InvertColorsIcon />
-				<span
-					className={color === 'w' ? 'selected' : ''}
-					onClick={() => setColor('w')}
-				>
-					White
-				</span>
+				<ColorOpt
+					color={'w'}
+					name={'White'}
+					selected={color === 'w'}
+					setColor={setColor}
+				/>
 			</Flex>
 			<Flex alignItems='center' gap='2em'>
 				<TimerIcon />
