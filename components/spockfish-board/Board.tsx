@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
-import { WebGLRenderer, Camera, Vector3, Group } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Vector3, Group } from 'three';
 import MainBoard from './MainBoard';
 import AttackBoard from './AttackBoard';
 import PieceComponent from './Piece';
@@ -13,22 +12,8 @@ import Color, { colors } from '~/engine/Color';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import PlayerController from '~/controllers/players/PlayerController';
 import SelectedPiece from '~/controllers/players/SelectedPiece';
+import useControls from '~/hooks/useControls';
 import useSoundEffect from '~/hooks/useSoundEffect';
-
-const makeControls = (gl: WebGLRenderer, camera: Camera) => {
-	const controls = new OrbitControls(camera, gl.domElement);
-	controls.enableDamping = true;
-	controls.dampingFactor = 0.1;
-	controls.enablePan = false;
-	controls.enableZoom = true;
-	controls.zoomSpeed = 0.1;
-	controls.rotateSpeed = 0.15;
-	controls.minDistance = 2;
-	controls.maxDistance = 14;
-	controls.minPolarAngle = Math.PI * 0.1;
-	controls.maxPolarAngle = Math.PI * 0.6;
-	return controls;
-};
 
 type BoardProps = {
 	engine: RemoteEngine,
@@ -51,7 +36,7 @@ const Board = ({
 
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
-	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
+	const controls = useControls(gl, camera);
 
 	useFrame((state, delta) => controls.update());
 
