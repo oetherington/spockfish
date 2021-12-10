@@ -37,7 +37,8 @@ class EnginePlayerController extends PlayerController {
 		if (this.triggered || position.turn !== this.color)
 			return;
 
-		this.generateMove(engine, setPosition);
+		if (position.status === 'playing')
+			this.generateMove(engine, setPosition);
 	}
 }
 
