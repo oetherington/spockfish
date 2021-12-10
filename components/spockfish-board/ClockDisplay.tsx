@@ -18,7 +18,7 @@ const ClockDisplay = ({ clock, turn }: ClockDisplayProps) => {
 		if (!clock.isStarted() && turn === 'b')
 			clock.start(setDisplayedTime);
 		clock.setTurn(turn);
-	}, [turn]);
+	}, [clock, turn]);
 
 	const whiteClass = `${s.clockWhite} ${turn === 'w' ? s.active : ''}`;
 	const blackClass = `${s.clockBlack} ${turn === 'b' ? s.active : ''}`;
