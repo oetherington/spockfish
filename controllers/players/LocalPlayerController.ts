@@ -22,8 +22,12 @@ class LocalPlayerController extends PlayerController {
 			setSelected(null);
 		} else {
 			const piece = obj.userData as Piece;
-			const legalMoves = await engine.getLegalMovesForPiece(piece);
-			setSelected({ obj, piece, legalMoves });
+			if (piece.color === this.color) {
+				const legalMoves = await engine.getLegalMovesForPiece(piece);
+				setSelected({ obj, piece, legalMoves });
+			} else {
+				setSelected(null);
+			}
 		}
 	}
 
