@@ -1,31 +1,23 @@
+@use './theme';
 @use './mixins';
-
-html,
-body {
-	--trek-font: StarTrekBT, sans-serif;
-	--trek-red: #cc0c00;
-	--trek-blue: #5c88da;
-	--trek-green: #84bd00;
-	--trek-yellow: #ffcd00;
-	--trek-grey: #7c878e;
-	--trek-black: #151515;
-	--trek-aqua-blue: #00b5e2;
-	--trek-aqua-green: #00af66;
-
-	--navbar-height: 48px;
-
-	padding: 0;
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-	Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-	background: var(--trek-black);
-}
 
 @font-face {
 	font-family: 'StarTrekBT';
 	font-style: normal;
 	font-weight: 400;
 	src: url(/StarTrekBT-Regular.ttf) format('truetype');
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+	Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	background: theme.$trekBlack;
+
+	/* Used in JS to calculate canvas size */
+	--navbar-height: #{theme.$navbarHeight};
 }
 
 a {
@@ -37,127 +29,50 @@ a {
 	box-sizing: border-box;
 }
 
-@keyframes move-stars-bg {
-	from { -webkit-transform: translate3d(0px, 0px, 0px); }
-	to { -webkit-transform: translate3d(1000px, 0px, 0px); }
-}
-
 .page-container {
 	.trek-font { @include mixins.trek-font; }
 
-	.trek-red { color: var(--trek-red); }
-	.trek-blue { color: var(--trek-blue); }
-	.trek-green { color: var(--trek-green); }
-	.trek-yellow { color: var(--trek-yellow); }
-	.trek-grey { color: var(--trek-grey); }
-	.trek-black { color: var(--trek-black); }
-	.trek-aqua-blue { color: var(--trek-aqua-blue); }
-	.trek-aqua-green { color: var(--trek-aqua-green); }
+	.trek-red { color: theme.$trekRed; }
+	.trek-blue { color: theme.$trekBlue; }
+	.trek-green { color: theme.$trekGreen; }
+	.trek-yellow { color: theme.$trekYellow; }
+	.trek-grey { color: theme.$trekGrey; }
+	.trek-black { color: theme.$trekBlack; }
+	.trek-aqua-blue { color: theme.$trekAquaBlue; }
+	.trek-aqua-green { color: theme.$trekAquaGreen; }
 
-	.trek-red-bg { background: var(--trek-red); }
-	.trek-blue-bg { background: var(--trek-blue); }
-	.trek-green-bg { background: var(--trek-green); }
-	.trek-yellow-bg { background: var(--trek-yellow); }
-	.trek-grey-bg { background: var(--trek-grey); }
-	.trek-black-bg { background: var(--trek-black); }
-	.trek-aqua-blue-bg { background: var(--trek-aqua-blue); }
-	.trek-aqua-green-bg { background: var(--trek-aqua-green); }
+	.trek-red-bg { background: theme.$trekRed; }
+	.trek-blue-bg { background: theme.$trekBlue; }
+	.trek-green-bg { background: theme.$trekGreen; }
+	.trek-yellow-bg { background: theme.$trekYellow; }
+	.trek-grey-bg { background: theme.$trekGrey; }
+	.trek-black-bg { background: theme.$trekBlack; }
+	.trek-aqua-blue-bg { background: theme.$trekAquaBlue; }
+	.trek-aqua-green-bg { background: theme.$trekAquaGreen; }
 
 	.spacer {
 		height: 80px;
+	}
+
+	.text-x1_5 { font-size: 1.5em; }
+	.text-x2 { font-size: 2em; }
+
+	.trek-headline {
+		@include mixins.trek-font;
+		color: theme.$trekYellow;
+		font-style: italic;
+		text-align: center;
 	}
 
 	.treky-link {
 		@include mixins.trek-font;
 		@include mixins.trek-outline;
 		font-style: italic;
-		color: var(--trek-yellow);
+		color: theme.$trekYellow;
 		transition: color 0.3s;
 
 		&:hover {
-			color: var(--trek-red);
-		}
-	}
-
-	.text-x1_5 { font-size: 1.5em; }
-	.text-x2 { font-size: 2em; }
-
-	.space-hero {
-		@include mixins.trek-font;
-		color: var(--trek-yellow);
-		background: #ccc;
-		background: black url("/stars.png") repeat;
-		z-index: 1;
-
-		width: 100%;
-		height: 100vh;
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		overflow: hidden;
-
-		position: relative;
-
-		.space-hero-twinkle {
-			position: absolute;
-			z-index: 2;
-			width: 10000%;
-			height: 100%;
-			background-size: 1000px 1000px;
-			background: transparent url("/twinkling.png") repeat;
-			animation: move-stars-bg 70s linear infinite;
-		}
-	}
-
-	.created-by {
-		display: flex;
-		align-items: center;
-		flex-direction: column;
-		z-index: 3;
-
-		h1 {
-			font-style: italic;
-			font-size: 9em;
-			margin: 0;
-		}
-
-		div {
-			display: flex;
-			width: 100%;
-			align-items: flex-start;
-			justify-content: flex-end;
-			column-gap: 1em;
-		}
-
-		h2 {
-			font-size: 5em;
-			margin: 0;
-			align-self: flex-end;
-		}
-
-		h3 {
-			font-size: 2em;
-			margin: 0;
-			text-align: right;
-		}
-	}
-
-	.website {
-		position: absolute;
-		bottom: 10px;
-		margin: auto;
-		text-transform: none;
-		z-index: 3;
-		font-size: 1.3em;
-
-		a {
-			color: var(--trek-green);
-
-			&:hover {
-				color: var(--trek-red);
-			}
+			color: theme.$trekRed;
 		}
 	}
 
@@ -189,35 +104,35 @@ a {
 
 	.icars-top-1 {
 		min-height: var(--icars-banner-height);
-		background: var(--trek-red);
+		background: theme.$trekRed;
 		border-top-left-radius: var(--icars-banner-height);
 	}
 
 	.icars-subtop-1 {
 		min-height: var(--icars-banner-inset);
-		background: var(--trek-red);
+		background: theme.$trekRed;
 	}
 
 	.icars-bottom-1 {
 		min-height: var(--icars-banner-height);
-		background: var(--trek-aqua-green);
+		background: theme.$trekAquaGreen;
 		border-bottom-left-radius: var(--icars-banner-height);
 	}
 
 	.icars-subbottom-1 {
 		min-height: var(--icars-banner-inset);
-		background: var(--trek-aqua-green);
+		background: theme.$trekAquaGreen;
 		margin-top: var(--icars-menu-gap);
 	}
 
 	.icars-2 {
-		background: var(--trek-red);
+		background: theme.$trekRed;
 		border-radius: var(--icars-banner-height);
 	}
 
 	.icars-top-2 {
 		min-height: var(--icars-banner-height);
-		background: var(--trek-red);
+		background: theme.$trekRed;
 		border-top-right-radius: var(--icars-banner-inset);
 	}
 
@@ -230,7 +145,7 @@ a {
 	.icars-content {
 		min-width: 55ch;
 		height: 100%;
-		color: var(--trek-grey);
+		color: theme.$trekGrey;
 		padding: var(--icars-banner-overlap) 40px;
 		background: var(--icars-content-bg);
 		text-transform: uppercase;
@@ -238,28 +153,28 @@ a {
 		font: sans-serif;
 
 		span {
-			color: var(--trek-grey);
+			color: theme.$trekGrey;
 			user-select: none;
 			transition: color 0.3s;
 
 			&:hover {
 				cursor: pointer;
-				color: var(--trek-blue);
+				color: theme.$trekBlue;
 			}
 
 			&.selected {
-				color: var(--trek-yellow);
+				color: theme.$trekYellow;
 			}
 		}
 	}
 
 	.icars-subbottom-2-wrapper {
-		background: var(--trek-aqua-green);
+		background: theme.$trekAquaGreen;
 	}
 
 	.icars-bottom-2 {
 		min-height: var(--icars-banner-height);
-		background: var(--trek-aqua-green);
+		background: theme.$trekAquaGreen;
 		border-bottom-right-radius: var(--icars-banner-inset);
 	}
 
@@ -274,19 +189,5 @@ a {
 		height: var(--icars-banner-height);
 		background: var(--icars-content-bg);
 		margin-left: 60px;
-	}
-
-	.new-game-engage {
-		@include mixins.trek-font;
-		font-size: 1.5em;
-		margin-top: 1em;
-		color: var(--trek-aqua-green);
-		user-select: none;
-		transition: color 0.3s;
-
-		&:hover {
-			cursor: pointer;
-			color: var(--trek-red);
-		}
 	}
 }

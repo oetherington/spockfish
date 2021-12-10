@@ -8,6 +8,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Link from 'next/link';
 import Color from '~/engine/Color';
 import TimeControl from '~/utils/TimeControl';
+import s from '~/styles/NewGame.module.scss';
 
 const timeControlsEqual = (a: TimeControl, b: TimeControl) =>
 	a.mins === b.mins && a.inc === b.inc;
@@ -87,11 +88,7 @@ const PlayTheAI = () => {
 			</Flex>
 			<Link href={url}>
 				<a>
-					<Flex
-						alignItems='center'
-						className='new-game-engage'
-						gap='0.2em'
-					>
+					<Flex alignItems='center' className={s.engage} gap='0.2em'>
 						Engage
 						<PlayCircleFilledIcon />
 					</Flex>

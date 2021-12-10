@@ -1,0 +1,12 @@
+@use './theme';
+
+.navbar {
+	width: 100%;
+	height: theme.$navbarHeight;
+	max-height: theme.$navbarHeight;
+	background: theme.$trekBlack;
+	padding: 5px 10px;
+	border-bottom: 1px solid theme.$trekBlue;
+	box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+	z-index: 1;
+}

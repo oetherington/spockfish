@@ -1,0 +1,16 @@
+@use './theme';
+@use './mixins';
+
+.engage {
+	@include mixins.trek-font;
+	font-size: 1.5em;
+	margin-top: 1em;
+	color: theme.$trekAquaGreen;
+	user-select: none;
+	transition: color 0.3s;
+
+	&:hover {
+		cursor: pointer;
+		color: theme.$trekRed;
+	}
+}

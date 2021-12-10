@@ -6,24 +6,13 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import TrekIcon from '~/public/emblem.svg';
+import s from '~/styles/NavBar.module.scss';
 
 const NavBar = () => {
 	const showMenuButton = false;
 
 	return (
-		<Flex
-			justifySpaceBetween
-			style={{
-				width: '100%',
-				height: 'var(--navbar-height)',
-				maxHeight: 'var(--navbar-height)',
-				background: 'var(--trek-black)',
-				padding: '5px 10px',
-				borderBottom: '1px solid var(--trek-blue)',
-				boxShadow: '0px 0px 20px 0px rgba(0,0,0,0.75)',
-				zIndex: 1,
-			}}
-		>
+		<Flex justifySpaceBetween className={s.navbar}>
 			<Link href='/'>
 				<a>
 					<Flex alignItemsCenter columnGap='10px'>
