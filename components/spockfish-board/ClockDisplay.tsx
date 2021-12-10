@@ -15,10 +15,8 @@ const ClockDisplay = ({ clock, turn }: ClockDisplayProps) => {
 	});
 
 	useEffect(() => {
-		clock.start(setDisplayedTime);
-	}, []);
-
-	useEffect(() => {
+		if (!clock.isStarted() && turn === 'b')
+			clock.start(setDisplayedTime);
 		clock.setTurn(turn);
 	}, [turn]);
 
@@ -27,8 +25,16 @@ const ClockDisplay = ({ clock, turn }: ClockDisplayProps) => {
 
 	return (
 		<div className={s.clock}>
-			<div className={whiteClass}>{displayedTime['w']}</div>
-			<div className={blackClass}>{displayedTime['b']}</div>
+			{
+				clock.isStarted()
+					? <>
+						<div className={whiteClass}>{displayedTime['w']}</div>
+						<div className={blackClass}>{displayedTime['b']}</div>
+					</>
+					: <span className={s.waiting}>
+						Waiting for first move...
+					</span>
+			}
 		</div>
 	);
 };

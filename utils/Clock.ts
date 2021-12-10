@@ -13,6 +13,7 @@ class Clock {
 	private seconds: Record<Color, number>;
 	private turn: Color = 'w';
 	private lastSwitch: number = 0;
+	private started: boolean = false;
 	private stopped: boolean = false;
 	private done: boolean = false;
 	private lowTimeCallback: LowTimeCallback = (color: Color) => {};
@@ -48,6 +49,8 @@ class Clock {
 	}
 
 	public start(setDisplayedTime: (dt: DisplayedTime) => void) : void {
+		this.started = true;
+
 		this.lastSwitch = performance.now();
 
 		const callback = () => {
@@ -85,6 +88,10 @@ class Clock {
 
 	public stop() : void {
 		this.stopped = true;
+	}
+
+	public isStarted() : boolean {
+		return this.started;
 	}
 
 	public isStopped() : boolean {
