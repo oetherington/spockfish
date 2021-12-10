@@ -1,7 +1,7 @@
 import PlayerController from './PlayerController';
 import { WebGLRenderer, Scene, Raycaster } from 'three';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
-import SelectedPiece from './SelectedPiece';
+import SelectedPiece from '~/utils/SelectedPiece';
 
 class NetworkPlayerController extends PlayerController {
 	public onRender(

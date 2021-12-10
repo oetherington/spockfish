@@ -1,7 +1,7 @@
 import PlayerController from './PlayerController';
 import { WebGLRenderer, Scene, Raycaster, Group } from 'three';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
-import SelectedPiece from './SelectedPiece';
+import SelectedPiece from '~/utils/SelectedPiece';
 import useDomEvent from '~/hooks/useDomEvent';
 import Piece from '~/engine/Piece';
 import Move from '~/engine/Move';

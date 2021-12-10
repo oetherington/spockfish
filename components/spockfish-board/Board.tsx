@@ -11,7 +11,7 @@ import Move from '~/engine/Move';
 import Color, { colors } from '~/engine/Color';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import PlayerController from '~/controllers/players/PlayerController';
-import SelectedPiece from '~/controllers/players/SelectedPiece';
+import SelectedPiece from '~/utils/SelectedPiece';
 import useControls from '~/hooks/useControls';
 import useSoundEffect from '~/hooks/useSoundEffect';
 

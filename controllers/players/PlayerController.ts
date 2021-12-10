@@ -1,7 +1,7 @@
 import { WebGLRenderer, Scene, Raycaster } from 'three';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import Color from '~/engine/Color';
-import SelectedPiece from './SelectedPiece';
+import SelectedPiece from '~/utils/SelectedPiece';
 
 abstract class PlayerController {
 	protected color: Color;
