@@ -67,7 +67,7 @@ export const pieceScale = 0.14;
 
 const pieceOffset = -0.1;
 
-export const getAttackLevelFiles = (level: Level) => (level[0] === 'W'
+export const getAttackLevelFiles = (level: Level) => (level[0] === 'Q'
 	? [ 'z', 'a' ]
 	: [ 'd', 'e' ]) as File[];
 
