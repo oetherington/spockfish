@@ -2292,3 +2292,61 @@ describe('Position - Making moves', () => {
 		expect(unmoved2).toEqual(expect.arrayContaining(expectedUnmoved2));
 	});
 });
+
+describe('Position - Game over conditions', () => {
+	it('can detect checkmate', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'd',
+				rank: 7,
+				color: 'w',
+				level: 'B',
+			},
+			{
+				piece: 'q',
+				file: 'd',
+				rank: 8,
+				color: 'w',
+				level: 'KL6',
+			},
+			{
+				piece: 'k',
+				file: 'e',
+				rank: 9,
+				color: 'b',
+				level: 'KL6',
+			},
+		], 'b');
+
+		expect(pos.isCheckmate()).toBe(true);
+	});
+
+	it('can detect stalemate', () => {
+		const pos = new Position([
+			{
+				piece: 'q',
+				file: 'd',
+				rank: 6,
+				color: 'w',
+				level: 'B',
+			},
+			{
+				piece: 'n',
+				file: 'c',
+				rank: 7,
+				color: 'w',
+				level: 'B',
+			},
+			{
+				piece: 'k',
+				file: 'e',
+				rank: 9,
+				color: 'b',
+				level: 'KL6',
+			},
+		], 'b');
+
+		expect(pos.isStalemate()).toBe(true);
+	});
+});

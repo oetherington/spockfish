@@ -1,6 +1,6 @@
 import { Remote } from 'comlink';
 import Position from './Position';
-import Color from './Color';
+import Color, { otherColor } from './Color';
 import Piece from './Piece';
 import Move from './Move';
 import { AttackLevel } from './Square';
@@ -70,8 +70,17 @@ class Engine {
 	}
 
 	public makeMove(move: Move) : SerializedPosition {
-		if (this.status === 'playing')
+		if (this.status === 'playing') {
 			this.position = this.position.makeMove(move);
+
+			if (this.position.isCheckmate()) {
+				this.status = 'checkmate';
+				this.result = otherColor(this.position.getTurn());
+			} else if (this.position.isStalemate()) {
+				this.status = 'stalemate';
+				this.result = 'draw';
+			}
+		}
 		return this.getSerializedPosition();
 	}
 }

@@ -384,6 +384,14 @@ class Position {
 	public isCheck() : boolean {
 		return this.check;
 	}
+
+	public isCheckmate() : boolean {
+		return this.legalMoves.length === 0 && this.check;
+	}
+
+	public isStalemate() : boolean {
+		return this.legalMoves.length === 0 && !this.check;
+	}
 }
 
 export default Position;
