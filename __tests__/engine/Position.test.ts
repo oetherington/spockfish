@@ -2349,4 +2349,25 @@ describe('Position - Game over conditions', () => {
 
 		expect(pos.isStalemate()).toBe(true);
 	});
+
+	it('can detect 50-move rule', () => {
+		const pos = new Position([
+			{
+				piece: 'k',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
+			},
+			{
+				piece: 'k',
+				file: 'e',
+				rank: 9,
+				color: 'b',
+				level: 'KL6',
+			},
+		], 'w', 100, new AttackBoards(), 100);
+
+		expect(pos.hitFiftyMoveLimit()).toBe(true);
+	});
 });

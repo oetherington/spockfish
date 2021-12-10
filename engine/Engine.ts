@@ -79,8 +79,12 @@ class Engine {
 			} else if (this.position.isStalemate()) {
 				this.status = 'stalemate';
 				this.result = 'draw';
+			} else if (this.position.hitFiftyMoveLimit()) {
+				this.status = '50-move-rule';
+				this.result = 'draw';
 			}
 		}
+
 		return this.getSerializedPosition();
 	}
 }

@@ -85,7 +85,7 @@ class Position {
 	}
 
 	public makeMove(
-		{ piece, color, from, to, castle }: Move,
+		{ piece, color, from, to, capture, castle }: Move,
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) : Position {
 		let pieces: Piece[] = [];
@@ -121,12 +121,16 @@ class Position {
 			});
 		}
 
+		const fiftyMoveCount = piece === 'p' || capture
+			? 0
+			: this.fiftyMoveCount + 1
+
 		return new Position(
 			pieces,
 			otherColor(this.turn),
 			this.ply + 1,
 			this.attackBoards, // TODO Update this
-			piece === 'p' ? 0 : this.fiftyMoveCount + 1,
+			fiftyMoveCount,
 			unmovedPieces,
 			checkDepth,
 		);
@@ -391,6 +395,11 @@ class Position {
 
 	public isStalemate() : boolean {
 		return this.legalMoves.length === 0 && !this.check;
+	}
+
+	public hitFiftyMoveLimit() : boolean {
+		// Use 100 because this.fiftyMoveCount actually counts plys
+		return this.fiftyMoveCount >= 100;
 	}
 }
 
