@@ -9,14 +9,20 @@ export type SoundEffect
 	| 'lowTime'
 	| 'gameOver';
 
-const effects: Record<SoundEffect, string> = {
-	move: moveSound,
-	lowTime: lowTimeSound,
-	gameOver: gameOverSound,
+type SoundSpec = {
+	file: string,
+	volume?: number,
+};
+
+const effects: Record<SoundEffect, SoundSpec> = {
+	move: { file: moveSound },
+	lowTime: { file: lowTimeSound, volume: 0.1 },
+	gameOver: { file: gameOverSound },
 };
 
 const useSoundEffect = (effect: SoundEffect) => {
-	const [play] = useSound(effects[effect]);
+	const { file, ...opts } = effects[effect];
+	const [play] = useSound(file, opts);
 	return play;
 };
 

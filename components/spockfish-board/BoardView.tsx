@@ -36,7 +36,7 @@ const BoardView = (props: BoardViewProps) => {
 	clock.setLowTimeCallback((color: Color) => {
 		const controller = props.controllers.find(c => c.getColor() === color);
 		if (controller && controller.isLocal())
-			playLowTimeSound();
+			playLowTimeSound(); // TODO: Show some visual indication on clock
 	});
 
 	if (!clock.isStopped() && position && position?.status !== 'playing') {
