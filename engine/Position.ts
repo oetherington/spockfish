@@ -263,12 +263,15 @@ class Position {
 			const allMoves = targets
 				.both(boardSquares[targetLevel])
 				.onlyLeft(this.occupied[color][targetLevel]);
-			const captures = allMoves
+			let captures = allMoves
 				.both(this.occupied[otherColor(color)][targetLevel]);
 			let quietMoves = allMoves.onlyLeft(captures);
 
-			if (p.piece === 'p')
-				quietMoves = quietMoves.both(FlatBitboard.fromFile(p.file));
+			if (p.piece === 'p') {
+				const file = FlatBitboard.fromFile(p.file);
+				captures = captures.onlyLeft(file);
+				quietMoves = quietMoves.both(file);
+			}
 
 			result = result
 				.concat(captures.toMoves(piece, color, from, targetLevel, true))
