@@ -8,6 +8,7 @@ import PlayerController from '~/controllers/players/PlayerController';
 import Clock from '~/utils/Clock';
 import { RemoteEngine, GameResult, GameOverReason } from '~/engine/Engine';
 import Color, { otherColor } from '~/engine/Color';
+import useSoundEffect from '~/hooks/useSoundEffect';
 
 type BoardViewProps = {
 	width: number,
@@ -20,6 +21,9 @@ const getLocalColor = (controllers: PlayerController[]) =>
 	controllers.find((c) => c.isLocal())?.getColor() ?? 'w';
 
 const BoardView = (props: BoardViewProps) => {
+	const playLowTimeSound = useSoundEffect('lowTime');
+	const playGameOverSound = useSoundEffect('gameOver');
+
 	const { engine, position, setPosition, setStatus } = useEngine();
 
 	const isLoaded = !!(engine && position);
@@ -27,8 +31,16 @@ const BoardView = (props: BoardViewProps) => {
 	props.clock.setTimeoutCallback((loserColor: Color) =>
 		setStatus('timeout', otherColor(loserColor)));
 
-	if (position && position?.status !== 'playing')
+	props.clock.setLowTimeCallback((color: Color) => {
+		const controller = props.controllers.find(c => c.getColor() === color);
+		if (controller && controller.isLocal())
+			playLowTimeSound();
+	});
+
+	if (position && position?.status !== 'playing') {
 		props.clock.stop();
+		playGameOverSound();
+	}
 
 	// TODO: Add option for perspective/orthographic cameras
 	return (

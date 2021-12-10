@@ -13,6 +13,7 @@ import Color, { colors } from '~/engine/Color';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import PlayerController from '~/controllers/players/PlayerController';
 import SelectedPiece from '~/controllers/players/SelectedPiece';
+import useSoundEffect from '~/hooks/useSoundEffect';
 
 const makeControls = (gl: WebGLRenderer, camera: Camera) => {
 	const controls = new OrbitControls(camera, gl.domElement);
@@ -46,6 +47,8 @@ const Board = ({
 	height,
 	controllers,
 }: BoardProps) => {
+	const playMoveSound = useSoundEffect('move');
+
 	const { gl, camera, setSize, raycaster, scene } = useThree();
 
 	const [controls] = useState<OrbitControls>(makeControls(gl, camera));
@@ -58,11 +61,16 @@ const Board = ({
 
 	const [selected, setSelected] = useState<SelectedPiece | null>(null);
 
+	const onMove = (newPosition: SerializedPosition) => {
+		playMoveSound();
+		setPosition(newPosition);
+	};
+
 	for (const controller of controllers)
 		controller.onRender(
 			engine,
 			position,
-			setPosition,
+			onMove,
 			selected,
 			setSelected,
 			gl,
