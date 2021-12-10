@@ -153,7 +153,7 @@ const NewGame = () => {
 	const pages: PageSpec[] = [
 		{
 			page: 'play-the-ai',
-			text: 'Plat the AI',
+			text: 'Play the AI',
 			color: 'trek-blue-bg',
 		},
 		{
