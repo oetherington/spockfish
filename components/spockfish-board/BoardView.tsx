@@ -28,17 +28,19 @@ const BoardView = (props: BoardViewProps) => {
 
 	const isLoaded = !!(engine && position);
 
-	props.clock.setTimeoutCallback((loserColor: Color) =>
+	const clock = props.clock;
+
+	clock.setTimeoutCallback((loserColor: Color) =>
 		setStatus('timeout', otherColor(loserColor)));
 
-	props.clock.setLowTimeCallback((color: Color) => {
+	clock.setLowTimeCallback((color: Color) => {
 		const controller = props.controllers.find(c => c.getColor() === color);
 		if (controller && controller.isLocal())
 			playLowTimeSound();
 	});
 
-	if (position && position?.status !== 'playing') {
-		props.clock.stop();
+	if (!clock.isStopped() && position && position?.status !== 'playing') {
+		clock.stop();
 		playGameOverSound();
 	}
 
@@ -52,7 +54,7 @@ const BoardView = (props: BoardViewProps) => {
 					<Board {...{ engine, position, setPosition }} {...props} />}
 			</Canvas>
 			{isLoaded &&
-				<ClockDisplay clock={props.clock} turn={position.turn} />}
+				<ClockDisplay clock={clock} turn={position.turn} />}
 			{position && position.status !== 'playing' &&
 				<GameOver
 					result={position.result as GameResult}

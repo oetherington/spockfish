@@ -87,6 +87,10 @@ class Clock {
 		this.stopped = true;
 	}
 
+	public isStopped() : boolean {
+		return this.stopped;
+	}
+
 	private getTimeAsString(color: Color) : string {
 		const totalSeconds = Math.ceil(this.seconds[color]);
 		const minutes = Math.floor(totalSeconds / 60);
