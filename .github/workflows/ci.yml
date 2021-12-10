@@ -15,3 +15,5 @@ jobs:
       run: npm run lint
     - name: Run tests
       run: npm run test-ci
+    - name: Run production build
+      run: npm run build
