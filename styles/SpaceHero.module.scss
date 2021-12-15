@@ -1,5 +1,6 @@
 @use './theme';
 @use './mixins';
+@use './breakpoints';
 
 @keyframes move-stars-bg {
 	from { -webkit-transform: translate3d(0px, 0px, 0px); }
@@ -36,6 +37,14 @@
 }
 
 .createdBy {
+	@media only screen and (max-width: breakpoints.$desktop) {
+		font-size: 0.6em;
+	}
+
+	@media only screen and (max-width: breakpoints.$tablet) {
+		font-size: 0.3em;
+	}
+
 	display: flex;
 	align-items: center;
 	flex-direction: column;
