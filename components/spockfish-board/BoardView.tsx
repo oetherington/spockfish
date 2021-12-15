@@ -47,7 +47,10 @@ const BoardView = (props: BoardViewProps) => {
 	// TODO: Add option for perspective/orthographic cameras
 	return (
 		<>
-			<Canvas camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}>
+			<Canvas
+				camera={{ zoom: 1, position: [ -6, 5.5, 5.5, ] }}
+				dpr={window?.devicePixelRatio ?? 1}
+			>
 				<ambientLight intensity={0.2} />
 				<pointLight position={[10, 10, 10]} />
 				{isLoaded &&

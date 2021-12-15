@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { Vector3, Group } from 'three';
 import MainBoard from './MainBoard';
