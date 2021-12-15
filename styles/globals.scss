@@ -50,12 +50,11 @@ a {
 	.trek-aqua-blue-bg { background: theme.$trekAquaBlue; }
 	.trek-aqua-green-bg { background: theme.$trekAquaGreen; }
 
-	.spacer {
-		height: 80px;
-	}
-
 	.text-x1_5 { font-size: 1.5em; }
 	.text-x2 { font-size: 2em; }
+
+	.full-height { min-height: 100vh; }
+	.full-height-minus-nav { min-height: calc(100vh - theme.$navbarHeight); }
 
 	.trek-headline {
 		@include mixins.trek-font;
