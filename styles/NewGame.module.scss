@@ -1,21 +1,21 @@
 @use './theme';
 @use './mixins';
 
-$icarsBannerHeight: 35px;
-$icarsBannerInset: 20px;
-$icarsBannerOverlap: 10px;
-$icarsMenuGap: 5px;
-$icarsContentBg: black;
+$lcarsBannerHeight: 35px;
+$lcarsBannerInset: 20px;
+$lcarsBannerOverlap: 10px;
+$lcarsMenuGap: 5px;
+$lcarsContentBg: black;
 
-.icars1 {
-	background: $icarsContentBg;
-	border-radius: $icarsBannerHeight;
+.lcars1 {
+	background: $lcarsContentBg;
+	border-radius: $lcarsBannerHeight;
 }
 
-.icarsMenuItem {
+.lcarsMenuItem {
 	@include mixins.trek-font;
 
-	margin-top: $icarsMenuGap;
+	margin-top: $lcarsMenuGap;
 	width: 220px;
 	height: 60px;
 	padding: 30px 5px 0 0;
@@ -28,52 +28,52 @@ $icarsContentBg: black;
 	}
 }
 
-.icarsTop1 {
-	min-height: $icarsBannerHeight;
+.lcarsTop1 {
+	min-height: $lcarsBannerHeight;
 	background: theme.$trekRed;
-	border-top-left-radius: $icarsBannerHeight;
+	border-top-left-radius: $lcarsBannerHeight;
 }
 
-.icarsSubtop1 {
-	min-height: $icarsBannerInset;
+.lcarsSubtop1 {
+	min-height: $lcarsBannerInset;
 	background: theme.$trekRed;
 }
 
-.icarsBottom1 {
-	min-height: $icarsBannerHeight;
+.lcarsBottom1 {
+	min-height: $lcarsBannerHeight;
 	background: theme.$trekAquaGreen;
-	border-bottom-left-radius: $icarsBannerHeight;
+	border-bottom-left-radius: $lcarsBannerHeight;
 }
 
-.icarsSubbottom1 {
-	min-height: $icarsBannerInset;
+.lcarsSubbottom1 {
+	min-height: $lcarsBannerInset;
 	background: theme.$trekAquaGreen;
-	margin-top: $icarsMenuGap;
+	margin-top: $lcarsMenuGap;
 }
 
-.icars2 {
+.lcars2 {
 	background: theme.$trekRed;
-	border-radius: $icarsBannerHeight;
+	border-radius: $lcarsBannerHeight;
 }
 
-.icarsTop2 {
-	min-height: $icarsBannerHeight;
+.lcarsTop2 {
+	min-height: $lcarsBannerHeight;
 	background: theme.$trekRed;
-	border-top-right-radius: $icarsBannerInset;
+	border-top-right-radius: $lcarsBannerInset;
 }
 
-.icarsSubtop2 {
-	min-height: $icarsBannerInset;
-	background: $icarsContentBg;
-	border-top-left-radius: $icarsBannerOverlap;
+.lcarsSubtop2 {
+	min-height: $lcarsBannerInset;
+	background: $lcarsContentBg;
+	border-top-left-radius: $lcarsBannerOverlap;
 }
 
-.icarsContent {
+.lcarsContent {
 	min-width: 55ch;
 	height: 100%;
 	color: theme.$trekGrey;
-	padding: $icarsBannerOverlap 40px;
-	background: $icarsContentBg;
+	padding: $lcarsBannerOverlap 40px;
+	background: $lcarsContentBg;
 	text-transform: uppercase;
 	font-weight: bold;
 	font: sans-serif;
@@ -94,26 +94,26 @@ $icarsContentBg: black;
 	}
 }
 
-.icarsSubbottom2Wrapper {
+.lcarsSubbottom2Wrapper {
 	background: theme.$trekAquaGreen;
 }
 
-.icarsBottom2 {
-	min-height: $icarsBannerHeight;
+.lcarsBottom2 {
+	min-height: $lcarsBannerHeight;
 	background: theme.$trekAquaGreen;
-	border-bottom-right-radius: $icarsBannerInset;
+	border-bottom-right-radius: $lcarsBannerInset;
 }
 
-.icarsSubbottom2 {
-	min-height: $icarsBannerInset;
-	background: $icarsContentBg;
-	border-bottom-left-radius: $icarsBannerOverlap;
+.lcarsSubbottom2 {
+	min-height: $lcarsBannerInset;
+	background: $lcarsContentBg;
+	border-bottom-left-radius: $lcarsBannerOverlap;
 }
 
-.icarsNotch {
+.lcarsNotch {
 	width: 6px;
-	height: $icarsBannerHeight;
-	background: $icarsContentBg;
+	height: $lcarsBannerHeight;
+	background: $lcarsContentBg;
 	margin-left: 60px;
 }
 

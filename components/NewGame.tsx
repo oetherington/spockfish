@@ -189,14 +189,14 @@ const NewGame = () => {
 
 	return (
 		<Flex justifyContent='center'>
-			<Flex column className={s.icars1}>
-				<div className={s.icarsTop1}></div>
-				<div className={s.icarsSubtop1}></div>
+			<Flex column className={s.lcars1}>
+				<div className={s.lcarsTop1}></div>
+				<div className={s.lcarsSubtop1}></div>
 				{
 					pages.map(({ page, text, color }, index) =>
 						<div
 							key={index}
-							className={`${s.icarsMenuItem} ${color}`}
+							className={`${s.lcarsMenuItem} ${color}`}
 							onClick={() => setValue(page)}
 						>
 							{value === page && <Chevron />}
@@ -204,22 +204,22 @@ const NewGame = () => {
 						</div>
 					)
 				}
-				<div className={s.icarsSubbottom1}></div>
-				<div className={s.icarsBottom1}></div>
+				<div className={s.lcarsSubbottom1}></div>
+				<div className={s.lcarsBottom1}></div>
 			</Flex>
-			<Flex column justifyContent='center' className={s.icars2}>
-				<div className={s.icarsTop2}>
-					<div className={s.icarsNotch}></div>
+			<Flex column justifyContent='center' className={s.lcars2}>
+				<div className={s.lcarsTop2}>
+					<div className={s.lcarsNotch}></div>
 				</div>
-				<div className={s.icarsSubtop2}></div>
-				<div className={s.icarsContent}>
+				<div className={s.lcarsSubtop2}></div>
+				<div className={s.lcarsContent}>
 					<NewGameContent value={value} />
 				</div>
-				<div className={s.icarsSubbottom2Wrapper}>
-					<div className={s.icarsSubbottom2}></div>
+				<div className={s.lcarsSubbottom2Wrapper}>
+					<div className={s.lcarsSubbottom2}></div>
 				</div>
-				<div className={s.icarsBottom2}>
-					<div className={s.icarsNotch}></div>
+				<div className={s.lcarsBottom2}>
+					<div className={s.lcarsNotch}></div>
 				</div>
 			</Flex>
 		</Flex>
