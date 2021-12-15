@@ -97,7 +97,7 @@ const PlayTheAI = () => {
 					setColor={setColor}
 				/>
 			</Flex>
-			<Flex alignItems='center' gap='2em'>
+			<Flex alignItems='center' gap='2em' className={s.timeControls}>
 				<TimerIcon />
 				{
 					timeControls.map((tc, index) => <TimeControlOpt
@@ -188,7 +188,7 @@ const NewGame = () => {
 	];
 
 	return (
-		<Flex justifyContent='center'>
+		<Flex justifyContent='center' className={s.lcars}>
 			<Flex column className={s.lcars1}>
 				<div className={s.lcarsTop1}></div>
 				<div className={s.lcarsSubtop1}></div>

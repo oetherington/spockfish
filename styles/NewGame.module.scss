@@ -1,11 +1,19 @@
 @use './theme';
 @use './mixins';
+@use './breakpoints';
 
 $lcarsBannerHeight: 35px;
 $lcarsBannerInset: 20px;
 $lcarsBannerOverlap: 10px;
 $lcarsMenuGap: 5px;
 $lcarsContentBg: black;
+$lcarsMenuWidthMobile: 80px;
+
+.lcars {
+	@media only screen and (max-width: breakpoints.$tablet) {
+		font-size: 0.8em;
+	}
+}
 
 .lcars1 {
 	background: $lcarsContentBg;
@@ -22,6 +30,22 @@ $lcarsContentBg: black;
 	font-size: 1.6em;
 	text-align: right;
 	user-select: none;
+
+	@media only screen and (max-width: breakpoints.$desktop) {
+		width: 160px;
+		height: 100px;
+		padding: 50px 5px 0 0;
+	}
+
+	@media only screen and (max-width: breakpoints.$midTablet) {
+		width: 120px;
+		height: 100px;
+		padding: 50px 5px 0 0;
+	}
+
+	@media only screen and (max-width: breakpoints.$tablet) {
+		width: $lcarsMenuWidthMobile;
+	}
 
 	&:hover {
 		cursor: pointer;
@@ -70,9 +94,25 @@ $lcarsContentBg: black;
 
 .lcarsContent {
 	min-width: 55ch;
+	padding: $lcarsBannerOverlap 40px;
+
+	@media only screen and (max-width: breakpoints.$desktop) {
+		min-width: 35ch;
+		padding: $lcarsBannerOverlap 25px;
+	}
+
+	@media only screen and (max-width: breakpoints.$midTablet) {
+		min-width: 25ch;
+		padding: $lcarsBannerOverlap 10px;
+	}
+
+	@media only screen and (max-width: breakpoints.$tablet) {
+		min-width: 21ch;
+		max-width: 21ch;
+	}
+
 	height: 100%;
 	color: theme.$trekGrey;
-	padding: $lcarsBannerOverlap 40px;
 	background: $lcarsContentBg;
 	text-transform: uppercase;
 	font-weight: bold;
@@ -111,16 +151,33 @@ $lcarsContentBg: black;
 }
 
 .lcarsNotch {
-	width: 6px;
+	width: $lcarsMenuGap;
 	height: $lcarsBannerHeight;
 	background: $lcarsContentBg;
 	margin-left: 60px;
+
+	@media only screen and (max-width: breakpoints.$desktop) {
+		margin-left: 30px;
+	}
+}
+
+.timeControls {
+	flex-direction: row;
+	margin-top: 1em;
+
+	@media only screen and (max-width: breakpoints.$desktop) {
+		flex-direction: column;
+
+		span {
+			margin-top: -1.4em;
+		}
+	}
 }
 
 .engage {
 	@include mixins.trek-font;
 	font-size: 1.5em;
-	margin-top: 1em;
+	margin-top: 0.5em;
 	color: theme.$trekAquaGreen;
 	user-select: none;
 	transition: color 0.3s;
