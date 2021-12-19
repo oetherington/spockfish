@@ -1,0 +1,11 @@
+@use './theme';
+
+.promSprite {
+	margin: 0.5em;
+	border-radius: 0.5em;
+
+	&:hover {
+		cursor: pointer;
+		background: theme.$trekBlue;
+	}
+}

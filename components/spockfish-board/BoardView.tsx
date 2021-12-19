@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Board from './Board';
 import ClockDisplay from './ClockDisplay';
+import Promotion from './Promotion';
 import GameOver from './GameOver';
 import useEngine from '~/hooks/useEngine';
 import PlayerController from '~/controllers/players/PlayerController';
@@ -64,6 +65,7 @@ const BoardView = (props: BoardViewProps) => {
 					reason={position.status as GameOverReason}
 					playerColor={getLocalColor(props.controllers)}
 				/>}
+			<Promotion color={'w'} />
 		</>
 	);
 };
