@@ -1,4 +1,4 @@
-import PlayerController from './PlayerController';
+import PlayerController, { PlayerRenderData } from './PlayerController';
 import { WebGLRenderer, Scene, Raycaster, Group } from 'three';
 import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import SelectedPiece from '~/utils/SelectedPiece';
@@ -14,16 +14,22 @@ class LocalPlayerController extends PlayerController {
 
 	private async takeOrMoveTo(
 		obj: Group,
-		selected: SelectedPiece | null,
-		setSelected: (piece: SelectedPiece | null) => void,
-		engine: RemoteEngine,
-		setPosition: (position: SerializedPosition) => void,
+		{
+			engine,
+			selected,
+			setSelected,
+			setPosition,
+			choosePromotion,
+		}: PlayerRenderData,
 	) : Promise<void> {
 		if (selected) {
 			const target = selected.legalMoves.find(({ to }: Move) =>
 				squaresEqual(obj.userData, to));
 
 			if (target) {
+				if (target.promotion)
+					target.promotion = await choosePromotion();
+
 				const newPosition = await engine.makeMove(target);
 				setPosition(newPosition);
 			}
@@ -34,11 +40,10 @@ class LocalPlayerController extends PlayerController {
 
 	private async selectPiece(
 		obj: Group,
-		selected: SelectedPiece | null,
-		setSelected: (piece: SelectedPiece | null) => void,
-		engine: RemoteEngine,
-		setPosition: (position: SerializedPosition) => void,
+		data: PlayerRenderData,
 	) : Promise<void> {
+		const { engine, selected, setSelected } = data;
+
 		if (!obj || (selected && obj === selected.obj)) {
 			setSelected(null);
 		} else {
@@ -47,38 +52,31 @@ class LocalPlayerController extends PlayerController {
 				const legalMoves = await engine.getLegalMovesForPiece(piece);
 				setSelected({ obj, piece, legalMoves });
 			} else {
-				await this.takeOrMoveTo(
-					obj, selected, setSelected, engine, setPosition);
+				await this.takeOrMoveTo(obj, data);
 			}
 		}
 	}
 
 	private async clickObject(
 		obj: Group,
-		selected: SelectedPiece | null,
-		setSelected: (piece: SelectedPiece | null) => void,
-		engine: RemoteEngine,
-		setPosition: (position: SerializedPosition) => void,
+		data: PlayerRenderData,
 	) : Promise<void> {
-		if (obj.userData.piece || obj.userData.abLevel) {
-			await this.selectPiece(
-				obj, selected, setSelected, engine, setPosition);
-		} else if (obj.userData.square) {
-			await this.takeOrMoveTo(
-				obj, selected, setSelected, engine, setPosition);
-		}
+		if (obj.userData.piece || obj.userData.abLevel)
+			await this.selectPiece(obj, data);
+		else if (obj.userData.square)
+			await this.takeOrMoveTo(obj, data);
 	}
 
-	public onRender(
-		engine: RemoteEngine,
-		position: SerializedPosition,
-		setPosition: (position: SerializedPosition) => void,
-		selected: SelectedPiece | null,
-		setSelected: (piece: SelectedPiece | null) => void,
-		gl: WebGLRenderer,
-		scene: Scene,
-		raycaster: Raycaster,
-	) : void {
+	public onRender(data: PlayerRenderData) : void {
+		const {
+			position,
+			scene,
+			selected,
+			setSelected,
+			raycaster,
+			gl,
+		} = data;
+
 		useDomEvent(gl.domElement, 'click', () => {
 			if (position.turn !== this.color)
 				return;
@@ -91,13 +89,7 @@ class LocalPlayerController extends PlayerController {
 					obj = obj.parent;
 
 				if (obj.userData && obj.userData.clickable) {
-					this.clickObject(
-						obj as Group,
-						selected,
-						setSelected,
-						engine,
-						setPosition,
-					);
+					this.clickObject(obj as Group, data);
 					return;
 				}
 			}

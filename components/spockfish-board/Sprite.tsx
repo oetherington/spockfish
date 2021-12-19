@@ -63,8 +63,8 @@ const Sprite = ({ piece, color }: SpriteProps) => {
 	return (
 		<div>
 			<Image
-				src={pieces[piece][color as string]}
-				alt={pieces[piece][name]}
+				src={pieces[piece][color]}
+				alt={pieces[piece].name}
 				width='50px'
 				height='50px'
 			/>
