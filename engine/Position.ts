@@ -85,7 +85,7 @@ class Position {
 	}
 
 	public makeMove(
-		{ piece, color, from, to, capture, castle }: Move,
+		{ piece, color, from, to, capture, castle, promotion }: Move,
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) : Position {
 		let pieces: Piece[] = [];
@@ -93,7 +93,7 @@ class Position {
 		for (const p of this.pieces)
 			if (!squaresEqual(p, to))
 				pieces.push(squaresEqual(p, from)
-					? { piece, color, ...to }
+					? { piece: promotion || piece, color, ...to }
 					: p);
 
 		const unmovedPieces = this.unmovedPieces.clone();

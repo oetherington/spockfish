@@ -2371,6 +2371,127 @@ describe('Position - Making moves', () => {
 				},
 			],
 		},
+		{
+			name: 'can make promotion moves',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'd',
+					rank: 7,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 2,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			move: {
+				piece: 'p',
+				color: 'w',
+				from: { file: 'd', rank: 7, level: 'B' },
+				to: { file: 'd', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'q',
+			},
+			expectedPieces: [
+				{
+					piece: 'q',
+					file: 'd',
+					rank: 8,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 2,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			],
+		},
+		{
+			name: 'can make promotion moves wiith a capture',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'd',
+					rank: 7,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 8,
+					color: 'b',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 2,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			move: {
+				piece: 'p',
+				color: 'w',
+				from: { file: 'd', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: true,
+				promotion: 'n',
+			},
+			expectedPieces: [
+				{
+					piece: 'n',
+					file: 'c',
+					rank: 8,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 2,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 7,
+					color: 'b',
+					level: 'B',
+				},
+			],
+		},
 	];
 
 	runMakeMoveTestCases('can make moves', makeMoveTestCases);
