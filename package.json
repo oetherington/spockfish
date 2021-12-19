@@ -8,9 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch --config=jest.config.js",
-    "test-fast": "jest --watch --config=jest-fast.config.js",
-    "test-ci": "jest --verbose --config=jest.config.js --ci"
+    "test": "jest --watch --maxWorkers=25% --config=jest.config.js",
+    "test-fast": "jest --watch --maxWorkers=25% --config=jest-fast.config.js",
+    "test-ci": "jest --verbose --ci --runInBand --config=jest.config.js"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -20,7 +20,7 @@
     "@react-css/flex": "^1.5.0",
     "@react-three/fiber": "^7.0.17",
     "comlink": "^4.3.1",
-    "next": "12.0.1",
+    "next": "^12.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "sass": "^1.43.4",
