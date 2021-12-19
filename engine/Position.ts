@@ -269,17 +269,33 @@ class Position {
 				.onlyLeft(this.occupied[color][targetLevel]);
 			let captures = allMoves
 				.both(this.occupied[otherColor(color)][targetLevel]);
-			let quietMoves = allMoves.onlyLeft(captures);
+			let quiet = allMoves.onlyLeft(captures);
 
 			if (p.piece === 'p') {
 				const file = FlatBitboard.fromFile(p.file);
 				captures = captures.onlyLeft(file);
-				quietMoves = quietMoves.both(file);
+				quiet = quiet.both(file);
 			}
 
-			result = result
-				.concat(captures.toMoves(piece, color, from, targetLevel, true))
-				.concat(quietMoves.toMoves(piece, color, from, targetLevel));
+			const captureMoves = captures.toMoves(
+				piece,
+				color,
+				from,
+				targetLevel,
+				true,
+				this.levels,
+			);
+
+			const quietMoves = quiet.toMoves(
+				piece,
+				color,
+				from,
+				targetLevel,
+				false,
+				this.levels,
+			);
+
+			result = result.concat(captureMoves).concat(quietMoves);
 		}
 
 		return result;

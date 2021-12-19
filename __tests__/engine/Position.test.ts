@@ -2039,6 +2039,145 @@ describe('Position - Castling', () => {
 	});
 });
 
+describe('Position - Pawn promotions', () => {
+	it('can generate pawn promotion moves', () => {
+		const pos = new Position([
+			{
+				piece: 'p',
+				file: 'c',
+				rank: 7,
+				color: 'w',
+				level: 'B',
+			},
+		], 'w');
+
+		const moves = pos.getLegalMoves();
+		expect(moves).toHaveLength(4);
+		expect(moves).toEqual(expect.arrayContaining([
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'q',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'r',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'b',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'n',
+			},
+		]));
+	});
+
+	it('can generate pawn promotion moves with a capture', () => {
+		const pos = new Position([
+			{
+				piece: 'p',
+				file: 'c',
+				rank: 7,
+				color: 'w',
+				level: 'B',
+			},
+			{
+				piece: 'n',
+				file: 'b',
+				rank: 8,
+				color: 'b',
+				level: 'B',
+			},
+		], 'w');
+
+		const moves = pos.getLegalMoves();
+		expect(moves).toHaveLength(8);
+		expect(moves).toEqual(expect.arrayContaining([
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'q',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'r',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'b',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'c', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'n',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: true,
+				promotion: 'q',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: true,
+				promotion: 'r',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: true,
+				promotion: 'b',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'c', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: true,
+				promotion: 'n',
+			},
+		]));
+	});
+});
+
 describe('Position - Making moves', () => {
 	const makeMoveTestCases: MakeMoveTestCase[] = [
 		{

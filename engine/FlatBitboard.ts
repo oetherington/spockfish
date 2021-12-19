@@ -281,24 +281,77 @@ class FlatBitboard {
 		}));
 	}
 
+	private static isQueeningSquare(
+		{ file, rank }: FlatSquare,
+		levels: Level[],
+	) : boolean {
+		switch (file) {
+			case 'z':
+			case 'e':
+				return rank === 0 || rank === 9;
+			case 'b':
+			case 'c':
+				return rank === 1 || rank === 8;
+			case 'a':
+				if (rank === 0)
+					return levels.includes('QL1');
+				else if (rank === 1)
+					return !levels.includes('QL1');
+				else if (rank === 9)
+					return levels.includes('QL6');
+				else if (rank === 8)
+					return !levels.includes('QL6');
+			case 'd':
+				if (rank === 0)
+					return levels.includes('KL1');
+				else if (rank === 1)
+					return !levels.includes('KL1');
+				else if (rank === 9)
+					return levels.includes('KL6');
+				else if (rank === 8)
+					return !levels.includes('KL6');
+			default:
+				return false;
+		}
+	}
+
 	public toMoves(
 		piece: PieceType,
 		color: Color,
 		from: Square,
 		targetLevel: Level,
 		capture: boolean = false,
+		levels: Level[] = [],
 	) : Move[] {
-		return this.toSquares().map(({ file, rank }) => ({
-			piece,
-			color,
-			from,
-			to: {
-				file,
-				rank,
-				level: targetLevel,
-			},
-			capture,
-		}));
+		if (piece === 'p') {
+			return this.toSquares().map(({ file, rank }) => {
+				const isPromotion = FlatBitboard.isQueeningSquare(
+					{ file, rank },
+					levels,
+				);
+
+				const promotions: (PieceType | undefined)[] = isPromotion
+					? [ 'q', 'r', 'b', 'n' ]
+					: [ undefined ];
+
+				return promotions.map((promotion) => ({
+					piece,
+					color,
+					from,
+					to: { file, rank, level: targetLevel },
+					capture,
+					promotion,
+				}));
+			}).flat();
+		} else {
+			return this.toSquares().map(({ file, rank }) => ({
+				piece,
+				color,
+				from,
+				to: { file, rank, level: targetLevel },
+				capture,
+			}));
+		}
 	}
 
 	public normalize() : void {

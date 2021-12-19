@@ -312,20 +312,101 @@ describe('FlatBitboard', () => {
 	it('can convert to pieces', () => {
 		const bb = new FlatBitboard(5);
 		const pieces = bb.toPieces('n', 'w', 'W');
-		expect(pieces[0]).toStrictEqual({
-			piece: 'n',
-			color: 'w',
-			file: 'z',
-			rank: 0,
-			level: 'W',
-		});
-		expect(pieces[1]).toStrictEqual({
-			piece: 'n',
-			color: 'w',
-			file: 'z',
-			rank: 2,
-			level: 'W',
-		});
+		const expectedPieces = [
+			{
+				piece: 'n',
+				color: 'w',
+				file: 'z',
+				rank: 0,
+				level: 'W',
+			},
+			{
+				piece: 'n',
+				color: 'w',
+				file: 'z',
+				rank: 2,
+				level: 'W',
+			},
+		];
+		expect(pieces).toHaveLength(expectedPieces.length);
+		expect(pieces).toEqual(expect.arrayContaining(expectedPieces));
+	});
+
+	it('can convert to moves', () => {
+		const bb = new FlatBitboard();
+		bb.setSquare('c', 4);
+		bb.setSquare('d', 4);
+		const moves = bb.toMoves(
+			'r',
+			'w',
+			{ file: 'b', rank: 4, level: 'N' },
+			'W',
+		);
+		const expectedMoves = [
+			{
+				piece: 'r',
+				color: 'w',
+				from: { file: 'b', rank: 4, level: 'N' },
+				to: { file: 'c', rank: 4, level: 'W' },
+				capture: false,
+			},
+			{
+				piece: 'r',
+				color: 'w',
+				from: { file: 'b', rank: 4, level: 'N' },
+				to: { file: 'd', rank: 4, level: 'W' },
+				capture: false,
+			},
+		];
+		expect(moves).toHaveLength(expectedMoves.length);
+		expect(moves).toEqual(expect.arrayContaining(expectedMoves));
+	});
+
+	it('can convert to moves with promotions', () => {
+		const bb = new FlatBitboard();
+		bb.setSquare('b', 8);
+		const moves = bb.toMoves(
+			'p',
+			'w',
+			{ file: 'b', rank: 7, level: 'B' },
+			'B',
+		);
+		const expectedMoves = [
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'q',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'r',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'b',
+			},
+			{
+				piece: 'p',
+				color: 'w',
+				from: { file: 'b', rank: 7, level: 'B' },
+				to: { file: 'b', rank: 8, level: 'B' },
+				capture: false,
+				promotion: 'n',
+			},
+		];
+		expect(moves).toHaveLength(expectedMoves.length);
+		expect(moves).toEqual(expect.arrayContaining(expectedMoves));
 	});
 
 	it('can get starting piece locations`', () => {

@@ -9,6 +9,7 @@ interface Move {
 	to: Square,
 	capture: boolean,
 	castle?: boolean,
+	promotion?: PieceType,
 }
 
 export default Move;
