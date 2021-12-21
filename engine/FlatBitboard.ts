@@ -11,8 +11,8 @@ import Square, {
 } from './Square';
 import Piece, { PieceType } from './Piece';
 import Color from './Color';
-import Move from './Move';
 import FullBitboard from './FullBitboard';
+import { PieceMove } from './Move';
 import { SquareIter, DiagIter, RankIter, FileIter } from './Iterators';
 
 class FlatBitboard {
@@ -322,7 +322,7 @@ class FlatBitboard {
 		targetLevel: Level,
 		capture: boolean = false,
 		levels: Level[] = [],
-	) : Move[] {
+	) : PieceMove[] {
 		if (piece === 'p') {
 			return this.toSquares().map(({ file, rank }) => {
 				const isPromotion = FlatBitboard.isQueeningSquare(

@@ -4,8 +4,8 @@ import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import SelectedPiece from '~/utils/SelectedPiece';
 import useDomEvent from '~/hooks/useDomEvent';
 import Piece from '~/engine/Piece';
-import Move from '~/engine/Move';
-import { squaresEqual } from '~/engine/Square';
+import Move, { PieceMove, isPieceMove } from '~/engine/Move';
+import Square, { squaresEqual } from '~/engine/Square';
 
 class LocalPlayerController extends PlayerController {
 	public isLocal() : boolean {
@@ -23,8 +23,9 @@ class LocalPlayerController extends PlayerController {
 		}: PlayerRenderData,
 	) : Promise<void> {
 		if (selected) {
-			const target = selected.legalMoves.find(({ to }: Move) =>
-				squaresEqual(obj.userData, to));
+			const target = selected.legalMoves.find((move: Move) =>
+				isPieceMove(move) && squaresEqual(obj.userData,
+					move.to as Square)) as PieceMove | undefined;
 
 			if (target) {
 				if (target.promotion)

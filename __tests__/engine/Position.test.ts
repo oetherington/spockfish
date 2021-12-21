@@ -1,6 +1,6 @@
 import Position from '~/engine/Position';
 import Piece from  '~/engine/Piece';
-import Move from '~/engine/Move';
+import Move, { isCastleMove } from '~/engine/Move';
 import AttackBoards from '~/engine/AttackBoards';
 import { FlatSquare } from '~/engine/Square';
 import FlatBitboard from '~/engine/FlatBitboard';
@@ -1819,12 +1819,12 @@ describe('Position - Castling', () => {
 	it('Castling is illegal on move 1', () => {
 		const pos = Position.makeInitial();
 
-		const moves1 = pos.getLegalMoves().filter((move) => move.castle);
+		const moves1 = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves1).toHaveLength(0);
 
 		const res = pos.makeRandomMove();
 
-		const moves2 = res.getLegalMoves().filter((move) => move.castle);
+		const moves2 = res.getLegalMoves().filter(isCastleMove);
 		expect(moves2).toHaveLength(0);
 	});
 
@@ -1848,7 +1848,7 @@ describe('Position - Castling', () => {
 			{ file: 'e', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(0);
 	});
 
@@ -1872,7 +1872,7 @@ describe('Position - Castling', () => {
 			{ file: 'd', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(0);
 	});
 
@@ -1904,7 +1904,7 @@ describe('Position - Castling', () => {
 			{ file: 'e', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(0);
 	});
 
@@ -1951,7 +1951,7 @@ describe('Position - Castling', () => {
 			{ file: 'e', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(0);
 	});
 
@@ -1983,7 +1983,7 @@ describe('Position - Castling', () => {
 			{ file: 'z', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(0);
 	});
 
@@ -2016,7 +2016,7 @@ describe('Position - Castling', () => {
 			{ file: 'e', rank: 0 },
 		]));
 
-		const moves = pos.getLegalMoves().filter((move) => move.castle);
+		const moves = pos.getLegalMoves().filter(isCastleMove);
 		expect(moves).toHaveLength(2);
 		expect(moves).toEqual(expect.arrayContaining([
 			{

@@ -8,7 +8,7 @@ import Square, {
 	squaresEqual,
 } from './Square';
 import Piece from './Piece';
-import Move from './Move';
+import Move, { PieceMove, AttackBoardMove, isPieceMove } from './Move';
 import FlatBitboard from './FlatBitboard';
 import FullBitboard, { createFullBitboard } from './FullBitboard';
 import AttackBoards from './AttackBoards';
@@ -85,9 +85,15 @@ class Position {
 	}
 
 	public makeMove(
-		{ piece, color, from, to, capture, castle, promotion }: Move,
+		move: Move,
 		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
 	) : Position {
+		if (!isPieceMove(move))
+			throw "Attack board move";	// TODO Implement attack board moves
+
+		const { piece, color, from, to, capture, castle, promotion } =
+			move as PieceMove;
+
 		let pieces: Piece[] = [];
 
 		for (const p of this.pieces)
@@ -255,13 +261,13 @@ class Position {
 		}
 	}
 
-	private generateLegalMovesForPiece(p: Piece) : Move[] {
+	private generateLegalMovesForPiece(p: Piece) : PieceMove[] {
 		const targets = this.getLegalSquaresForPiece(p);
 
 		const { piece, color, file, rank, level } = p;
 		const from: Square = { file, rank, level };
 
-		let result: Move[] = [];
+		let result: PieceMove[] = [];
 
 		for (const targetLevel of this.levels) {
 			const allMoves = targets
@@ -308,11 +314,14 @@ class Position {
 		return null;
 	}
 
-	private static isAttacked(attacked: Move[], square: any) : boolean {
+	private static isAttacked(attacked: PieceMove[], square: any) : boolean {
 		return !!attacked.find(({ to }) => squaresEqual(square, to));
 	}
 
-	private generateLegalCastlingMoves(king: Piece, attacked: Move[]) : Move[] {
+	private generateLegalCastlingMoves(
+		king: Piece,
+		attacked: PieceMove[],
+	) : PieceMove[] {
 		if (this.ply < 2 ||
 				!this.unmovedPieces.isSquareSet(king.file, king.rank) ||
 				Position.isAttacked(attacked, king))
@@ -324,7 +333,7 @@ class Position {
 			!Position.isAttacked(attacked, { file, rank, level })
 		);
 
-		const result: Move[] = [];
+		const result: PieceMove[] = [];
 
 		for (const rook of rooks) {
 			const target = Position.getCastle(rook);
@@ -358,12 +367,12 @@ class Position {
 
 		const searchDeeper = king && checkDepth > 0;
 
-		let attacked: Move[] = [];
+		let attacked: PieceMove[] = [];
 
 		for (const piece of this.pieces) {
 			if (piece.color === this.turn) {
 				const moves = this.generateLegalMovesForPiece(piece)
-				this.legalMoves = this.legalMoves.concat(moves);
+				this.legalMoves = this.legalMoves.concat(moves as Move[]);
 			} else if (searchDeeper) {
 				const moves = this.generateLegalMovesForPiece(piece)
 				attacked = attacked.concat(moves);
@@ -372,7 +381,7 @@ class Position {
 
 		if (king)
 			this.legalMoves = this.legalMoves.concat(
-				this.generateLegalCastlingMoves(king, attacked));
+				this.generateLegalCastlingMoves(king, attacked) as Move[]);
 
 		if (!searchDeeper)
 			return;
@@ -382,19 +391,28 @@ class Position {
 
 		this.legalMoves = this.legalMoves.filter((move) => {
 			const pos = this.makeMove(move, checkDepth - 1);
+			const kingPos = (move as PieceMove).piece === 'k' ? move.to : king;
 			const moves = pos.getLegalMoves();
-			for (const { capture, to } of moves) {
-				const kingPos = move.piece === 'k' ? move.to : king;
-				if (capture && squaresEqual(to, kingPos))
-					return false;
+			for (const theMove of moves) {
+				if (isPieceMove(theMove)) {
+					const { capture, to } = theMove as PieceMove;
+					if (capture && squaresEqual(to, kingPos))
+						return false;
+				} else {
+					// TODO
+				}
 			}
 			return true;
 		});
 	}
 
 	public getLegalMovesForPiece(p: Piece) : Move[] {
-		return this.legalMoves.filter(({ piece, color, from }: Move) =>
-			p.piece === piece && p.color === color && squaresEqual(p, from));
+		return this.legalMoves.filter((move: Move) => {
+			const { piece, color, from } = move as PieceMove;
+			return p.piece === piece &&
+				p.color === color &&
+				squaresEqual(p, from);
+		});
 	}
 
 	public getLegalMoves() : Move[] {

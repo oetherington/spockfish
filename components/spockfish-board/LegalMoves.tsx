@@ -8,7 +8,7 @@ import {
 	legalMoveBobSpeed,
 	getSquarePosition,
 } from './geometry';
-import Move from '~/engine/Move';
+import Move, { isPieceMove } from '~/engine/Move';
 import Square from '~/engine/Square';
 
 const getPosition = ({ file, rank, level }: Square, bob: number) => {
@@ -41,15 +41,18 @@ const LegalMoves = ({ moves }: LegalMovesProps) => {
 	return (
 		<>
 			{
-				moves.map(({ to }, index) =>
-					<mesh
-						key={index}
-						position={getPosition(to, bob.display)}
-						scale={legalMoveScale}
-					>
-						<sphereGeometry args={[1, 16]} />
-						<meshStandardMaterial color={legalMoveColor} />
-					</mesh>
+				moves.map((move, index) =>
+					isPieceMove(move)
+						? <mesh
+							key={index}
+							position={getPosition(move.to as Square,
+								bob.display)}
+							scale={legalMoveScale}
+						>
+							<sphereGeometry args={[1, 16]} />
+							<meshStandardMaterial color={legalMoveColor} />
+						</mesh>
+						: null
 				)
 			}
 		</>
