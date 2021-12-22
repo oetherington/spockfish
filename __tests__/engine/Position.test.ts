@@ -1799,18 +1799,40 @@ type MakeMoveTestCase = {
 	position: Position,
 	move: Move,
 	expectedPieces: Piece[],
+	expectedAttackBoards?: AttackBoards,
 }
 
 const runMakeMoveTestCases = (
 	description: string,
 	makeMoveTestCases: MakeMoveTestCase[],
 ) : void => {
-	makeMoveTestCases.forEach(({ name, position, move, expectedPieces }) => {
+	makeMoveTestCases.forEach(({
+		name,
+		position,
+		move,
+		expectedPieces,
+		expectedAttackBoards,
+	}) => {
 		it(`${description} - ${name}`, () => {
 			const res = position.makeMove(move);
+
 			const pieces = res.getPieces();
 			expect(pieces).toHaveLength(expectedPieces.length);
 			expect(pieces).toEqual(expect.arrayContaining(expectedPieces));
+
+			if (expectedAttackBoards) {
+				const ab = res.getAttackBoards();
+
+				expect(ab.getWhite()).toHaveLength(
+					expectedAttackBoards.getWhite().length);
+				expect(ab.getWhite()).toEqual(
+					expect.arrayContaining(expectedAttackBoards.getWhite()));
+
+				expect(ab.getBlack()).toHaveLength(
+					expectedAttackBoards.getBlack().length);
+				expect(ab.getBlack()).toEqual(
+					expect.arrayContaining(expectedAttackBoards.getBlack()));
+			}
 		});
 	});
 }
@@ -2491,6 +2513,64 @@ describe('Position - Making moves', () => {
 					level: 'B',
 				},
 			],
+		},
+		{
+			name: 'can make attack board moves',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 9,
+					color: 'b',
+					level: 'KL6',
+				},
+				{
+					piece: 'p',
+					file: 'z',
+					rank: 1,
+					color: 'w',
+					level: 'QL1',
+				},
+			]),
+			move: {
+				color: 'w',
+				from: 'QL1',
+				to: 'QL2',
+			},
+			expectedPieces: [
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 0,
+					color: 'w',
+					level: 'KL1',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 9,
+					color: 'b',
+					level: 'KL6',
+				},
+				{
+					piece: 'p',
+					file: 'z',
+					rank: 5,
+					color: 'w',
+					level: 'QL2',
+				},
+			],
+			expectedAttackBoards: new AttackBoards(
+				[ 'KL1', 'QL2' ],
+				[ 'KL6', 'QL6' ],
+			),
 		},
 	];
 

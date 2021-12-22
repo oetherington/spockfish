@@ -84,16 +84,10 @@ class Position {
 		this.generateLegalMoves(checkDepth);
 	}
 
-	public makeMove(
-		move: Move,
-		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
+	private makePieceMove(
+		{ piece, color, from, to, capture, castle, promotion }: PieceMove,
+		checkDepth: number,
 	) : Position {
-		if (!isPieceMove(move))
-			throw "Attack board move";	// TODO Implement attack board moves
-
-		const { piece, color, from, to, capture, castle, promotion } =
-			move as PieceMove;
-
 		let pieces: Piece[] = [];
 
 		for (const p of this.pieces)
@@ -135,11 +129,59 @@ class Position {
 			pieces,
 			otherColor(this.turn),
 			this.ply + 1,
-			this.attackBoards, // TODO Update this
+			this.attackBoards,
 			fiftyMoveCount,
 			unmovedPieces,
 			checkDepth,
 		);
+	}
+
+	private makeAttackBoardMove(
+		{ color, from, to }: AttackBoardMove,
+		checkDepth: number,
+	) : Position {
+		const pieces: Piece[] = [];
+		const movedPieces: Piece[] = [];
+
+		for (const piece of this.pieces)
+			(piece.level === from ? movedPieces : pieces).push(piece);
+
+		const fromBase = boardSquares[from].lowestBit();
+		const toBase = boardSquares[to].lowestBit();
+		const d = toBase - fromBase;
+
+		for (const piece of movedPieces) {
+			const bb = new FlatBitboard();
+			bb.setBit(FlatBitboard.squareToIndex(piece.file, piece.rank) + d);
+
+			const square = bb.toSquares()[0];
+			pieces.push({
+				...piece,
+				...square,
+				level: to,
+			});
+		}
+
+		const attackBoards = this.attackBoards.move(color, from, to);
+
+		return new Position(
+			pieces,
+			otherColor(this.turn),
+			this.ply + 1,
+			attackBoards,
+			this.fiftyMoveCount,
+			this.unmovedPieces,
+			checkDepth,
+		);
+	}
+
+	public makeMove(
+		move: Move,
+		checkDepth: number = Position.DEFAULT_CHECK_DEPTH,
+	) : Position {
+		return isPieceMove(move)
+			? this.makePieceMove(move as PieceMove, checkDepth)
+			: this.makeAttackBoardMove(move as AttackBoardMove, checkDepth);
 	}
 
 	public makeRandomMove() : Position {
@@ -193,11 +235,11 @@ class Position {
 	}
 
 	public getWhiteAttackBoards() : AttackLevel[] {
-		return this.attackBoards.white;
+		return this.attackBoards.getWhite();
 	}
 
 	public getBlackAttackBoards() : AttackLevel[] {
-		return this.attackBoards.black;
+		return this.attackBoards.getBlack();
 	}
 
 	private generateOccupied(color: Color) : FullBitboard {
@@ -216,6 +258,10 @@ class Position {
 		return this.pieces;
 	}
 
+	public getAttackBoards() : AttackBoards {
+		return this.attackBoards;
+	}
+
 	public generateLevels() : Level[] {
 		const levels: Level[] = [ 'W', 'N', 'B' ];
 		return levels
@@ -231,7 +277,7 @@ class Position {
 		return this.unmovedPieces;
 	}
 
-	private getLegalSquaresForPiece(
+	private generateLegalSquaresForPiece(
 		{ piece, color, file, rank, level }: Piece,
 	) : FlatBitboard {
 		const bb = new FlatBitboard();
@@ -257,12 +303,13 @@ class Position {
 			case 'k':
 				return bb.kingMoves();
 			default:
-				throw new Error('Invalid piece in getLegalSquaresForPiece');
+				throw new Error(
+					'Invalid piece in generateLegalSquaresForPiece');
 		}
 	}
 
 	private generateLegalMovesForPiece(p: Piece) : PieceMove[] {
-		const targets = this.getLegalSquaresForPiece(p);
+		const targets = this.generateLegalSquaresForPiece(p);
 
 		const { piece, color, file, rank, level } = p;
 		const from: Square = { file, rank, level };
