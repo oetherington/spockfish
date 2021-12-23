@@ -25,9 +25,11 @@ import {
 	legalMoveBobHeight,
 	legalMoveBobSpeed,
 	getSquarePosition,
+	getStalkPosition,
+	stalkSize,
 } from './geometry';
 import Move, { isPieceMove } from '~/engine/Move';
-import Square from '~/engine/Square';
+import Square, { AttackLevel } from '~/engine/Square';
 
 const getPosition = ({ file, rank, level }: Square, bob: number) => {
 	const position = getSquarePosition(file, rank, level)
@@ -56,6 +58,8 @@ const LegalMoves = ({ moves }: LegalMovesProps) => {
 
 	useFrame((state, delta) => updateBob(delta));
 
+	const { radius, height, segments } = stalkSize;
+
 	return (
 		<>
 			{
@@ -70,7 +74,21 @@ const LegalMoves = ({ moves }: LegalMovesProps) => {
 							<sphereGeometry args={[1, 16]} />
 							<meshStandardMaterial color={legalMoveColor} />
 						</mesh>
-						: null
+						: <mesh
+							key={index}
+							position={getStalkPosition(move.to as AttackLevel,
+								bob.display)}
+							scale={1}
+							userData={{
+								targetAbLevel: move.to,
+								clickable: true,
+							}}
+						>
+							<cylinderGeometry args={
+								[radius, radius, height, segments]
+							} />
+							<meshStandardMaterial color={legalMoveColor} />
+						</mesh>
 				)
 			}
 		</>

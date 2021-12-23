@@ -22,7 +22,7 @@ import { RemoteEngine, SerializedPosition } from '~/engine/Engine';
 import SelectedPiece from '~/utils/SelectedPiece';
 import useDomEvent from '~/hooks/useDomEvent';
 import Piece from '~/engine/Piece';
-import Move, { PieceMove, isPieceMove } from '~/engine/Move';
+import Move, { PieceMove, isPieceMove, isAttackBoardMove } from '~/engine/Move';
 import Square, { AttackLevel, squaresEqual } from '~/engine/Square';
 
 class LocalPlayerController extends PlayerController {
@@ -41,13 +41,17 @@ class LocalPlayerController extends PlayerController {
 		}: PlayerRenderData,
 	) : Promise<void> {
 		if (selected) {
-			const target = selected.legalMoves.find((move: Move) =>
-				isPieceMove(move) && squaresEqual(obj.userData,
-					move.to as Square)) as PieceMove | undefined;
+			const target = selected.legalMoves.find(
+				obj.userData.targetAbLevel
+					? (move: Move) => isAttackBoardMove(move) &&
+						move.to === obj.userData.targetAbLevel
+					: (move: Move) => isPieceMove(move) &&
+						squaresEqual(obj.userData, move.to as Square)
+			);
 
 			if (target) {
-				if (target.promotion)
-					target.promotion = await choosePromotion();
+				if ((target as PieceMove).promotion)
+					(target as PieceMove).promotion = await choosePromotion();
 
 				const newPosition = await engine.makeMove(target);
 				setPosition(newPosition);
@@ -66,11 +70,11 @@ class LocalPlayerController extends PlayerController {
 		if (!obj || (selected && obj === selected.obj)) {
 			setSelected(null);
 		} else if (obj.userData.abLevel) {
-			setSelected({
-				obj,
-				piece: obj.userData.abLevel as AttackLevel,
-				legalMoves: [],
-			});
+			const piece = obj.userData.abLevel as AttackLevel;
+			const legalMoves = await engine.getLegalMovesForAttackBoard(piece);
+			setSelected({ obj, piece, legalMoves });
+		} else if (obj.userData.targetAbLevel) {
+			await this.takeOrMoveTo(obj, data);
 		} else {
 			const piece = obj.userData as Piece;
 			if (piece.color === this.color) {
@@ -86,7 +90,9 @@ class LocalPlayerController extends PlayerController {
 		obj: Group,
 		data: PlayerRenderData,
 	) : Promise<void> {
-		if (obj.userData.piece || obj.userData.abLevel)
+		if (obj.userData.piece ||
+				obj.userData.abLevel ||
+				obj.userData.targetAbLevel)
 			await this.selectPiece(obj, data);
 		else if (obj.userData.square)
 			await this.takeOrMoveTo(obj, data);

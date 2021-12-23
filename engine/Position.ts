@@ -566,6 +566,10 @@ class Position {
 		});
 	}
 
+	public getLegalMovesForAttackBoard(level: AttackLevel) : Move[] {
+		return this.legalMoves.filter(({ from }: Move) => from === level);
+	}
+
 	public getLegalMoves() : Move[] {
 		return this.legalMoves;
 	}

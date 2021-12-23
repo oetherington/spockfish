@@ -83,6 +83,10 @@ class Engine {
 		return this.position.getLegalMovesForPiece(p);
 	}
 
+	public getLegalMovesForAttackBoard(level: AttackLevel) : Move[] {
+		return this.position.getLegalMovesForAttackBoard(level);
+	}
+
 	public getLegalMoves() : Move[] {
 		return this.position.getLegalMoves();
 	}

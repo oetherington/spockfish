@@ -17,7 +17,7 @@
  */
 
 import { Vector3 } from 'three';
-import { File, Rank, Level, MainLevel } from '~/engine/Square';
+import { File, Rank, Level, MainLevel, AttackLevel } from '~/engine/Square';
 
 const trekColors = {
 	red: '#cc0c00',
@@ -61,10 +61,10 @@ export const heightOffsets = {
 };
 
 const getAttackBoardFileOffset =
-	(level: Level) => level[0] === 'Q' ? -2.5 : 1.5;
+	(level: AttackLevel) => level[0] === 'Q' ? -2.5 : 1.5;
 
 export const getBoardPosition = (level: Level) => new Vector3(
-	level.length === 1 ? -1.5 : getAttackBoardFileOffset(level),
+	level.length === 1 ? -1.5 : getAttackBoardFileOffset(level as AttackLevel),
 	heightOffsets[level] - boardDepth,
 	4.5,
 );
@@ -75,9 +75,12 @@ export const stalkSize = {
 	segments: 6,
 };
 
-export const getStalkPosition = (level: Level) => new Vector3(
+export const getStalkPosition = (
+	level: AttackLevel,
+	bob: number | undefined = undefined,
+) => new Vector3(
 	getAttackBoardFileOffset(level) + 0.5,
-	heightOffsets[level] - (stalkSize.height / 2) - boardDepth,
+	heightOffsets[level] - (stalkSize.height / 2) - boardDepth + (bob || 0),
 	4 - getAttackLevelRanks(level)[0],
 );
 
