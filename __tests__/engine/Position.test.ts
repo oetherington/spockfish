@@ -1,6 +1,10 @@
 import Position from '~/engine/Position';
 import Piece from  '~/engine/Piece';
-import Move, { isCastleMove } from '~/engine/Move';
+import Move, {
+	isPieceMove,
+	isAttackBoardMove,
+	isCastleMove,
+} from '~/engine/Move';
 import AttackBoards from '~/engine/AttackBoards';
 import { FlatSquare } from '~/engine/Square';
 import FlatBitboard from '~/engine/FlatBitboard';
@@ -688,6 +692,285 @@ describe('Position - Empty board moves', () => {
 		'can generate legal piece moves',
 		legalMovesTestCases,
 	);
+});
+
+describe('Position - Attack board moves', () => {
+	type AttackBoardMovesTestCase = {
+		name: string,
+		position: Position,
+		expectedMoves: Move[],
+	}
+
+	const attackBoardMovesTestCases: AttackBoardMovesTestCase[] = [
+		{
+			name: 'cannot move attack boards containing multiple pieces',
+			position: Position.makeInitial(),
+			expectedMoves: [],
+		},
+		{
+			name: 'empty attack boards can be moved by their owner in any direction',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 8,
+					color: 'b',
+					level: 'B',
+				},
+			], 'w', 0, new AttackBoards([ 'KL1', 'QL2' ], [ 'KL6', 'QL5' ])),
+			expectedMoves: [
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL2',
+				},
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL3',
+				},
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'QL1',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL1',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL3',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL4',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'KL2',
+				},
+			],
+		},
+		{
+			name: 'attack boards cannot be moved to an occupied position',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 8,
+					color: 'b',
+					level: 'B',
+				},
+			]),
+			expectedMoves: [
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL2',
+				},
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL3',
+				},
+				{
+					color: 'w',
+					from: 'QL1',
+					to: 'QL2',
+				},
+				{
+					color: 'w',
+					from: 'QL1',
+					to: 'QL3',
+				},
+			],
+		},
+		{
+			name: 'white attack board with one piece move forwards or sideways',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 4,
+					color: 'w',
+					level: 'QL2',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 8,
+					color: 'b',
+					level: 'B',
+				},
+			], 'w', 0, new AttackBoards([ 'KL1', 'QL2' ], [ 'KL6', 'QL6' ])),
+			expectedMoves: [
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL2',
+				},
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'KL3',
+				},
+				{
+					color: 'w',
+					from: 'KL1',
+					to: 'QL1',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL4',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'KL2',
+				},
+			],
+		},
+		{
+			name: 'black attack board with one piece move forwards or sideways',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 1,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 5,
+					color: 'b',
+					level: 'QL5',
+				},
+			], 'b', 0, new AttackBoards([ 'KL1', 'QL1' ], [ 'KL6', 'QL5' ])),
+			expectedMoves: [
+				{
+					color: 'b',
+					from: 'KL6',
+					to: 'KL5',
+				},
+				{
+					color: 'b',
+					from: 'KL6',
+					to: 'KL4',
+				},
+				{
+					color: 'b',
+					from: 'KL6',
+					to: 'QL6',
+				},
+				{
+					color: 'b',
+					from: 'QL5',
+					to: 'QL3',
+				},
+				{
+					color: 'b',
+					from: 'QL5',
+					to: 'KL5',
+				},
+			],
+		},
+		{
+			name: 'cannot move attack board occupied by an enemy piece',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 2,
+					color: 'w',
+					level: 'W',
+				},
+				{
+					piece: 'k',
+					file: 'd',
+					rank: 1,
+					color: 'b',
+					level: 'KL1',
+				},
+			]),
+			expectedMoves: [
+				{
+					color: 'w',
+					from: 'QL1',
+					to: 'QL2',
+				},
+				{
+					color: 'w',
+					from: 'QL1',
+					to: 'QL3',
+				},
+			],
+		},
+		{
+			name: 'cannot make an attack board move that leaves self in check',
+			position: new Position([
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 4,
+					color: 'w',
+					level: 'QL2',
+				},
+				{
+					piece: 'k',
+					file: 'a',
+					rank: 5,
+					color: 'b',
+					level: 'B',
+				},
+			], 'w', 0, new AttackBoards([ 'KL1', 'QL2' ], [ 'KL6', 'QL6' ])),
+			expectedMoves: [
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL4',
+				},
+				{
+					color: 'w',
+					from: 'QL2',
+					to: 'QL4',
+				},
+			],
+		},
+	];
+
+	attackBoardMovesTestCases.forEach(({
+		name,
+		position,
+		expectedMoves,
+	}) => {
+		it(`can generate legal attack board moves - ${name}`, () => {
+			const moves = position.getLegalMoves().filter(isAttackBoardMove);
+			expect(moves).toHaveLength(expectedMoves.length);
+			expect(moves).toEqual(expect.arrayContaining(expectedMoves));
+		});
+	});
 });
 
 describe('Position - Piece collisions', () => {
@@ -2073,7 +2356,7 @@ describe('Position - Pawn promotions', () => {
 			},
 		], 'w');
 
-		const moves = pos.getLegalMoves();
+		const moves = pos.getLegalMoves().filter(isPieceMove);
 		expect(moves).toHaveLength(4);
 		expect(moves).toEqual(expect.arrayContaining([
 			{
@@ -2129,7 +2412,7 @@ describe('Position - Pawn promotions', () => {
 			},
 		], 'w');
 
-		const moves = pos.getLegalMoves();
+		const moves = pos.getLegalMoves().filter(isPieceMove);
 		expect(moves).toHaveLength(8);
 		expect(moves).toEqual(expect.arrayContaining([
 			{
@@ -2666,24 +2949,52 @@ describe('Position - Game over conditions', () => {
 		const pos = new Position([
 			{
 				piece: 'q',
-				file: 'd',
+				file: 'b',
 				rank: 6,
 				color: 'w',
-				level: 'B',
+				level: 'N',
 			},
 			{
-				piece: 'n',
-				file: 'c',
-				rank: 7,
+				piece: 'r',
+				file: 'b',
+				rank: 3,
 				color: 'w',
-				level: 'B',
+				level: 'W',
 			},
 			{
 				piece: 'k',
+				file: 'a',
+				rank: 4,
+				color: 'b',
+				level: 'N',
+			},
+			{
+				piece: 'b',
+				file: 'z',
+				rank: 9,
+				color: 'w',
+				level: 'QL6',
+			},
+			{
+				piece: 'b',
 				file: 'e',
 				rank: 9,
-				color: 'b',
+				color: 'w',
 				level: 'KL6',
+			},
+			{
+				piece: 'n',
+				file: 'z',
+				rank: 0,
+				color: 'w',
+				level: 'QL1',
+			},
+			{
+				piece: 'n',
+				file: 'e',
+				rank: 0,
+				color: 'w',
+				level: 'KL1',
 			},
 		], 'b');
 

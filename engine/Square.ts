@@ -8,6 +8,9 @@ export type AttackLevel =
 	'QL1' | 'QL2' | 'QL3' | 'QL4' | 'QL5' | 'QL6' |
 	'KL1' | 'KL2' | 'KL3' | 'KL4' | 'KL5' | 'KL6';
 
+export const oppositeLevel = (l: AttackLevel) =>
+	((l[0] === 'Q' ? 'K' : 'Q') + l.slice(1)) as AttackLevel;
+
 export type Level = MainLevel | AttackLevel;
 
 export type FlatSquare = {
@@ -27,7 +30,7 @@ export const squaresEqual = (a: any, b: any) : boolean =>
 	a.file === b.file && a.rank === b.rank && a.level === b.level;
 
 export const rankCount = 10;
-export  const fileCount = 6;
+export const fileCount = 6;
 
 export const fileIndices: Record<File, number> = {
 	'z': 0,

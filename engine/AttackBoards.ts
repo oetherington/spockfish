@@ -18,6 +18,10 @@ class AttackBoards {
 		return new AttackBoards(data['w'], data['b']);
 	}
 
+	public getColor(color: Color) : AttackLevel[] {
+		return this.data[color];
+	}
+
 	public getWhite() : AttackLevel[] {
 		return this.data['w'];
 	}

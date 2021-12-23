@@ -1,8 +1,9 @@
-import Color, { otherColor } from './Color';
+import Color, { colors, otherColor } from './Color';
 import Square, {
 	File,
 	Rank,
 	AttackLevel,
+	oppositeLevel,
 	Level,
 	FlatSquare,
 	squaresEqual,
@@ -12,6 +13,7 @@ import Move, { PieceMove, AttackBoardMove, isPieceMove } from './Move';
 import FlatBitboard from './FlatBitboard';
 import FullBitboard, { createFullBitboard } from './FullBitboard';
 import AttackBoards from './AttackBoards';
+import LevelCounter, { makeLevelCounter } from './LevelCounter';
 import { boardSquares } from './BoardSquares';
 
 type Castle = {
@@ -40,6 +42,34 @@ class Position {
 			target: { file: 'e', rank: 9, level: 'KL6' },
 		},
 	];
+
+	private static readonly ATTACK_BOARD_TARGETS:
+			Record<string, Record<Color, string[]>> = {
+		'1': {
+			'w': [ '2', '3' ],
+			'b': [],
+		},
+		'2': {
+			'w': [ '4' ],
+			'b': [ '1', '3' ],
+		},
+		'3': {
+			'w': [ '2', '4', '5' ],
+			'b': [ '1' ],
+		},
+		'4': {
+			'w': [ '6' ],
+			'b': [ '2', '3', '5' ],
+		},
+		'5': {
+			'w': [ '4', '6' ],
+			'b': [ '3' ],
+		},
+		'6': {
+			'w': [],
+			'b': [ '4', '5' ],
+		},
+	};
 
 	private turn: Color;
 	private ply: number;
@@ -164,13 +194,16 @@ class Position {
 
 		const attackBoards = this.attackBoards.move(color, from, to);
 
+		const unmovedPieces =
+			this.unmovedPieces.clone().onlyLeft(boardSquares[from]);
+
 		return new Position(
 			pieces,
 			otherColor(this.turn),
 			this.ply + 1,
 			attackBoards,
-			this.fiftyMoveCount,
-			this.unmovedPieces,
+			this.fiftyMoveCount + 1,
+			unmovedPieces,
 			checkDepth,
 		);
 	}
@@ -406,15 +439,63 @@ class Position {
 		return result;
 	}
 
-	private generateLegalMoves(checkDepth: number) : void {
-		// TODO: Generate legal moves for attack boards
+	private generateLegalAttackBoardMoves(
+		levelCounts: LevelCounter,
+	) : AttackBoardMove[] {
+		const result: AttackBoardMove[] = [];
 
+		const occupied = this.attackBoards.getWhite().concat(
+			this.attackBoards.getBlack());
+
+		for (const color of colors) {
+			const levels = this.attackBoards.getColor(color);
+
+			for (const level of levels) {
+				let targets: string[] = [];
+				const index = level.substr(2, 1);
+				const count = levelCounts[level];
+
+				if (count === 0) {
+					if (color !== this.turn)
+						continue;
+
+					targets = Position.ATTACK_BOARD_TARGETS[index]['w'].concat(
+						Position.ATTACK_BOARD_TARGETS[index]['b']);
+				} else if (count === 1) {
+					if (!this.pieces.find((piece) =>
+							piece.level === level &&
+							piece.color === this.turn))
+						continue;
+
+					targets = Position.ATTACK_BOARD_TARGETS[index][this.turn];
+				} else {
+					continue;
+				}
+
+				for (const target of targets) {
+					const to = (level.substr(0, 2) + target) as AttackLevel;
+					if (!occupied.includes(to))
+						result.push({ color, from: level, to });
+				}
+
+				const opposite = oppositeLevel(level);
+				if (!occupied.includes(opposite))
+					result.push({ color, from: level, to: opposite });
+			}
+		}
+
+		return result;
+	}
+
+	private generateLegalMoves(checkDepth: number) : void {
 		const king = this.pieces.find(({ piece, color }) =>
 			piece === 'k' && color === this.turn);
 
 		const searchDeeper = king && checkDepth > 0;
 
 		let attacked: PieceMove[] = [];
+
+		const levelCounts = makeLevelCounter();
 
 		for (const piece of this.pieces) {
 			if (piece.color === this.turn) {
@@ -424,11 +505,16 @@ class Position {
 				const moves = this.generateLegalMovesForPiece(piece)
 				attacked = attacked.concat(moves);
 			}
+
+			levelCounts[piece.level]++;
 		}
 
 		if (king)
 			this.legalMoves = this.legalMoves.concat(
 				this.generateLegalCastlingMoves(king, attacked) as Move[]);
+
+		this.legalMoves = this.legalMoves.concat(
+			this.generateLegalAttackBoardMoves(levelCounts));
 
 		if (!searchDeeper)
 			return;
@@ -479,7 +565,7 @@ class Position {
 	}
 
 	public hitFiftyMoveLimit() : boolean {
-		// Use 100 because this.fiftyMoveCount actually counts plys
+		// Use 100 because this.fiftyMoveCount actually counts plys, not moves
 		return this.fiftyMoveCount >= 100;
 	}
 }
