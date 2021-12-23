@@ -59,7 +59,10 @@ const AttackBoard = ({ level, color }: AttackBoardProps) => {
 			<mesh
 				position={getStalkPosition(level)}
 				scale={1}
-				userData={{ abLevel: level }}
+				userData={{
+					abLevel: level,
+					clickable: true,
+				}}
 			>
 				<cylinderGeometry args={[radius, radius, height, segments]} />
 				<meshStandardMaterial color={pieceColors[color]} />

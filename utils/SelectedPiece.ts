@@ -19,10 +19,11 @@
 import { Group } from 'three';
 import Piece from '~/engine/Piece';
 import Move from '~/engine/Move';
+import { AttackLevel } from '~/engine/Square';
 
 type SelectedPiece = {
 	obj: Group;
-	piece: Piece;
+	piece: Piece | AttackLevel;
 	legalMoves: Move[];
 }
 

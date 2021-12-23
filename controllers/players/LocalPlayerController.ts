@@ -23,7 +23,7 @@ import SelectedPiece from '~/utils/SelectedPiece';
 import useDomEvent from '~/hooks/useDomEvent';
 import Piece from '~/engine/Piece';
 import Move, { PieceMove, isPieceMove } from '~/engine/Move';
-import Square, { squaresEqual } from '~/engine/Square';
+import Square, { AttackLevel, squaresEqual } from '~/engine/Square';
 
 class LocalPlayerController extends PlayerController {
 	public isLocal() : boolean {
@@ -65,6 +65,12 @@ class LocalPlayerController extends PlayerController {
 
 		if (!obj || (selected && obj === selected.obj)) {
 			setSelected(null);
+		} else if (obj.userData.abLevel) {
+			setSelected({
+				obj,
+				piece: obj.userData.abLevel as AttackLevel,
+				legalMoves: [],
+			});
 		} else {
 			const piece = obj.userData as Piece;
 			if (piece.color === this.color) {
