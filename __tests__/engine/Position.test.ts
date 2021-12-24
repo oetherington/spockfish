@@ -1948,6 +1948,19 @@ describe('Position - Piece collisions', () => {
 	];
 
 	runLegalMovesTestCases('can detect piece collisions', legalMovesTestCases);
+
+	it('pieces cannot wrap around', () => {
+		const initial = Position.makeInitial();
+		const pos = initial.makeMove(initial.getLegalMoves()[0]);
+		const moves = pos.getLegalMovesForPiece({
+			piece: 'p',
+			color: 'b',
+			file: 'e',
+			rank: 8,
+			level: 'KL6',
+		});
+		expect(moves).toHaveLength(0);
+	});
 });
 
 describe('Position - Checks', () => {

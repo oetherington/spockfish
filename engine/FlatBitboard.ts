@@ -38,8 +38,8 @@ class FlatBitboard {
 		(r) => FlatBitboard.fromRank(r));
 
 	private static readonly PAWN_TAKES = [
-		{ limitFile: 'z', incrementer: nextFile },
-		{ limitFile: 'e', incrementer: prevFile },
+		{ limitFile: 'e', incrementer: nextFile },
+		{ limitFile: 'z', incrementer: prevFile },
 	];
 
 	low: number;

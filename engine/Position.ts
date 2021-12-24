@@ -336,7 +336,6 @@ class Position {
 
 		switch (piece) {
 			case 'p':
-				// TODO: Handle promotions
 				return bb.pawnMoves(
 					level,
 					color,
