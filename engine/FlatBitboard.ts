@@ -340,6 +340,7 @@ class FlatBitboard {
 		targetLevel: Level,
 		capture: boolean = false,
 		levels: Level[] = [],
+		enPassant: boolean | undefined = undefined,
 	) : PieceMove[] {
 		if (piece === 'p') {
 			return this.toSquares().map(({ file, rank }) => {
@@ -359,6 +360,7 @@ class FlatBitboard {
 					to: { file, rank, level: targetLevel },
 					capture,
 					promotion,
+					enPassant,
 				}));
 			}).flat();
 		} else {

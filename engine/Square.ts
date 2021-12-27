@@ -63,3 +63,6 @@ export const files: File[] = [ 'z', 'a', 'b', 'c', 'd', 'e' ];
 
 export const nextFile = (f: File) => files[fileIndices[f] + 1];
 export const prevFile = (f: File) => files[fileIndices[f] - 1];
+
+export const fileDiff = (a: File, b: File) =>
+	Math.abs(fileIndices[a] - fileIndices[b]);

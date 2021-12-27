@@ -28,6 +28,7 @@ export interface PieceMove {
 	capture?: boolean,
 	castle?: boolean,
 	promotion?: PieceType,
+	enPassant?: boolean,
 }
 
 export interface AttackBoardMove {

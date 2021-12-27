@@ -1218,6 +1218,52 @@ describe('Position - Piece collisions', () => {
 			],
 		},
 		{
+			name: 'white en passant',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 6,
+					color: 'w',
+					level: 'B',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 6,
+					color: 'b',
+					level: 'B',
+				},
+			], 'w', 0, new AttackBoards(), 0, new FlatBitboard(), {
+				file: 'c',
+				rank: 6,
+			}),
+			piece: {
+				piece: 'p',
+				file: 'b',
+				rank: 6,
+				color: 'w',
+				level: 'B',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'b', rank: 6, level: 'B' },
+					to: { file: 'b', rank: 7, level: 'B' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'w',
+					from: { file: 'b', rank: 6, level: 'B' },
+					to: { file: 'c', rank: 7, level: 'B' },
+					capture: true,
+					enPassant: true,
+				},
+			],
+		},
+		{
 			name: 'black pawn collisions - friendly piece one square ahead',
 			position: new Position([
 				{
@@ -1438,6 +1484,52 @@ describe('Position - Piece collisions', () => {
 					from: { file: 'b', rank: 6, level: 'B' },
 					to: { file: 'c', rank: 5, level: 'B' },
 					capture: true,
+				},
+			],
+		},
+		{
+			name: 'black en passant',
+			position: new Position([
+				{
+					piece: 'p',
+					file: 'b',
+					rank: 3,
+					color: 'b',
+					level: 'W',
+				},
+				{
+					piece: 'p',
+					file: 'c',
+					rank: 3,
+					color: 'w',
+					level: 'W',
+				},
+			], 'b', 0, new AttackBoards(), 0, new FlatBitboard(), {
+				file: 'c',
+				rank: 3,
+			}),
+			piece: {
+				piece: 'p',
+				file: 'b',
+				rank: 3,
+				color: 'b',
+				level: 'W',
+			},
+			expectedMoves: [
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'b', rank: 3, level: 'W' },
+					to: { file: 'b', rank: 2, level: 'W' },
+					capture: false,
+				},
+				{
+					piece: 'p',
+					color: 'b',
+					from: { file: 'b', rank: 3, level: 'W' },
+					to: { file: 'c', rank: 2, level: 'W' },
+					capture: true,
+					enPassant: true,
 				},
 			],
 		},
