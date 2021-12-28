@@ -1237,6 +1237,7 @@ describe('Position - Piece collisions', () => {
 			], 'w', 0, new AttackBoards(), 0, new FlatBitboard(), {
 				file: 'c',
 				rank: 6,
+				level: 'B',
 			}),
 			piece: {
 				piece: 'p',
@@ -1507,6 +1508,7 @@ describe('Position - Piece collisions', () => {
 			], 'b', 0, new AttackBoards(), 0, new FlatBitboard(), {
 				file: 'c',
 				rank: 3,
+				level: 'W',
 			}),
 			piece: {
 				piece: 'p',
@@ -2981,6 +2983,54 @@ describe('Position - Making moves', () => {
 	];
 
 	runMakeMoveTestCases('can make moves', makeMoveTestCases);
+
+	it('can make moves - can make en passant moves', () => {
+		const pos1 = new Position([
+			{
+				piece: 'p',
+				file: 'b',
+				rank: 2,
+				color: 'w',
+				level: 'W',
+			},
+			{
+				piece: 'p',
+				file: 'c',
+				rank: 4,
+				color: 'b',
+				level: 'W',
+			},
+		]);
+
+		const pos2 = pos1.makeMove({
+			piece: 'p',
+			color: 'w',
+			from: { file: 'b', rank: 2, level: 'W' },
+			to: { file: 'b', rank: 4, level: 'W' },
+			capture: false,
+		});
+
+		const pos3 = pos2.makeMove({
+			piece: 'p',
+			color: 'b',
+			from: { file: 'c', rank: 4, level: 'W' },
+			to: { file: 'b', rank: 3, level: 'W' },
+			capture: true,
+			enPassant: true,
+		});
+
+		const pieces = pos3.getPieces();
+		expect(pieces).toHaveLength(1);
+		expect(pieces).toEqual(expect.arrayContaining([
+			{
+				piece: 'p',
+				file: 'b',
+				rank: 3,
+				color: 'b',
+				level: 'W',
+			},
+		]));
+	});
 
 	it('pieces are marked as moved after their first move', () => {
 		const pos = Position.makeInitial();
