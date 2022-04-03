@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Layout from '~/components/Layout';
 import BoardView from '~/components/spockfish-board/BoardView';
 import useDomEvent from '~/hooks/useDomEvent';
@@ -49,6 +49,10 @@ type PlayPageProps = {
 
 const PlayPage = ({ router }: PlayPageProps) => {
 	const [boardSize, setBoardSize] = useState<BoardSize>(calculateBoardSize());
+
+	useEffect(() => {
+		setBoardSize(calculateBoardSize());
+	}, []);
 
 	useDomEvent(null, 'resize', () => setBoardSize(calculateBoardSize()));
 
